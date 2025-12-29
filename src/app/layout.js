@@ -13,15 +13,17 @@ export default function RootLayout({ children }) {
       const video = document.createElement("video");
       video.src = "/videos/hero.mp4";
       video.onloadeddata = resolve;
+      video.onerror = resolve; // Handle error gracefully
     });
 
-    const imagesToLoad = ["/images/Logo.jpg"];
+    const imagesToLoad = ["/images/Logo.png"];
     const imagePromises = imagesToLoad.map(
       (src) =>
         new Promise((resolve) => {
           const img = new Image();
           img.src = src;
           img.onload = resolve;
+          img.onerror = resolve; // Handle error gracefully
         })
     );
 
@@ -33,22 +35,22 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/images/Logo.jpg" type="image/jpeg" />
-        <title>Embrocraft DZ</title>
-        <meta name="description" content="اكتشف الملابس المطرزة المخصصة التي تعكس أسلوبك وشخصيتك الفريدة. أنشئ وصمّم واطلب قطعًا فريدة بسهولة!" />
+        <link rel="icon" href="/images/Logo.png" type="image/png" />
+        <title>Rital – أناقتك تبدأ من هنا</title>
+        <meta name="description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات. اكتشفي تشكيلتنا الفريدة من الفساتين والبلايز والأطقم النسائية." />
         <meta property="og:url" content="https://embrocraft-dz.vercel.app/" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Embrocraft DZ" />
-        <meta property="og:description" content="اكتشف الملابس المطرزة المخصصة التي تعكس أسلوبك وشخصيتك الفريدة. أنشئ وصمّم واطلب قطعًا فريدة بسهولة!" />
-        <meta property="og:image" content="https://embrocraft-dz.vercel.app/images/Logo.jpg" />
+        <meta property="og:title" content="Rital – أناقتك تبدأ من هنا" />
+        <meta property="og:description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات. اكتشفي تشكيلتنا الفريدة من الفساتين والبلايز والأطقم النسائية." />
+        <meta property="og:image" content="https://embrocraft-dz.vercel.app/images/Logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="embrocraft-dz.vercel.app" />
-        <meta property="twitter:url" content="https://embrocraft-dz.vercel.app/" />
-        <meta name="twitter:title" content="Embrocraft DZ" />
-        <meta name="twitter:description" content="اكتشف الملابس المطرزة المخصصة التي تعكس أسلوبك وشخصيتك الفريدة. أنشئ وصمّم واطلب قطعًا فريدة بسهولة!" />
-        <meta name="twitter:image" content="https://embrocraft-dz.vercel.app/images/Logo.jpg" />
+        <meta property="twitter:domain" content="rital.vercel.app" />
+        <meta property="twitter:url" content="https://rital.vercel.app/" />
+        <meta name="twitter:title" content="Rital – أناقتك تبدأ من هنا" />
+        <meta name="twitter:description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات." />
+        <meta name="twitter:image" content="https://embrocraft-dz.vercel.app/images/Logo.png" />
       </head>
-      <body className="bg-gray-100">
+      <body className="bg-cream-50 min-h-screen">
         {isLoading ? <Loading /> : (
           <>
             <Header />

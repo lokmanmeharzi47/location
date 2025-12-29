@@ -309,17 +309,15 @@ function OrderForm({ selectedImage }) {
               <label className="block text-sm font-medium text-gray-700 text-right">
                 لون القميص
               </label>
-              <select
+              <input
                 name="shirtColor"
                 value={formData.shirtColor}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md bg-gray-50 border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
-              >
-                <option value="">اختر لون القميص</option>
-                <option value="Noir">Noir</option>
-                <option value="Blanc">Blanc</option>
-              </select>
+              />
+
+
             </div>
 
             {/* Shirt Size Dropdown */}

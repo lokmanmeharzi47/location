@@ -21,7 +21,7 @@ export async function GET(request, context) {
   }
 
   // Validate category against the allowed ones
-  const validCategories = ["t-shirts", "hoodies", "sweatshirts"];
+  const validCategories = ["dresses", "tops", "sets", "sweaters"];
   if (!validCategories.includes(category)) {
     return NextResponse.json(
       { message: "Invalid category" },
