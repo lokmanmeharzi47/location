@@ -33,6 +33,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -43,24 +44,31 @@ body {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
 }
 
 @keyframes pulse-gold {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(201, 169, 98, 0.4);
   }
+
   50% {
     box-shadow: 0 0 0 10px rgba(201, 169, 98, 0);
   }
@@ -90,24 +98,16 @@ body {
 
 /* Elegant button styles */
 .btn-primary {
-  @apply bg-blush-500 text-white font-semibold py-3 px-8 rounded-full 
-         transition-all duration-300 ease-in-out transform 
-         hover:bg-blush-600 hover:scale-105 hover:shadow-lg
-         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blush-400;
+  @apply bg-blush-500 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 ease-in-out transform hover:bg-blush-600 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blush-400;
 }
 
 .btn-secondary {
-  @apply border-2 border-gold-500 text-gold-600 font-semibold py-3 px-8 rounded-full 
-         transition-all duration-300 ease-in-out transform bg-transparent
-         hover:bg-gold-500 hover:text-white hover:scale-105 hover:shadow-lg
-         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-400;
+  @apply border-2 border-gold-500 text-gold-600 font-semibold py-3 px-8 rounded-full transition-all duration-300 ease-in-out transform bg-transparent hover:bg-gold-500 hover:text-white hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-400;
 }
 
 /* Elegant card styles */
 .card-elegant {
-  @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg 
-         border border-cream-200 transition-all duration-300
-         hover:shadow-xl hover:border-blush-200 hover:-translate-y-1;
+  @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-cream-200 transition-all duration-300 hover:shadow-xl hover:border-blush-200 hover:-translate-y-1;
 }
 
 /* Gold accent line */
@@ -122,10 +122,23 @@ body {
 
 /* Icon twitch animation */
 @keyframes twitch {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  50% { transform: translateX(2px); }
-  75% { transform: translateX(-1px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-2px);
+  }
+
+  50% {
+    transform: translateX(2px);
+  }
+
+  75% {
+    transform: translateX(-1px);
+  }
 }
 
 .icon-twitch {
@@ -149,4 +162,263 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #D4A5A5, #B76E79);
+}
+
+/* ================================
+   Premium Order Form Modal Styles
+   ================================ */
+
+/* Modal Backdrop */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Modal Content Container */
+.modal-content {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal Header Gradient */
+.modal-header {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 50%, #4F46E5 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Modal Slide In Animation */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-modalSlideIn {
+  animation: modalSlideIn 0.3s ease-out forwards;
+}
+
+/* Step Fade In Animation */
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-stepFadeIn {
+  animation: stepFadeIn 0.3s ease-out forwards;
+}
+
+/* Form Input Styles */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  background: #FAFAFA;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #8B5CF6;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.form-input:disabled {
+  background: #F3F4F6;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 4px;
+}
+
+/* Color Picker Options */
+.color-option {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+}
+
+/* Size Option Buttons */
+.size-option {
+  padding: 10px 18px;
+  border: 2px solid;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-option:hover {
+  transform: translateY(-2px);
+}
+
+/* Delivery Option Buttons */
+.delivery-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border: 2px solid;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.delivery-option:hover {
+  transform: translateY(-2px);
+}
+
+/* Product Preview Card */
+.product-preview-card {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EEF2FF 100%);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+/* Summary Card */
+.summary-card {
+  background: #FAFAFA;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #E5E7EB;
+}
+
+.summary-section {
+  margin-bottom: 16px;
+}
+
+.summary-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Trust Badges */
+.trust-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  background: linear-gradient(135deg, #F5F3FF 0%, #ECFDF5 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Custom Scrollbar for Modal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8B5CF6, #6366F1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7C3AED, #4F46E5);
+}
+
+/* Modal Footer */
+.modal-footer {
+  flex-shrink: 0;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  .modal-content {
+    max-height: 95vh;
+    margin: 8px;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 20px 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .form-input {
+    padding: 10px 14px;
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+  }
+
+  .color-option {
+    width: 32px;
+    height: 32px;
+  }
+
+  .size-option {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .delivery-option {
+    padding: 12px;
+  }
+
+  .trust-badge {
+    padding: 10px 6px;
+  }
+
+  .trust-badge span {
+    font-size: 10px;
+  }
 }
