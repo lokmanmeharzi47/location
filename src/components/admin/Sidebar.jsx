@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FiHome,
   FiGrid,
   FiPackage,
+  FiFileText,
   FiUsers,
   FiSettings,
   FiChevronRight,
@@ -17,6 +18,7 @@ const menuItems = [
   { icon: FiHome, label: "الرئيسية", href: "/admin/dashboard" },
   { icon: FiGrid, label: "الفئات", href: "/admin/dashboard/categories" },
   { icon: FiPackage, label: "المنتجات", href: "/admin/dashboard/products" },
+  { icon: FiFileText, label: "الطلبيات", href: "/admin/dashboard/orders" },
   { icon: FiUsers, label: "العملاء", href: "/admin/dashboard/customers" },
   { icon: FiSettings, label: "الإعدادات", href: "/admin/dashboard/settings" },
 ];
@@ -37,9 +39,9 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       {/* Logo Section */}
       <div className="h-20 flex items-center justify-center border-b border-white/10">
         {collapsed ? (
-          <span className="text-2xl font-bold text-gold-400">E</span>
+          <span className="text-2xl font-bold text-gold-400">B</span>
         ) : (
-          <h1 className="text-xl font-bold text-gold-400">EmbroCraft DZ</h1>
+          <h1 className="text-xl font-bold text-gold-400">Boutique Rital</h1>
         )}
       </div>
 
@@ -61,8 +63,8 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                 <Link
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                      ? "bg-gold-500 text-white shadow-lg"
-                      : "hover:bg-white/10 text-white/80 hover:text-white"
+                    ? "bg-gold-500 text-white shadow-lg"
+                    : "hover:bg-white/10 text-white/80 hover:text-white"
                     } ${collapsed ? "justify-center" : "justify-start"}`}
                 >
                   <item.icon size={20} />

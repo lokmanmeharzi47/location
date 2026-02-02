@@ -69,10 +69,32 @@ export async function PUT(request, { params }) {
 
         // If only updating status
         if (status && Object.keys(body).length === 1) {
+            // Get current order status and product_id before update
+            const currentOrder = await queryOne('SELECT status, product_id FROM orders WHERE id = ?', [id]);
+            const previousStatus = currentOrder?.status;
+            const productId = currentOrder?.product_id;
+
             const affectedRows = await update(
                 'UPDATE orders SET status = ? WHERE id = ?',
                 [status, id]
             );
+
+            // Handle sales count based on status change
+            if (productId && previousStatus !== status) {
+                try {
+                    // If changing TO "مكتمل" - increment sales
+                    if (status === 'مكتمل' && previousStatus !== 'مكتمل') {
+                        await update('UPDATE products SET sales = sales + 1 WHERE id = ?', [productId]);
+                    }
+                    // If changing FROM "مكتمل" to something else - decrement sales
+                    else if (previousStatus === 'مكتمل' && status !== 'مكتمل') {
+                        await update('UPDATE products SET sales = GREATEST(sales - 1, 0) WHERE id = ?', [productId]);
+                    }
+                } catch (salesError) {
+                    console.error('Failed to update sales count:', salesError);
+                    // Don't fail the status update just because sales count failed
+                }
+            }
 
             return NextResponse.json({
                 success: true,

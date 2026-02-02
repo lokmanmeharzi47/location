@@ -1,6 +1,14 @@
 "use client";
 import { useState } from "react";
-import { FiUser, FiLock, FiStore, FiGlobe, FiBell, FiSave, FiCheck } from "react-icons/fi";
+import {
+    FiUser,
+    FiLock,
+    FiShoppingBag,
+    FiGlobe,
+    FiBell,
+    FiSave,
+    FiCheck
+} from "react-icons/fi";
 
 export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState("profile");
@@ -13,7 +21,7 @@ export default function SettingsPage() {
 
     const tabs = [
         { id: "profile", label: "الملف الشخصي", icon: FiUser },
-        { id: "store", label: "المتجر", icon: FiStore },
+        { id: "store", label: "المتجر", icon: FiShoppingBag },
         { id: "password", label: "كلمة المرور", icon: FiLock },
         { id: "notifications", label: "الإشعارات", icon: FiBell },
     ];
@@ -35,8 +43,8 @@ export default function SettingsPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-5 py-4 text-right transition-colors ${activeTab === tab.id
-                                        ? "bg-gold-50 text-gold-600 border-r-4 border-gold-500"
-                                        : "text-gray-600 hover:bg-gray-50"
+                                    ? "bg-gold-50 text-gold-600 border-r-4 border-gold-500"
+                                    : "text-gray-600 hover:bg-gray-50"
                                     }`}
                             >
                                 <tab.icon size={18} />
@@ -114,7 +122,7 @@ export default function SettingsPage() {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">اسم المتجر</label>
                                         <input
                                             type="text"
-                                            defaultValue="EmbroCraft DZ"
+                                            defaultValue="Boutique Rital"
                                             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400"
                                         />
                                     </div>
@@ -214,8 +222,8 @@ export default function SettingsPage() {
                             <button
                                 onClick={handleSave}
                                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all ${saved
-                                        ? "bg-emerald-500 text-white"
-                                        : "bg-gold-500 text-white hover:bg-gold-600"
+                                    ? "bg-emerald-500 text-white"
+                                    : "bg-gold-500 text-white hover:bg-gold-600"
                                     }`}
                             >
                                 {saved ? (

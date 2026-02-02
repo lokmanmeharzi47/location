@@ -35,6 +35,10 @@ export async function GET() {
         );
         const outOfStockProducts = outOfStockResult?.count || 0;
 
+        // Get total sales count (completed orders only)
+        const [salesResult] = await query("SELECT COUNT(*) as total FROM orders WHERE status = 'مكتمل'");
+        const totalSales = salesResult?.total || 0;
+
         // Get recent orders (last 5)
         const recentOrders = await query(
             `SELECT order_number, customer_name, product_name, total, status, order_date 
@@ -69,6 +73,11 @@ export async function GET() {
             totalProducts: {
                 value: totalProducts.toLocaleString('ar-DZ'),
                 change: 3,
+                changeType: 'increase',
+            },
+            totalSales: {
+                value: totalSales.toLocaleString('ar-DZ'),
+                change: 15,
                 changeType: 'increase',
             },
             lowStockProducts,

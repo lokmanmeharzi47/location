@@ -110,6 +110,8 @@ export async function POST(request) {
             ]
         );
 
+        // Note: Sales are NOT incremented here. They are incremented when order status changes to "مكتمل"
+
         return NextResponse.json({
             success: true,
             message: 'تم إنشاء الطلب بنجاح',

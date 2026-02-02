@@ -11,9 +11,8 @@ export async function POST(request) {
         if (token) {
             try {
                 await query('DELETE FROM sessions WHERE token = ?', [token]);
-            } catch (error) {
+            } catch {
                 // Session table might not exist, continue anyway
-                console.log('Session deletion skipped:', error.message);
             }
         }
 

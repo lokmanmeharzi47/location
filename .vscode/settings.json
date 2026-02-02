@@ -1,0 +1,30 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": false
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "aws-1-eu-west-1.pooler.supabase.com",
+            "port": 6543,
+            "driver": "PostgreSQL",
+            "name": "Supabase Dashboard",
+            "database": "postgres",
+            "username": "postgres"
+        },
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "aws-1-eu-west-1.pooler.supabase.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Supabase Dashboard v2",
+            "database": "postgres",
+            "username": "postgres.ejruvukorbzofslzaiwc"
+        }
+    ],
+    "prisma.pinToPrisma6": false
+}

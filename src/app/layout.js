@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
   }, []);
 
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/images/Logo.png" type="image/png" />
         <title>Rital – أناقتك تبدأ من هنا</title>

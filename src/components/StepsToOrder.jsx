@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function StepsToOrder() {
   const [activeStep, setActiveStep] = useState(null);
@@ -76,8 +76,8 @@ export default function StepsToOrder() {
             <div
               key={index}
               className={`relative bg-white rounded-2xl p-6 text-center transition-all duration-500 cursor-pointer group border border-cream-200 ${activeStep === index
-                  ? "shadow-xl -translate-y-2 border-blush-300"
-                  : "shadow-md hover:shadow-xl hover:-translate-y-2 hover:border-blush-200"
+                ? "shadow-xl -translate-y-2 border-blush-300"
+                : "shadow-md hover:shadow-xl hover:-translate-y-2 hover:border-blush-200"
                 }`}
               onClick={() => isSmallScreen && setActiveStep(activeStep === index ? null : index)}
               onMouseEnter={() => !isSmallScreen && setActiveStep(index)}
@@ -90,8 +90,8 @@ export default function StepsToOrder() {
 
               {/* Icon */}
               <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center transition-all duration-300 ${activeStep === index
-                  ? "bg-blush-500 text-white"
-                  : "bg-blush-100 text-blush-500 group-hover:bg-blush-500 group-hover:text-white"
+                ? "bg-blush-500 text-white"
+                : "bg-blush-100 text-blush-500 group-hover:bg-blush-500 group-hover:text-white"
                 }`}>
                 {step.icon}
               </div>
@@ -101,8 +101,8 @@ export default function StepsToOrder() {
 
               {/* Description */}
               <p className={`text-brown-light text-sm leading-relaxed transition-all duration-300 ${activeStep === index
-                  ? "opacity-100 max-h-24"
-                  : "opacity-60 lg:opacity-0 lg:group-hover:opacity-100 max-h-0 lg:max-h-0 lg:group-hover:max-h-24 overflow-hidden"
+                ? "opacity-100 max-h-24"
+                : "opacity-60 lg:opacity-0 lg:group-hover:opacity-100 max-h-0 lg:max-h-0 lg:group-hover:max-h-24 overflow-hidden"
                 }`}>
                 {step.description}
               </p>

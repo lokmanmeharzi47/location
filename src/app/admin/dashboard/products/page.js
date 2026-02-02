@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiTrendingUp } from "react-icons/fi";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
@@ -10,6 +10,7 @@ export default function ProductsPage() {
     const [showModal, setShowModal] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("all");
+    const [sortOrder, setSortOrder] = useState("newest");
     const [saving, setSaving] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
@@ -58,12 +59,17 @@ export default function ProductsPage() {
         }
     };
 
-    const filteredProducts = selectedCategory === "all"
+    const filteredProducts = (selectedCategory === "all"
         ? products
         : products.filter(p =>
             p.categoryId === parseInt(selectedCategory) ||
             p.category === selectedCategory
-        );
+        )).sort((a, b) => {
+            if (sortOrder === "sales") {
+                return (b.sales || 0) - (a.sales || 0);
+            }
+            return 0; // Default to API order (newest)
+        });
 
     const handleImageUpload = async (e) => {
         const file = e.target.files?.[0];
@@ -175,10 +181,6 @@ export default function ProductsPage() {
         setEditProduct(null);
     };
 
-    const getCategoryName = (categoryId) => {
-        const cat = categories.find(c => c.id === categoryId);
-        return cat?.name || "غير محدد";
-    };
 
     if (loading) {
         return (
@@ -225,29 +227,49 @@ export default function ProductsPage() {
                 </button>
             </div>
 
-            {/* Category Filter Tabs */}
-            <div className="flex flex-wrap gap-2">
-                <button
-                    onClick={() => setSelectedCategory("all")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedCategory === "all"
+            {/* Filters & Sort */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Category Tabs */}
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        onClick={() => setSelectedCategory("all")}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedCategory === "all"
                             ? "bg-gold-500 text-white shadow-lg shadow-gold-500/20"
                             : "bg-white text-gray-600 hover:bg-cream-100 border border-cream-200"
-                        }`}
-                >
-                    الكل ({products.length})
-                </button>
-                {categories.map((cat) => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id.toString())}
-                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedCategory === cat.id.toString()
-                                ? "bg-gold-500 text-white shadow-lg shadow-gold-500/20"
-                                : "bg-white text-gray-600 hover:bg-cream-100 border border-cream-200"
                             }`}
                     >
-                        {cat.name} ({products.filter(p => p.categoryId === cat.id).length})
+                        الكل ({products.length})
                     </button>
-                ))}
+                    {categories.map((cat) => (
+                        <button
+                            key={cat.id}
+                            onClick={() => setSelectedCategory(cat.id.toString())}
+                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedCategory === cat.id.toString()
+                                ? "bg-gold-500 text-white shadow-lg shadow-gold-500/20"
+                                : "bg-white text-gray-600 hover:bg-cream-100 border border-cream-200"
+                                }`}
+                        >
+                            {cat.name} ({products.filter(p => p.categoryId === cat.id).length})
+                        </button>
+                    ))}
+                </div>
+
+                {/* Sort Toggle */}
+                <div className="flex bg-white rounded-xl border border-cream-200 p-1 flex-shrink-0">
+                    <button
+                        onClick={() => setSortOrder("newest")}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${sortOrder === "newest" ? "bg-cream-100 text-brown-dark" : "text-gray-500 hover:text-gray-700"}`}
+                    >
+                        الأحدث
+                    </button>
+                    <button
+                        onClick={() => setSortOrder("sales")}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 ${sortOrder === "sales" ? "bg-gold-100 text-gold-700" : "text-gray-500 hover:text-gray-700"}`}
+                    >
+                        <FiTrendingUp size={14} />
+                        الأكثر مبيعاً
+                    </button>
+                </div>
             </div>
 
             {/* Products Grid */}
@@ -268,15 +290,21 @@ export default function ProductsPage() {
                             ) : (
                                 <FiImage size={48} className="text-cream-300" />
                             )}
-                            <div className="absolute top-3 left-3">
+                            <div className="absolute top-3 inset-x-3 flex items-start justify-between">
                                 <span
                                     className={`px-3 py-1 rounded-full text-xs font-medium ${product.status === "متوفر"
-                                            ? "bg-emerald-100 text-emerald-700"
-                                            : "bg-red-100 text-red-700"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : "bg-red-100 text-red-700"
                                         }`}
                                 >
                                     {product.status}
                                 </span>
+                                {(product.sales > 0 || sortOrder === "sales") && (
+                                    <span className="bg-white/90 backdrop-blur-sm text-gold-600 px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
+                                        <FiTrendingUp size={12} />
+                                        {product.sales || 0} مبيعاً
+                                    </span>
+                                )}
                             </div>
                         </div>
 

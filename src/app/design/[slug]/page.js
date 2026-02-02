@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowRight, FiShoppingBag, FiFilter, FiX } from "react-icons/fi";
+import { FiArrowRight, FiShoppingBag } from "react-icons/fi";
+import ProductModal from "@/components/ProductModal";
+import OrderModal from "@/components/OrderModal";
 
 export default function CategoryPage() {
     const params = useParams();
@@ -12,7 +14,10 @@ export default function CategoryPage() {
     const [category, setCategory] = useState(null);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Two-step modal state
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showOrderModal, setShowOrderModal] = useState(false);
 
     useEffect(() => {
         if (slug) {
@@ -49,6 +54,29 @@ export default function CategoryPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Handle product card click - show ProductModal (step 1)
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setShowOrderModal(false);
+    };
+
+    // Handle "Order Now" click - show OrderModal (step 2)
+    const handleOrderClick = (product) => {
+        setSelectedProduct(product);
+        setShowOrderModal(true);
+    };
+
+    // Handle back from OrderModal to ProductModal
+    const handleBackToProduct = () => {
+        setShowOrderModal(false);
+    };
+
+    // Handle close all modals
+    const handleCloseModals = () => {
+        setSelectedProduct(null);
+        setShowOrderModal(false);
     };
 
     if (loading) {
@@ -111,7 +139,7 @@ export default function CategoryPage() {
                             {products.map((product) => (
                                 <div
                                     key={product.id}
-                                    onClick={() => setSelectedProduct(product)}
+                                    onClick={() => handleProductClick(product)}
                                     className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-cream-200 hover:border-blush-200 cursor-pointer"
                                 >
                                     {/* Image */}
@@ -164,60 +192,24 @@ export default function CategoryPage() {
                 </div>
             </section>
 
-            {/* Product Detail Modal */}
-            {selectedProduct && (
-                <div
-                    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-                    onClick={() => setSelectedProduct(null)}
-                >
-                    <div
-                        className="bg-white rounded-2xl w-full max-w-lg overflow-hidden animate-fadeIn"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Product Image */}
-                        <div className="relative h-72 bg-gradient-to-br from-blush-100 to-cream-100">
-                            {selectedProduct.image && !selectedProduct.image.includes("placeholder") ? (
-                                <Image
-                                    src={selectedProduct.image}
-                                    alt={selectedProduct.name}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <FiShoppingBag size={64} className="text-cream-300" />
-                                </div>
-                            )}
-                            <button
-                                onClick={() => setSelectedProduct(null)}
-                                className="absolute top-4 left-4 p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
-                            >
-                                <FiX size={20} />
-                            </button>
-                        </div>
+            {/* Step 1: Product Modal - Clean product preview */}
+            {selectedProduct && !showOrderModal && (
+                <ProductModal
+                    product={selectedProduct}
+                    category={category}
+                    onClose={handleCloseModals}
+                    onOrder={handleOrderClick}
+                />
+            )}
 
-                        {/* Product Details */}
-                        <div className="p-6">
-                            <span className="text-xs text-gold-600 font-medium">{category.name}</span>
-                            <h2 className="text-2xl font-bold text-brown-dark mt-1 mb-3">{selectedProduct.name}</h2>
-
-                            {selectedProduct.description && (
-                                <p className="text-brown-light mb-4 leading-relaxed">{selectedProduct.description}</p>
-                            )}
-
-                            <div className="flex items-center justify-between pt-4 border-t border-cream-200">
-                                <p className="text-2xl font-bold text-gold-600">{selectedProduct.price}</p>
-                                <Link
-                                    href={`/order?product=${selectedProduct.id}`}
-                                    className="flex items-center gap-2 px-6 py-3 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors font-medium shadow-lg shadow-gold-500/20"
-                                >
-                                    <FiShoppingBag size={18} />
-                                    اطلب الآن
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* Step 2: Order Modal - Order form */}
+            {selectedProduct && showOrderModal && (
+                <OrderModal
+                    product={selectedProduct}
+                    category={category}
+                    onClose={handleCloseModals}
+                    onBack={handleBackToProduct}
+                />
             )}
         </div>
     );

@@ -68,6 +68,7 @@ export default function DashboardPage() {
         { title: "الإيرادات", value: "0 د.ج", change: 0, changeType: "increase", icon: FiDollarSign, color: "green" },
         { title: "العملاء الجدد", value: "0", change: 0, changeType: "increase", icon: FiUsers, color: "purple" },
         { title: "المنتجات", value: "0", change: 0, changeType: "increase", icon: FiPackage, color: "blush" },
+        { title: "المبيعات", value: "0", change: 0, changeType: "increase", icon: FiTrendingUp, color: "green" },
     ];
 
     const statsCards = stats ? [
@@ -75,6 +76,7 @@ export default function DashboardPage() {
         { title: "الإيرادات", value: stats.totalRevenue?.value || "0 د.ج", change: stats.totalRevenue?.change || 0, changeType: stats.totalRevenue?.changeType || "increase", icon: FiDollarSign, color: "green" },
         { title: "العملاء الجدد", value: "89", change: 5, changeType: "decrease", icon: FiUsers, color: "purple" },
         { title: "المنتجات", value: stats.totalProducts?.value || "0", change: stats.totalProducts?.change || 0, changeType: stats.totalProducts?.changeType || "increase", icon: FiPackage, color: "blush" },
+        { title: "المبيعات", value: stats.totalSales?.value || "0", change: stats.totalSales?.change || 0, changeType: stats.totalSales?.changeType || "increase", icon: FiTrendingUp, color: "green" },
     ] : fallbackCards;
 
     if (loading) {
@@ -117,7 +119,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {statsCards.map((stat, idx) => (
                     <StatsCard key={idx} {...stat} />
                 ))}

@@ -24,7 +24,7 @@ export async function GET(request) {
         }
         // Fallback to text category
         else if (category && category !== 'all') {
-            sql += ' AND (p.category = ? OR c.name = ? OR c.slug = ?)';
+            sql += ' AND (p.category ILIKE ? OR c.name ILIKE ? OR c.slug ILIKE ?)';
             params.push(category, category, category);
         }
 
@@ -47,6 +47,7 @@ export async function GET(request) {
             price: `${p.price.toLocaleString('ar-DZ')} د.ج`,
             priceRaw: p.price,
             stock: p.stock,
+            sales: p.sales || 0,
             status: p.status,
             image: p.image_path || '/images/placeholder.jpg',
             description: p.description,

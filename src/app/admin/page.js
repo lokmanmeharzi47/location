@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    
+    console.log("Attempting login with:", { email, password });
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -19,7 +22,7 @@ export default function AdminLogin() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -28,7 +31,7 @@ export default function AdminLogin() {
         sessionStorage.setItem("adminAuth", "true");
         router.push("/admin/dashboard");
       } else {
-        setError(data.message || "كلمة المرور غير صحيحة");
+        setError(data.message || "البريد الإلكتروني أو كلمة المرور غير صحيحة");
       }
     } catch {
       setError("حدث خطأ في الاتصال بالخادم");
@@ -45,6 +48,21 @@ export default function AdminLogin() {
         </h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-brown-dark mb-2">
+              البريد الإلكتروني
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border border-brown-light rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400"
+              placeholder="admin@example.com"
+              required
+              disabled={loading}
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-brown-dark mb-2">
               كلمة المرور
@@ -73,6 +91,7 @@ export default function AdminLogin() {
           </button>
         </form>
       </div>
+      );
     </div>
   );
 }
