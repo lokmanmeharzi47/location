@@ -30,11 +30,16 @@ export async function GET(request) {
             createdAt: c.created_at,
         }));
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             success: true,
             categories: formattedCategories,
             total: formattedCategories.length,
         });
+
+        // Cache for 5 minutes
+        response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+
+        return response;
 
     } catch (error) {
         console.error('Get categories error:', error);

@@ -39,7 +39,7 @@ export async function GET(request) {
             product: o.product_name || o.product_name_ref || 'غير محدد',
             color: o.color || '-',
             size: o.size || '-',
-            total: `${(o.total || 0).toLocaleString('ar-DZ')} د.ج`,
+            total: `${Math.floor(o.total || 0).toLocaleString('ar-DZ')} د.ج`,
             totalRaw: o.total,
             status: o.status,
             wilaya: o.wilaya || '-',

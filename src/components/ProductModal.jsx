@@ -1,14 +1,20 @@
 "use client";
-import { useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import { FiX, FiShoppingBag } from "react-icons/fi";
+import ImageCarousel from "./ImageCarousel";
+import ColorSwatches from "./ColorSwatches";
 
 /**
- * ProductModal - Clean, elegant product preview modal
+ * ProductModal - Clean, elegant product preview modal with color-aware carousel
  * 
  * First step in the two-step order flow:
  * 1. User clicks product → ProductModal (view + price + order button)
  * 2. User clicks "اطلب الآن" → OrderModal (form)
+ * 
+ * Features:
+ * - Image carousel with swipe, arrows, and pagination dots
+ * - Color swatches that switch the carousel to that color's images
+ * - Product badge overlay with name and price
  */
 export default function ProductModal({
     product,
@@ -16,6 +22,9 @@ export default function ProductModal({
     onClose,
     onOrder
 }) {
+    const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+    const [carouselIndex, setCarouselIndex] = useState(0);
+
     // Close on Escape key
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -32,7 +41,41 @@ export default function ProductModal({
         };
     }, [onClose]);
 
+    // Reset states when product changes
+    useEffect(() => {
+        setSelectedVariantIndex(0);
+        setCarouselIndex(0);
+    }, [product?.id]);
+
+    const handleColorChange = useCallback((index) => {
+        setSelectedVariantIndex(index);
+        setCarouselIndex(0); // Reset carousel to first image when color changes
+    }, []);
+
     if (!product) return null;
+
+    // Get variants - use product.variants if available, otherwise create from legacy data
+    const variants = product.variants && product.variants.length > 0
+        ? product.variants
+        : product.colors && product.colors.length > 0
+            ? product.colors.map((color, i) => ({
+                colorName: color,
+                colorCode: color,
+                images: i === 0 && product.image ? [product.image] : [],
+                stock: 0
+            }))
+            : [{
+                colorName: 'الافتراضي',
+                colorCode: '#C9A86C',
+                images: product.image ? [product.image] : [],
+                stock: product.stock
+            }];
+
+    // Get current variant and its images
+    const currentVariant = variants[selectedVariantIndex] || variants[0];
+    const currentImages = currentVariant?.images?.length > 0
+        ? currentVariant.images
+        : [product.image || '/images/placeholder.jpg'];
 
     return (
         <div
@@ -51,32 +94,33 @@ export default function ProductModal({
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 left-4 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 group"
+                    className="absolute top-4 left-4 z-20 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 group"
                     aria-label="إغلاق"
                 >
                     <FiX size={20} className="text-brown-dark group-hover:text-blush-600 transition-colors" />
                 </button>
 
-                {/* Product Image */}
-                <div className="relative h-72 sm:h-80 bg-gradient-to-br from-blush-100 via-cream-100 to-blush-50 overflow-hidden">
-                    {product.image && !product.image.includes("placeholder") ? (
-                        <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className="transition-transform duration-500 hover:scale-105"
-                            priority
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <FiShoppingBag size={64} className="text-cream-300" />
-                        </div>
-                    )}
+                {/* Image Carousel */}
+                <ImageCarousel
+                    images={currentImages}
+                    productName={product.name}
+                    productPrice={product.price}
+                    currentIndex={carouselIndex}
+                    onIndexChange={setCarouselIndex}
+                    showBadge={true}
+                />
 
-                    {/* Elegant gradient overlay at bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/80 to-transparent pointer-events-none" />
-                </div>
+                {/* Color Swatches - Below Carousel */}
+                {variants.length > 1 && (
+                    <div className="bg-cream-50/50 border-b border-cream-100">
+                        <ColorSwatches
+                            variants={variants}
+                            selectedIndex={selectedVariantIndex}
+                            onColorChange={handleColorChange}
+                            size="md"
+                        />
+                    </div>
+                )}
 
                 {/* Product Details */}
                 <div className="p-6 pt-4 text-center space-y-4">
@@ -97,6 +141,13 @@ export default function ProductModal({
                         </p>
                     )}
 
+                    {/* Selected Color Name (when multiple variants) */}
+                    {variants.length > 1 && currentVariant?.colorName && (
+                        <p className="text-sm text-brown-light">
+                            اللون: <span className="font-semibold text-brown-dark">{currentVariant.colorName}</span>
+                        </p>
+                    )}
+
                     {/* Price */}
                     <div className="py-3">
                         <p className="text-3xl font-bold bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
@@ -109,7 +160,7 @@ export default function ProductModal({
 
                     {/* Order CTA Button */}
                     <button
-                        onClick={() => onOrder(product)}
+                        onClick={() => onOrder({ ...product, selectedVariant: currentVariant })}
                         className="w-full py-4 px-8 bg-gradient-to-r from-gold-500 to-gold-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-gold-500/30 hover:from-gold-600 hover:to-gold-700 hover:shadow-xl hover:shadow-gold-500/40 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3"
                     >
                         <FiShoppingBag size={20} />

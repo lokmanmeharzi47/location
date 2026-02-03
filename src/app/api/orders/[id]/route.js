@@ -32,7 +32,7 @@ export async function GET(request, { params }) {
                 productId: order.product_id,
                 color: order.color || '-',
                 size: order.size || '-',
-                total: `${(order.total || 0).toLocaleString('ar-DZ')} د.ج`,
+                total: `${Math.floor(order.total || 0).toLocaleString('ar-DZ')} د.ج`,
                 totalRaw: order.total,
                 status: order.status,
                 wilaya: order.wilaya || '-',

@@ -12,17 +12,16 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [sortOrder, setSortOrder] = useState("newest");
     const [saving, setSaving] = useState(false);
-    const [uploadingImage, setUploadingImage] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
-    const fileInputRef = useRef(null);
+    const [uploadingVariantIndex, setUploadingVariantIndex] = useState(null);
+    const variantFileInputRefs = useRef({});
 
     const [formData, setFormData] = useState({
         name: "",
         category_id: "",
         price: "",
-        stock: 0,
-        image_path: "",
+        stock: 1,
         description: "",
+        variants: [{ colorName: "", colorCode: "#C9A86C", images: [], stock: 0 }],
     });
 
     useEffect(() => {
@@ -34,7 +33,6 @@ export default function ProductsPage() {
             setLoading(true);
             setError(null);
 
-            // Fetch both products and categories
             const [productsRes, categoriesRes] = await Promise.all([
                 fetch("/api/products"),
                 fetch("/api/categories?active=true")
@@ -68,14 +66,15 @@ export default function ProductsPage() {
             if (sortOrder === "sales") {
                 return (b.sales || 0) - (a.sales || 0);
             }
-            return 0; // Default to API order (newest)
+            return 0;
         });
 
-    const handleImageUpload = async (e) => {
+    // Handle image upload for a specific variant
+    const handleVariantImageUpload = async (e, variantIndex) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setUploadingImage(true);
+        setUploadingVariantIndex(variantIndex);
         const formDataUpload = new FormData();
         formDataUpload.append("file", file);
 
@@ -87,21 +86,75 @@ export default function ProductsPage() {
             const data = await response.json();
 
             if (data.success) {
-                setFormData(prev => ({ ...prev, image_path: data.url }));
-                setImagePreview(data.url);
+                setFormData(prev => {
+                    const newVariants = [...prev.variants];
+                    newVariants[variantIndex] = {
+                        ...newVariants[variantIndex],
+                        images: [...(newVariants[variantIndex].images || []), data.url]
+                    };
+                    return { ...prev, variants: newVariants };
+                });
             } else {
                 alert(data.message);
             }
         } catch {
             alert("حدث خطأ في رفع الصورة");
         } finally {
-            setUploadingImage(false);
+            setUploadingVariantIndex(null);
         }
+    };
+
+    // Remove an image from a variant
+    const handleRemoveImage = (variantIndex, imageIndex) => {
+        setFormData(prev => {
+            const newVariants = [...prev.variants];
+            newVariants[variantIndex] = {
+                ...newVariants[variantIndex],
+                images: newVariants[variantIndex].images.filter((_, i) => i !== imageIndex)
+            };
+            return { ...prev, variants: newVariants };
+        });
+    };
+
+    // Add a new variant
+    const addVariant = () => {
+        setFormData(prev => ({
+            ...prev,
+            variants: [...prev.variants, { colorName: "", colorCode: "#C9A86C", images: [], stock: 0 }]
+        }));
+    };
+
+    // Remove a variant
+    const removeVariant = (index) => {
+        if (formData.variants.length <= 1) {
+            alert("يجب أن يكون هناك متغير واحد على الأقل");
+            return;
+        }
+        setFormData(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
+
+    // Update variant field
+    const updateVariant = (index, field, value) => {
+        setFormData(prev => {
+            const newVariants = [...prev.variants];
+            newVariants[index] = { ...newVariants[index], [field]: value };
+            return { ...prev, variants: newVariants };
+        });
     };
 
     const handleSubmit = async () => {
         if (!formData.name || !formData.category_id || !formData.price) {
             alert("الاسم والفئة والسعر مطلوبون");
+            return;
+        }
+
+        // Validate variants
+        const validVariants = formData.variants.filter(v => v.colorCode && v.colorName);
+        if (validVariants.length === 0) {
+            alert("يجب إضافة متغير واحد على الأقل مع اسم اللون");
             return;
         }
 
@@ -116,6 +169,7 @@ export default function ProductsPage() {
                 body: JSON.stringify({
                     ...formData,
                     price: parseFloat(formData.price.toString().replace(/,/g, "")),
+                    variants: validVariants,
                 }),
             });
 
@@ -156,15 +210,36 @@ export default function ProductsPage() {
 
     const openEditModal = (product) => {
         setEditProduct(product);
+
+        // Convert product data to form format
+        let variants = product.variants || [];
+        if (variants.length === 0) {
+            // Create variants from legacy data
+            if (product.colors && product.colors.length > 0) {
+                variants = product.colors.map((color, i) => ({
+                    colorName: color,
+                    colorCode: color,
+                    images: i === 0 && product.image ? [product.image] : [],
+                    stock: 0
+                }));
+            } else {
+                variants = [{
+                    colorName: "الافتراضي",
+                    colorCode: "#C9A86C",
+                    images: product.image && !product.image.includes("placeholder") ? [product.image] : [],
+                    stock: product.stock || 0
+                }];
+            }
+        }
+
         setFormData({
             name: product.name,
             category_id: product.categoryId?.toString() || "",
             price: product.priceRaw?.toString() || "",
             stock: product.stock,
-            image_path: product.image || "",
             description: product.description || "",
+            variants: variants,
         });
-        setImagePreview(product.image && !product.image.includes("placeholder") ? product.image : null);
         setShowModal(true);
     };
 
@@ -173,14 +248,12 @@ export default function ProductsPage() {
             name: "",
             category_id: "",
             price: "",
-            stock: 0,
-            image_path: "",
+            stock: 1,
             description: "",
+            variants: [{ colorName: "", colorCode: "#C9A86C", images: [], stock: 0 }],
         });
-        setImagePreview(null);
         setEditProduct(null);
     };
-
 
     if (loading) {
         return (
@@ -229,7 +302,6 @@ export default function ProductsPage() {
 
             {/* Filters & Sort */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                {/* Category Tabs */}
                 <div className="flex flex-wrap gap-2">
                     <button
                         onClick={() => setSelectedCategory("all")}
@@ -254,7 +326,6 @@ export default function ProductsPage() {
                     ))}
                 </div>
 
-                {/* Sort Toggle */}
                 <div className="flex bg-white rounded-xl border border-cream-200 p-1 flex-shrink-0">
                     <button
                         onClick={() => setSortOrder("newest")}
@@ -279,7 +350,6 @@ export default function ProductsPage() {
                         key={product.id}
                         className="bg-white rounded-2xl shadow-sm border border-cream-100 overflow-hidden hover:shadow-xl transition-all duration-300 group hover:-translate-y-1"
                     >
-                        {/* Product Image */}
                         <div className="relative h-48 bg-gradient-to-br from-cream-100 to-blush-50 flex items-center justify-center overflow-hidden">
                             {product.image && !product.image.includes("placeholder") ? (
                                 <img
@@ -299,16 +369,26 @@ export default function ProductsPage() {
                                 >
                                     {product.status}
                                 </span>
-                                {(product.sales > 0 || sortOrder === "sales") && (
-                                    <span className="bg-white/90 backdrop-blur-sm text-gold-600 px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
-                                        <FiTrendingUp size={12} />
-                                        {product.sales || 0} مبيعاً
-                                    </span>
+                                {/* Color swatches preview */}
+                                {product.variants && product.variants.length > 1 && (
+                                    <div className="flex -space-x-1">
+                                        {product.variants.slice(0, 4).map((v, i) => (
+                                            <div
+                                                key={i}
+                                                className="w-5 h-5 rounded-full border-2 border-white shadow-sm"
+                                                style={{ backgroundColor: v.colorCode }}
+                                            />
+                                        ))}
+                                        {product.variants.length > 4 && (
+                                            <div className="w-5 h-5 rounded-full border-2 border-white shadow-sm bg-gray-200 flex items-center justify-center text-xs text-gray-600">
+                                                +{product.variants.length - 4}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Product Info */}
                         <div className="p-5">
                             <p className="text-xs text-gold-600 font-medium mb-1">{product.category}</p>
                             <h3 className="font-bold text-gray-800 mb-2 group-hover:text-gold-600 transition-colors">{product.name}</h3>
@@ -318,7 +398,6 @@ export default function ProductsPage() {
                             </div>
                         </div>
 
-                        {/* Actions */}
                         <div className="p-5 pt-0 flex gap-2">
                             <button
                                 onClick={() => openEditModal(product)}
@@ -348,7 +427,7 @@ export default function ProductsPage() {
             {/* Add/Edit Product Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md animate-fadeIn max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl w-full max-w-xl animate-fadeIn max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b border-cream-100 flex items-center justify-between sticky top-0 bg-white z-10">
                             <h2 className="text-xl font-bold text-gray-800">
                                 {editProduct ? "تعديل المنتج" : "إضافة منتج جديد"}
@@ -387,9 +466,6 @@ export default function ProductsPage() {
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                {categories.length === 0 && (
-                                    <p className="text-xs text-amber-600 mt-1">لا توجد فئات. أضف فئات أولاً من قسم الفئات.</p>
-                                )}
                             </div>
 
                             {/* Price & Stock */}
@@ -405,7 +481,7 @@ export default function ProductsPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">المخزون</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">المخزون الإجمالي</label>
                                     <input
                                         type="number"
                                         value={formData.stock}
@@ -429,31 +505,115 @@ export default function ProductsPage() {
                                 />
                             </div>
 
-                            {/* Image Upload */}
+                            {/* Color Variants Section */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">صورة المنتج</label>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleImageUpload}
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="border-2 border-dashed border-cream-300 rounded-xl p-6 text-center hover:border-gold-400 transition-colors cursor-pointer bg-cream-50/50"
-                                >
-                                    {uploadingImage ? (
-                                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold-500 mx-auto"></div>
-                                    ) : imagePreview ? (
-                                        <img src={imagePreview} alt="Preview" className="max-h-32 mx-auto rounded-xl shadow-sm" />
-                                    ) : (
-                                        <>
-                                            <FiUpload size={32} className="mx-auto text-cream-400 mb-2" />
-                                            <p className="text-sm text-gray-500">اضغط لرفع صورة</p>
-                                        </>
-                                    )}
+                                <div className="flex items-center justify-between mb-3">
+                                    <label className="block text-sm font-medium text-gray-700">متغيرات الألوان</label>
+                                    <button
+                                        type="button"
+                                        onClick={addVariant}
+                                        className="text-sm text-gold-600 hover:text-gold-700 font-medium flex items-center gap-1"
+                                    >
+                                        <FiPlus size={14} />
+                                        إضافة لون
+                                    </button>
                                 </div>
+
+                                <div className="space-y-4">
+                                    {formData.variants.map((variant, variantIndex) => (
+                                        <div
+                                            key={variantIndex}
+                                            className="border border-cream-200 rounded-xl p-4 bg-cream-50/30"
+                                        >
+                                            {/* Variant Header */}
+                                            <div className="flex items-center gap-3 mb-3">
+                                                {/* Color Picker */}
+                                                <div className="relative">
+                                                    <input
+                                                        type="color"
+                                                        value={variant.colorCode}
+                                                        onChange={(e) => updateVariant(variantIndex, 'colorCode', e.target.value)}
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                    />
+                                                    <div
+                                                        className="w-10 h-10 rounded-lg shadow-md border-2 border-white cursor-pointer"
+                                                        style={{ backgroundColor: variant.colorCode }}
+                                                    />
+                                                </div>
+
+                                                {/* Color Name */}
+                                                <input
+                                                    type="text"
+                                                    value={variant.colorName}
+                                                    onChange={(e) => updateVariant(variantIndex, 'colorName', e.target.value)}
+                                                    className="flex-1 px-3 py-2 border border-cream-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                                                    placeholder="اسم اللون (مثال: أحمر)"
+                                                />
+
+                                                {/* Remove Variant */}
+                                                {formData.variants.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeVariant(variantIndex)}
+                                                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                        title="حذف هذا اللون"
+                                                    >
+                                                        <FiTrash2 size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {/* Variant Images */}
+                                            <div>
+                                                <p className="text-xs text-gray-500 mb-2">صور هذا اللون:</p>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {/* Existing Images */}
+                                                    {variant.images?.map((img, imgIndex) => (
+                                                        <div key={imgIndex} className="relative group">
+                                                            <img
+                                                                src={img}
+                                                                alt={`${variant.colorName} ${imgIndex + 1}`}
+                                                                className="w-16 h-16 object-cover rounded-lg border border-cream-200"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveImage(variantIndex, imgIndex)}
+                                                                className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            >
+                                                                <FiX size={12} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+
+                                                    {/* Add Image Button */}
+                                                    <input
+                                                        type="file"
+                                                        ref={el => variantFileInputRefs.current[variantIndex] = el}
+                                                        onChange={(e) => handleVariantImageUpload(e, variantIndex)}
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => variantFileInputRefs.current[variantIndex]?.click()}
+                                                        disabled={uploadingVariantIndex === variantIndex}
+                                                        className="w-16 h-16 border-2 border-dashed border-cream-300 rounded-lg flex items-center justify-center hover:border-gold-400 transition-colors cursor-pointer bg-white"
+                                                    >
+                                                        {uploadingVariantIndex === variantIndex ? (
+                                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gold-500"></div>
+                                                        ) : (
+                                                            <FiUpload size={20} className="text-cream-400" />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <p className="text-xs text-gray-400 mt-2">
+                                    كل لون يمكن أن يحتوي على صور متعددة. انقر على الصورة لحذفها.
+                                </p>
                             </div>
                         </div>
 

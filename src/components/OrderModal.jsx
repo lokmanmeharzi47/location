@@ -77,7 +77,7 @@ const pricingData = {
 };
 
 // Size options
-const sizes = ["S", "M", "L", "XL", "XXL"];
+const sizes = ["38", "40", "42", "44", "46", "48"];
 
 function getDeliveryFee(wilaya, deliveryMethod) {
     if (!wilaya || !deliveryMethod) return 0;
@@ -87,7 +87,7 @@ function getDeliveryFee(wilaya, deliveryMethod) {
 }
 
 function formatPrice(price) {
-    return price.toLocaleString("ar-DZ") + " دج";
+    return Math.floor(price).toLocaleString("ar-DZ") + " دج";
 }
 
 // Extract numeric price from string like "2500 دج" or "2,500 DA"
@@ -296,8 +296,8 @@ export default function OrderModal({
                                         type="button"
                                         onClick={() => setFormData({ ...formData, size })}
                                         className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${formData.size === size
-                                                ? "bg-gold-500 text-white shadow-md"
-                                                : "bg-cream-100 text-brown-dark hover:bg-cream-200 border border-cream-200"
+                                            ? "bg-gold-500 text-white shadow-md"
+                                            : "bg-cream-100 text-brown-dark hover:bg-cream-200 border border-cream-200"
                                             }`}
                                     >
                                         {size}
@@ -396,8 +396,8 @@ export default function OrderModal({
                                     type="button"
                                     onClick={() => setFormData({ ...formData, deliveryMethod: "office" })}
                                     className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.deliveryMethod === "office"
-                                            ? "border-gold-500 bg-gold-50 text-gold-700"
-                                            : "border-cream-200 bg-cream-50 text-brown-light hover:border-gold-300"
+                                        ? "border-gold-500 bg-gold-50 text-gold-700"
+                                        : "border-cream-200 bg-cream-50 text-brown-light hover:border-gold-300"
                                         }`}
                                 >
                                     <FiTruck size={22} />
@@ -407,8 +407,8 @@ export default function OrderModal({
                                     type="button"
                                     onClick={() => setFormData({ ...formData, deliveryMethod: "home" })}
                                     className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.deliveryMethod === "home"
-                                            ? "border-gold-500 bg-gold-50 text-gold-700"
-                                            : "border-cream-200 bg-cream-50 text-brown-light hover:border-gold-300"
+                                        ? "border-gold-500 bg-gold-50 text-gold-700"
+                                        : "border-cream-200 bg-cream-50 text-brown-light hover:border-gold-300"
                                         }`}
                                 >
                                     <FiHome size={22} />

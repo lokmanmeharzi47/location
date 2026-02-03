@@ -21,6 +21,41 @@ export async function GET(request, { params }) {
             );
         }
 
+        // Parse variants JSON
+        let variants = [];
+        try {
+            variants = product.variants ? JSON.parse(product.variants) : [];
+        } catch {
+            variants = [];
+        }
+
+        // Parse legacy colors (for backward compatibility)
+        let colors = [];
+        try {
+            colors = product.colors ? JSON.parse(product.colors) : [];
+        } catch {
+            colors = [];
+        }
+
+        // If no variants but has legacy data, create default variant
+        if (variants.length === 0 && (product.image_path || colors.length > 0)) {
+            const defaultColor = colors[0] || '#C9A86C';
+            variants = [{
+                colorName: 'اللون الافتراضي',
+                colorCode: defaultColor,
+                images: product.image_path ? [product.image_path] : [],
+                stock: product.stock
+            }];
+            colors.slice(1).forEach(color => {
+                variants.push({
+                    colorName: color,
+                    colorCode: color,
+                    images: [],
+                    stock: 0
+                });
+            });
+        }
+
         return NextResponse.json({
             success: true,
             product: {
@@ -29,12 +64,14 @@ export async function GET(request, { params }) {
                 category: product.category_name || product.category,
                 categoryId: product.category_id,
                 categorySlug: product.category_slug,
-                price: `${product.price.toLocaleString('ar-DZ')} د.ج`,
+                price: `${Math.floor(product.price).toLocaleString('ar-DZ')} د.ج`,
                 priceRaw: product.price,
                 stock: product.stock,
                 status: product.status,
-                image: product.image_path || '/images/placeholder.jpg',
+                image: variants[0]?.images?.[0] || product.image_path || '/images/placeholder.jpg',
                 description: product.description,
+                colors: colors,
+                variants: variants,
                 createdAt: product.created_at,
             }
         });
@@ -48,12 +85,12 @@ export async function GET(request, { params }) {
     }
 }
 
-// PUT - Update product with category_id
+// PUT - Update product with category_id and variants
 export async function PUT(request, { params }) {
     try {
         const { id } = await params;
         const body = await request.json();
-        const { name, category_id, category, price, stock, image_path, description } = body;
+        const { name, category_id, category, price, stock, image_path, description, colors, variants } = body;
 
         // Check if product exists
         const existing = await queryOne('SELECT id FROM products WHERE id = ?', [id]);
@@ -76,9 +113,40 @@ export async function PUT(request, { params }) {
             }
         }
 
+        // Handle variants - validate and stringify
+        let variantsJson = null;
+        if (variants && Array.isArray(variants) && variants.length > 0) {
+            for (const variant of variants) {
+                if (!variant.colorCode || !variant.colorName) {
+                    return NextResponse.json(
+                        { success: false, message: 'كل متغير يجب أن يحتوي على اسم اللون ورمزه' },
+                        { status: 400 }
+                    );
+                }
+                if (!Array.isArray(variant.images)) {
+                    variant.images = [];
+                }
+            }
+            variantsJson = JSON.stringify(variants);
+        }
+
+        // Handle legacy colors
+        let colorsJson = null;
+        if (colors && Array.isArray(colors)) {
+            colorsJson = JSON.stringify(colors);
+        } else if (variants && variants.length > 0) {
+            colorsJson = JSON.stringify(variants.map(v => v.colorCode));
+        }
+
+        // Get primary image from first variant for legacy image_path
+        let primaryImage = image_path || null;
+        if (!primaryImage && variants && variants.length > 0 && variants[0].images?.length > 0) {
+            primaryImage = variants[0].images[0];
+        }
+
         const affectedRows = await update(
             `UPDATE products 
-             SET name = ?, category = ?, category_id = ?, price = ?, stock = ?, status = ?, image_path = ?, description = ?
+             SET name = ?, category = ?, category_id = ?, price = ?, stock = ?, status = ?, image_path = ?, description = ?, colors = ?, variants = ?, updated_at = NOW()
              WHERE id = ?`,
             [
                 name,
@@ -87,8 +155,10 @@ export async function PUT(request, { params }) {
                 parseFloat(price),
                 parseInt(stock) || 0,
                 status,
-                image_path || null,
+                primaryImage,
                 description || null,
+                colorsJson,
+                variantsJson,
                 id
             ]
         );

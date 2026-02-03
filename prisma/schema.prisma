@@ -67,8 +67,10 @@ model Product {
   stock       Int         @default(0)
   sales       Int         @default(0)
   status      String      @default("متوفر") // 'متوفر' (available) or 'نفذ' (out of stock)
-  imagePath   String?     @map("image_path") // Cloudinary URL
+  imagePath   String?     @map("image_path") // Legacy single image
   description String?
+  colors      String? // Legacy: JSON array of HEX colors
+  variants    String? // JSON: [{colorName, colorCode, images[], stock?}]
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
   categoryRef Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)

@@ -659,11 +659,12 @@ function OrderForm({ selectedImage }) {
                 required
               >
                 <option value="">اختر القياس</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
+                <option value="38">38</option>
+                <option value="40">40</option>
+                <option value="42">42</option>
+                <option value="44">44</option>
+                <option value="46">46</option>
+                <option value="48">48</option>
               </select>
             </div>
 

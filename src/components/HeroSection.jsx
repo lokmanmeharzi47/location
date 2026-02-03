@@ -34,6 +34,8 @@ export default function HeroSection() {
         loop
         muted
         playsInline
+        preload="metadata"
+        poster="/images/hero-poster.jpg"
       />
 
       {/* Elegant Gradient Overlay */}

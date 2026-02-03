@@ -1,62 +1,33 @@
-"use client";
-import { useState, useEffect } from 'react';
+import { query } from '@/lib/db';
 import Image from 'next/image';
 import Link from 'next/link';
 
-// Fallback categories for when database is not available
-const fallbackCategories = [
-  {
-    id: 1,
-    name: "فساتين",
-    href: "/design/dresses",
-    image: "/images/t-shirtcat.jpg",
-    description: "اكتشفي تشكيلتنا الراقية من الفساتين الأنيقة، مصممة لتبرز جمالك في كل مناسبة.",
-  },
-  {
-    id: 2,
-    name: "بلايز نسائية",
-    href: "/design/tops",
-    image: "/images/hoodiecat.jpg",
-    description: "بلايز عصرية بتصاميم أنثوية ناعمة، مثالية للإطلالات اليومية والمميزة.",
-  },
-  {
-    id: 3,
-    name: "أطقم نسائية",
-    href: "/design/sets",
-    image: "/images/sweet-shirtcat.jpg",
-    description: "أطقم متناسقة تجمع بين الأناقة والراحة، لإطلالة متكاملة تعكس ذوقك الرفيع.",
-  },
-  {
-    id: 4,
-    name: "كنزات ناعمة",
-    href: "/design/sweaters",
-    image: "/images/sweet-shirtct.jpg",
-    description: "كنزات دافئة بملمس ناعم وتطريز أنيق، لأيام الشتاء الباردة.",
-  },
-];
+// Server Component - Data fetched at build/request time
+async function getCategories() {
+  try {
+    const sql = 'SELECT * FROM categories WHERE is_active = TRUE ORDER BY display_order ASC, created_at DESC';
+    const categories = await query(sql, []);
 
-export default function ClothingCategories() {
-  const [categories, setCategories] = useState(fallbackCategories);
-  const [loading, setLoading] = useState(true);
+    return categories.map(c => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      description: c.description,
+      image: c.image_path || '/images/placeholder.jpg',
+      href: c.href || `/design/${c.slug}`,
+    }));
+  } catch {
+    return [];
+  }
+}
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+export default async function ClothingCategories() {
+  const categories = await getCategories();
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("/api/categories?active=true");
-      const data = await response.json();
-
-      if (data.success && data.categories.length > 0) {
-        setCategories(data.categories);
-      }
-    } catch {
-      // Use fallback categories
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Don't render if no categories
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-20 px-4" id="clothing-categories">
@@ -90,6 +61,7 @@ export default function ClothingCategories() {
                   style={{ objectFit: 'cover' }}
                   className="transition-transform duration-500 ease-out group-hover:scale-110"
                   priority={index < 2}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-blush-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -130,13 +102,6 @@ export default function ClothingCategories() {
             </Link>
           ))}
         </div>
-
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
-          </div>
-        )}
       </div>
     </section>
   );

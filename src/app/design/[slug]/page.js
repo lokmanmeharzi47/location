@@ -165,6 +165,24 @@ export default function CategoryPage() {
                                         <h3 className="font-bold text-brown-dark group-hover:text-blush-600 transition-colors mb-2 line-clamp-1">
                                             {product.name}
                                         </h3>
+
+                                        {/* Color Swatches */}
+                                        {product.colors && product.colors.length > 0 && (
+                                            <div className="flex gap-1 mb-2">
+                                                {product.colors.slice(0, 5).map((color, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="w-4 h-4 rounded-full shadow-sm border border-cream-200"
+                                                        style={{ backgroundColor: color }}
+                                                        title={color}
+                                                    />
+                                                ))}
+                                                {product.colors.length > 5 && (
+                                                    <span className="text-xs text-brown-light">+{product.colors.length - 5}</span>
+                                                )}
+                                            </div>
+                                        )}
+
                                         <div className="flex items-center justify-between">
                                             <p className="text-lg font-bold text-gold-600">{product.price}</p>
                                             <span className="text-xs text-blush-500 font-medium group-hover:text-blush-600 transition-colors">
