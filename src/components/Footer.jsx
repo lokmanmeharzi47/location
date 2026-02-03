@@ -42,7 +42,7 @@ export default function Footer() {
                     <div className="text-center md:text-right">
                         <div className="flex flex-col items-center md:items-start gap-4">
                             <Image
-                                src="/images/Logo.jpg"
+                                src="/images/logo.png"
                                 alt="Rital"
                                 width={100}
                                 height={100}
