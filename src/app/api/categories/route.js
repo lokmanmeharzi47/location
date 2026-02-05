@@ -23,7 +23,7 @@ export async function GET(request) {
             name: c.name,
             slug: c.slug,
             description: c.description,
-            image: c.image_path || '/images/placeholder.jpg',
+            image: c.image_path || '/images/placeholder.svg',
             href: c.href || `/design/${c.slug}`,
             displayOrder: c.display_order,
             isActive: c.is_active,

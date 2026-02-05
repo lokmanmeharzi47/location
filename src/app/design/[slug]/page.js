@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowRight, FiShoppingBag } from "react-icons/fi";
-import ProductModal from "@/components/ProductModal";
-import OrderModal from "@/components/OrderModal";
+import { FiArrowRight } from "react-icons/fi";
+import { BsFuelPump } from "react-icons/bs";
+import { TbManualGearbox } from "react-icons/tb";
+import { MdAirlineSeatReclineNormal } from "react-icons/md";
+import CarDetailsModal from "@/components/CarDetailsModal";
+import BookingModal from "@/components/BookingModal";
 
 export default function CategoryPage() {
     const params = useParams();
@@ -17,7 +20,7 @@ export default function CategoryPage() {
 
     // Two-step modal state
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [showOrderModal, setShowOrderModal] = useState(false);
+    const [showBookingModal, setShowBookingModal] = useState(false);
 
     useEffect(() => {
         if (slug) {
@@ -56,32 +59,32 @@ export default function CategoryPage() {
         }
     };
 
-    // Handle product card click - show ProductModal (step 1)
+    // Handle car card click - show CarDetailsModal (step 1)
     const handleProductClick = (product) => {
         setSelectedProduct(product);
-        setShowOrderModal(false);
+        setShowBookingModal(false);
     };
 
-    // Handle "Order Now" click - show OrderModal (step 2)
-    const handleOrderClick = (product) => {
+    // Handle "Book Now" click - show BookingModal (step 2)
+    const handleBookingClick = (product) => {
         setSelectedProduct(product);
-        setShowOrderModal(true);
+        setShowBookingModal(true);
     };
 
-    // Handle back from OrderModal to ProductModal
+    // Handle back from BookingModal to CarDetailsModal
     const handleBackToProduct = () => {
-        setShowOrderModal(false);
+        setShowBookingModal(false);
     };
 
     // Handle close all modals
     const handleCloseModals = () => {
         setSelectedProduct(null);
-        setShowOrderModal(false);
+        setShowBookingModal(false);
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-cream-50 via-blush-50 to-cream-100 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500"></div>
             </div>
         );
@@ -89,11 +92,11 @@ export default function CategoryPage() {
 
     if (!category) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-cream-50 via-blush-50 to-cream-100 flex flex-col items-center justify-center px-4">
-                <h1 className="text-2xl font-bold text-brown-dark mb-4">الفئة غير موجودة</h1>
+            <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 flex flex-col items-center justify-center px-4">
+                <h1 className="text-2xl font-bold text-slate-800 mb-4">الفئة غير موجودة</h1>
                 <Link
                     href="/"
-                    className="flex items-center gap-2 px-6 py-3 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-gold-500 text-slate-900 rounded-xl hover:bg-gold-600 transition-colors"
                 >
                     <FiArrowRight />
                     العودة للرئيسية
@@ -103,47 +106,47 @@ export default function CategoryPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-cream-50 via-blush-50 to-cream-100">
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50">
             {/* Hero Banner */}
-            <div className="relative h-64 md:h-80 bg-gradient-to-br from-blush-200 via-cream-100 to-blush-100 overflow-hidden">
+            <div className="relative h-64 md:h-80 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 overflow-hidden">
                 <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-5"></div>
                 <div className="relative h-full max-w-7xl mx-auto px-4 flex flex-col items-center justify-center text-center">
                     <Link
                         href="/"
-                        className="absolute top-6 right-6 flex items-center gap-2 text-brown-light hover:text-gold-600 transition-colors"
+                        className="absolute top-6 right-6 flex items-center gap-2 text-slate-300 hover:text-gold-400 transition-colors"
                     >
                         <FiArrowRight />
                         <span>العودة</span>
                     </Link>
 
-                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2">تشكيلتنا الراقية</span>
-                    <h1 className="text-3xl md:text-5xl font-bold text-brown-dark mb-4">{category.name}</h1>
-                    <div className="w-24 h-1 bg-gradient-to-r from-blush-400 via-gold-400 to-blush-400 rounded-full mb-4"></div>
-                    <p className="text-brown-light max-w-xl text-lg">{category.description}</p>
+                    <span className="text-gold-400 font-medium text-sm tracking-wider mb-2">أسطول سياراتنا</span>
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{category.name}</h1>
+                    <div className="w-24 h-1 bg-gradient-to-r from-slate-500 via-gold-400 to-slate-500 rounded-full mb-4"></div>
+                    <p className="text-slate-300 max-w-xl text-lg">{category.description}</p>
                 </div>
             </div>
 
-            {/* Products Section */}
+            {/* Cars Section */}
             <section className="py-12 md:py-20 px-4">
                 <div className="max-w-7xl mx-auto">
-                    {/* Products Count */}
+                    {/* Cars Count */}
                     <div className="flex items-center justify-between mb-8">
-                        <p className="text-brown-light">
-                            <span className="font-bold text-gold-600">{products.length}</span> منتج متوفر
+                        <p className="text-slate-600">
+                            <span className="font-bold text-gold-600">{products.length}</span> سيارة متوفرة
                         </p>
                     </div>
 
-                    {/* Products Grid */}
+                    {/* Cars Grid */}
                     {products.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map((product) => (
                                 <div
                                     key={product.id}
                                     onClick={() => handleProductClick(product)}
-                                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-cream-200 hover:border-blush-200 cursor-pointer"
+                                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300 cursor-pointer"
                                 >
                                     {/* Image */}
-                                    <div className="relative h-48 md:h-64 bg-gradient-to-br from-blush-100 to-cream-100 overflow-hidden">
+                                    <div className="relative h-48 md:h-56 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
                                         {product.image && !product.image.includes("placeholder") ? (
                                             <Image
                                                 src={product.image}
@@ -154,39 +157,51 @@ export default function CategoryPage() {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <FiShoppingBag size={48} className="text-cream-300" />
+                                                <svg className="w-16 h-16 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                                </svg>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        {/* Availability Badge */}
+                                        <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${product.stock !== 0
+                                                ? 'bg-green-500 text-white'
+                                                : 'bg-red-500 text-white'
+                                            }`}>
+                                            {product.stock !== 0 ? 'متوفر' : 'غير متوفر'}
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
 
                                     {/* Info */}
                                     <div className="p-4 md:p-5">
-                                        <h3 className="font-bold text-brown-dark group-hover:text-blush-600 transition-colors mb-2 line-clamp-1">
+                                        <h3 className="font-bold text-slate-800 group-hover:text-gold-600 transition-colors mb-2 text-lg">
                                             {product.name}
                                         </h3>
 
-                                        {/* Color Swatches */}
-                                        {product.colors && product.colors.length > 0 && (
-                                            <div className="flex gap-1 mb-2">
-                                                {product.colors.slice(0, 5).map((color, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="w-4 h-4 rounded-full shadow-sm border border-cream-200"
-                                                        style={{ backgroundColor: color }}
-                                                        title={color}
-                                                    />
-                                                ))}
-                                                {product.colors.length > 5 && (
-                                                    <span className="text-xs text-brown-light">+{product.colors.length - 5}</span>
-                                                )}
-                                            </div>
-                                        )}
+                                        {/* Car Specs - Quick view */}
+                                        <div className="flex items-center gap-3 text-slate-500 text-sm mb-3">
+                                            <span className="flex items-center gap-1">
+                                                <TbManualGearbox className="text-gold-500" />
+                                                أوتو
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <BsFuelPump className="text-gold-500" />
+                                                بنزين
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <MdAirlineSeatReclineNormal className="text-gold-500" />
+                                                5
+                                            </span>
+                                        </div>
 
                                         <div className="flex items-center justify-between">
-                                            <p className="text-lg font-bold text-gold-600">{product.price}</p>
-                                            <span className="text-xs text-blush-500 font-medium group-hover:text-blush-600 transition-colors">
-                                                عرض التفاصيل
+                                            <div>
+                                                <p className="text-xl font-bold text-gold-600">{product.price}</p>
+                                                <p className="text-xs text-slate-500">لليوم</p>
+                                            </div>
+                                            <span className="text-xs text-slate-500 font-medium group-hover:text-gold-600 transition-colors">
+                                                عرض التفاصيل ←
                                             </span>
                                         </div>
                                     </div>
@@ -194,13 +209,16 @@ export default function CategoryPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-white rounded-2xl border border-cream-200">
-                            <FiShoppingBag size={64} className="mx-auto text-cream-300 mb-4" />
-                            <h3 className="text-xl font-bold text-brown-dark mb-2">لا توجد منتجات بعد</h3>
-                            <p className="text-brown-light mb-6">سيتم إضافة منتجات قريباً</p>
+                        <div className="text-center py-20 bg-white rounded-2xl border border-slate-200">
+                            <svg className="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                            </svg>
+                            <h3 className="text-xl font-bold text-slate-800 mb-2">لا توجد سيارات بعد</h3>
+                            <p className="text-slate-600 mb-6">سيتم إضافة سيارات قريباً</p>
                             <Link
                                 href="/"
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 text-slate-900 rounded-xl hover:bg-gold-600 transition-colors"
                             >
                                 <FiArrowRight />
                                 تصفح الفئات الأخرى
@@ -210,19 +228,19 @@ export default function CategoryPage() {
                 </div>
             </section>
 
-            {/* Step 1: Product Modal - Clean product preview */}
-            {selectedProduct && !showOrderModal && (
-                <ProductModal
+            {/* Step 1: Car Details Modal */}
+            {selectedProduct && !showBookingModal && (
+                <CarDetailsModal
                     product={selectedProduct}
                     category={category}
                     onClose={handleCloseModals}
-                    onOrder={handleOrderClick}
+                    onOrder={handleBookingClick}
                 />
             )}
 
-            {/* Step 2: Order Modal - Order form */}
-            {selectedProduct && showOrderModal && (
-                <OrderModal
+            {/* Step 2: Booking Modal */}
+            {selectedProduct && showBookingModal && (
+                <BookingModal
                     product={selectedProduct}
                     category={category}
                     onClose={handleCloseModals}

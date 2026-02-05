@@ -8,33 +8,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary - Soft blush pink / Dusty rose
-        blush: {
-          50: '#FEF5F5',
-          100: '#FDEDEF',
-          200: '#F8D4DA',
-          300: '#F2B8C1',
-          400: '#E8A1AD',
-          500: '#E8B4BC',
-          600: '#D4A5A5',
-          700: '#B76E79',
-          800: '#9A5A63',
-          900: '#7D4850',
+        // Primary - Dark automotive slate
+        slate: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
+          950: '#020617',
         },
-        // Secondary - Warm beige / Cream
-        cream: {
-          50: '#FFFBF7',
-          100: '#FFF8F0',
-          200: '#F5E6D3',
-          300: '#EDD9C4',
-          400: '#E5CCB5',
-          500: '#DCC0A6',
-          600: '#C9A97D',
-          700: '#B59262',
-          800: '#8C7049',
-          900: '#634F33',
+        // Secondary - Professional dark gray
+        carbon: {
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+          900: '#111827',
         },
-        // Accent - Gold / Rose gold
+        // Accent - Gold (luxury feel)
         gold: {
           50: '#FBF8F0',
           100: '#F7F0E0',
@@ -47,15 +48,50 @@ module.exports = {
           800: '#7C612E',
           900: '#5E4922',
         },
-        rose: {
-          gold: '#B76E79',
+        // Secondary accent - Blue (automotive)
+        auto: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
         },
         // Text colors
-        charcoal: '#3D3D3D',
+        charcoal: '#1F2937',
         brown: {
-          dark: '#4A3728',
-          medium: '#5D4A3A',
-          light: '#7A6555',
+          dark: '#1F2937',
+          medium: '#374151',
+          light: '#6B7280',
+        },
+        // Keep cream for light backgrounds
+        cream: {
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+        },
+        // Legacy blush mapped to slate for compatibility
+        blush: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
+        },
+        rose: {
+          gold: '#C9A962',
         },
         background: "var(--background)",
         foreground: "var(--foreground)",

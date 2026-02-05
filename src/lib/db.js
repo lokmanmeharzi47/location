@@ -2,16 +2,31 @@ import { Pool } from "pg";
 
 if (!process.env.DATABASE_URL) {
     console.error("FATAL ERROR: DATABASE_URL is not defined in environment variables");
-} else {
-    console.log("DB Connection initialized with:", process.env.DATABASE_URL.split("@")[1]); // Log only host for safety
 }
 
+// Optimized pool configuration for Supabase
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 10,
-    idleTimeoutMillis: 30000,
+    max: 5, // Reduced pool size for faster initial connections
+    idleTimeoutMillis: 60000, // Keep connections alive longer
+    connectionTimeoutMillis: 10000, // Timeout after 10s
+    keepAlive: true, // Keep TCP connections alive
+    keepAliveInitialDelayMillis: 10000,
 });
+
+// Prewarm connection on module load
+let connectionWarmed = false;
+async function warmConnection() {
+    if (connectionWarmed) return;
+    try {
+        await pool.query("SELECT 1");
+        connectionWarmed = true;
+    } catch (e) {
+        console.error("Failed to warm connection:", e.message);
+    }
+}
+warmConnection();
 
 /**
  * Convert MySQL '?' placeholders to PostgreSQL '$1, $2, ...'

@@ -91,7 +91,7 @@ export default function TopHeader({ collapsed, onMenuClick }) {
                             </div>
                             <div className="hidden md:block text-right">
                                 <p className="text-sm font-semibold text-gray-800">المسؤول</p>
-                                <p className="text-xs text-gray-500">admin@embrocraft.dz</p>
+                                <p className="text-xs text-gray-500">admin@carrent.dz</p>
                             </div>
                         </button>
 
@@ -99,7 +99,7 @@ export default function TopHeader({ collapsed, onMenuClick }) {
                             <div className="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fadeIn">
                                 <div className="p-4 border-b border-gray-100 bg-gradient-to-br from-gold-50 to-cream-50">
                                     <p className="font-bold text-gray-800">المسؤول</p>
-                                    <p className="text-sm text-gray-500">admin@embrocraft.dz</p>
+                                    <p className="text-sm text-gray-500">admin@carrent.dz</p>
                                 </div>
                                 <div className="p-2">
                                     <button className="w-full text-right px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl">

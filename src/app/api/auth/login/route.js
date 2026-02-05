@@ -43,7 +43,7 @@ export async function POST(request) {
     // 2. Fetch User (Admin Only)
     // We explicitly select only needed fields
     const userQuery = `
-      SELECT id, email, password_hash, name, role
+      SELECT id, email, password, name, role
       FROM users
       WHERE email = $1
       LIMIT 1
@@ -57,7 +57,7 @@ export async function POST(request) {
     // If it's an enum, it's safer, but strict comparison is good.
     const isAdmin = user && (user.role === 'admin' || user.role === 'ADMIN');
 
-    if (!user || !isAdmin || !user.password_hash) {
+    if (!user || !isAdmin || !user.password) {
       // Return generic error to prevent enumeration
       // (Optional: add a slight delay here to mitigate timing attacks if desired)
       return NextResponse.json(
@@ -67,10 +67,10 @@ export async function POST(request) {
     }
 
     // 4. Verify Password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
-            console.log("Invalid password attempt for user:", cleanEmail);
+      console.log("Invalid password attempt for user:", cleanEmail);
 
       return NextResponse.json(
         { success: false, message: "بيانات الدخول غير صحيحة" },

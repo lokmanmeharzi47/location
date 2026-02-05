@@ -1,210 +1,225 @@
 import { NextResponse } from 'next/server';
-import { query, queryOne, update, remove } from '@/lib/db';
+import { pool } from '@/lib/db';
 
-// GET - Fetch single product with category info
+// GET - Fetch single car with category info and images
 export async function GET(request, { params }) {
+    const client = await pool.connect();
+
     try {
         const { id } = await params;
 
-        const product = await queryOne(
-            `SELECT p.*, c.name as category_name, c.slug as category_slug
-             FROM products p
-             LEFT JOIN categories c ON p.category_id = c.id
-             WHERE p.id = ?`,
+        const result = await client.query(
+            `SELECT 
+                c.*,
+                cat.name as category_name,
+                cat.slug as category_slug,
+                COALESCE(
+                    json_agg(
+                        json_build_object(
+                            'id', ci.id,
+                            'url', ci.image_url,
+                            'order', ci.display_order,
+                            'isPrimary', ci.is_primary
+                        ) ORDER BY ci.display_order
+                    ) FILTER (WHERE ci.id IS NOT NULL),
+                    '[]'::json
+                ) as images_data
+            FROM cars c
+            LEFT JOIN categories cat ON c.category_id = cat.id
+            LEFT JOIN car_images ci ON c.id = ci.car_id
+            WHERE c.id = $1
+            GROUP BY c.id, cat.name, cat.slug`,
             [id]
         );
 
-        if (!product) {
+        const car = result.rows[0];
+
+        if (!car) {
             return NextResponse.json(
-                { success: false, message: 'المنتج غير موجود' },
+                { success: false, message: 'السيارة غير موجودة' },
                 { status: 404 }
             );
         }
 
-        // Parse variants JSON
-        let variants = [];
-        try {
-            variants = product.variants ? JSON.parse(product.variants) : [];
-        } catch {
-            variants = [];
-        }
+        // Extract image URLs
+        const images = car.images_data.map(img => img.url);
 
-        // Parse legacy colors (for backward compatibility)
-        let colors = [];
-        try {
-            colors = product.colors ? JSON.parse(product.colors) : [];
-        } catch {
-            colors = [];
-        }
-
-        // If no variants but has legacy data, create default variant
-        if (variants.length === 0 && (product.image_path || colors.length > 0)) {
-            const defaultColor = colors[0] || '#C9A86C';
-            variants = [{
-                colorName: 'اللون الافتراضي',
-                colorCode: defaultColor,
-                images: product.image_path ? [product.image_path] : [],
-                stock: product.stock
-            }];
-            colors.slice(1).forEach(color => {
-                variants.push({
-                    colorName: color,
-                    colorCode: color,
-                    images: [],
-                    stock: 0
-                });
-            });
-        }
+        // Create variants structure for compatibility
+        const variants = [{
+            colorName: 'Default',
+            colorCode: '#333333',
+            images: images,
+            stock: 1
+        }];
 
         return NextResponse.json({
             success: true,
             product: {
-                id: product.id,
-                name: product.name,
-                category: product.category_name || product.category,
-                categoryId: product.category_id,
-                categorySlug: product.category_slug,
-                price: `${Math.floor(product.price).toLocaleString('ar-DZ')} د.ج`,
-                priceRaw: product.price,
-                stock: product.stock,
-                status: product.status,
-                image: variants[0]?.images?.[0] || product.image_path || '/images/placeholder.jpg',
-                description: product.description,
-                colors: colors,
+                id: car.id,
+                name: car.name,
+                category: car.category_name || 'غير مصنف',
+                categoryId: car.category_id,
+                categorySlug: car.category_slug,
+                price: `${Math.floor(car.price_per_day).toLocaleString('ar-DZ')} د.ج`,
+                priceRaw: car.price_per_day,
+                stock: car.status === 'disponible' ? 1 : 0,
+                status: car.status === 'disponible' ? 'متوفر' : 'محجوز',
+                image: images[0] || '/images/placeholder.svg',
+                description: car.description,
+                colors: [],
                 variants: variants,
-                createdAt: product.created_at,
+                // Car-specific fields
+                brand: car.brand,
+                model: car.model,
+                year: car.year,
+                fuelType: car.fuel_type,
+                transmission: car.transmission,
+                seats: car.seats,
+                doors: car.doors,
+                createdAt: car.created_at,
             }
         });
 
     } catch (error) {
-        console.error('Get product error:', error);
+        console.error('Get car error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في جلب المنتج' },
+            { success: false, message: 'حدث خطأ في جلب السيارة' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// PUT - Update product with category_id and variants
+// PUT - Update car and images
 export async function PUT(request, { params }) {
+    const client = await pool.connect();
+
     try {
+        await client.query('BEGIN');
+
         const { id } = await params;
         const body = await request.json();
-        const { name, category_id, category, price, stock, image_path, description, colors, variants } = body;
+        const { name, category_id, price, stock, description, variants } = body;
 
-        // Check if product exists
-        const existing = await queryOne('SELECT id FROM products WHERE id = ?', [id]);
-        if (!existing) {
+        // Check if car exists
+        const existing = await client.query('SELECT id FROM cars WHERE id = $1', [id]);
+        if (existing.rows.length === 0) {
             return NextResponse.json(
-                { success: false, message: 'المنتج غير موجود' },
+                { success: false, message: 'السيارة غير موجودة' },
                 { status: 404 }
             );
         }
 
-        // Determine status based on stock
-        const status = parseInt(stock) > 0 ? 'متوفر' : 'نفذ';
+        // Extract images
+        let imageUrls = [];
+        if (variants && Array.isArray(variants) && variants.length > 0 && variants[0].images) {
+            imageUrls = variants[0].images;
+        }
 
-        // Get category name if category_id provided
-        let categoryName = category;
-        if (category_id) {
-            const catResult = await query('SELECT name FROM categories WHERE id = ?', [category_id]);
-            if (catResult.length > 0) {
-                categoryName = catResult[0].name;
+        // Parse description
+        let brand = '', model = '', year = new Date().getFullYear();
+        let fuelType = 'Essence', transmission = 'Automatique', seats = 5;
+
+        if (description) {
+            const parts = description.split(' | ');
+            if (parts[0]) {
+                const nameParts = parts[0].split(' ');
+                brand = nameParts[0] || '';
+                model = nameParts[1] || '';
+                year = parseInt(nameParts[2]) || new Date().getFullYear();
             }
+            if (parts[1]) fuelType = parts[1];
+            if (parts[2]) transmission = parts[2];
+            if (parts[3]) seats = parseInt(parts[3]) || 5;
         }
 
-        // Handle variants - validate and stringify
-        let variantsJson = null;
-        if (variants && Array.isArray(variants) && variants.length > 0) {
-            for (const variant of variants) {
-                if (!variant.colorCode || !variant.colorName) {
-                    return NextResponse.json(
-                        { success: false, message: 'كل متغير يجب أن يحتوي على اسم اللون ورمزه' },
-                        { status: 400 }
-                    );
-                }
-                if (!Array.isArray(variant.images)) {
-                    variant.images = [];
-                }
-            }
-            variantsJson = JSON.stringify(variants);
-        }
+        const carStatus = parseInt(stock) > 0 ? 'disponible' : 'loué';
 
-        // Handle legacy colors
-        let colorsJson = null;
-        if (colors && Array.isArray(colors)) {
-            colorsJson = JSON.stringify(colors);
-        } else if (variants && variants.length > 0) {
-            colorsJson = JSON.stringify(variants.map(v => v.colorCode));
-        }
-
-        // Get primary image from first variant for legacy image_path
-        let primaryImage = image_path || null;
-        if (!primaryImage && variants && variants.length > 0 && variants[0].images?.length > 0) {
-            primaryImage = variants[0].images[0];
-        }
-
-        const affectedRows = await update(
-            `UPDATE products 
-             SET name = ?, category = ?, category_id = ?, price = ?, stock = ?, status = ?, image_path = ?, description = ?, colors = ?, variants = ?, updated_at = NOW()
-             WHERE id = ?`,
+        // Update car
+        await client.query(
+            `UPDATE cars 
+             SET name = $1, brand = $2, model = $3, year = $4, category_id = $5, 
+                 price_per_day = $6, fuel_type = $7, transmission = $8, seats = $9,
+                 status = $10, description = $11, updated_at = CURRENT_TIMESTAMP
+             WHERE id = $12`,
             [
                 name,
-                categoryName || 'أخرى',
-                category_id || null,
+                brand,
+                model,
+                year,
+                category_id ? parseInt(category_id) : null,
                 parseFloat(price),
-                parseInt(stock) || 0,
-                status,
-                primaryImage,
+                fuelType,
+                transmission,
+                seats,
+                carStatus,
                 description || null,
-                colorsJson,
-                variantsJson,
                 id
             ]
         );
 
+        // Delete old images
+        await client.query('DELETE FROM car_images WHERE car_id = $1', [id]);
+
+        // Insert new images
+        if (imageUrls.length > 0) {
+            for (let i = 0; i < imageUrls.length; i++) {
+                await client.query(
+                    `INSERT INTO car_images (car_id, image_url, display_order, is_primary, created_at)
+                     VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)`,
+                    [id, imageUrls[i], i, i === 0]
+                );
+            }
+        }
+
+        await client.query('COMMIT');
+
         return NextResponse.json({
             success: true,
-            message: 'تم تحديث المنتج بنجاح',
-            affectedRows,
+            message: 'تم تحديث السيارة بنجاح',
         });
 
     } catch (error) {
-        console.error('Update product error:', error);
+        await client.query('ROLLBACK');
+        console.error('Update car error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في تحديث المنتج' },
+            { success: false, message: 'حدث خطأ في تحديث السيارة' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// DELETE - Delete product
+// DELETE - Delete car (images auto-deleted by CASCADE)
 export async function DELETE(request, { params }) {
+    const client = await pool.connect();
+
     try {
         const { id } = await params;
 
-        const affectedRows = await remove(
-            'DELETE FROM products WHERE id = ?',
-            [id]
-        );
+        const result = await client.query('DELETE FROM cars WHERE id = $1 RETURNING id', [id]);
 
-        if (affectedRows === 0) {
+        if (result.rows.length === 0) {
             return NextResponse.json(
-                { success: false, message: 'المنتج غير موجود' },
+                { success: false, message: 'السيارة غير موجودة' },
                 { status: 404 }
             );
         }
 
         return NextResponse.json({
             success: true,
-            message: 'تم حذف المنتج بنجاح',
+            message: 'تم حذف السيارة بنجاح',
         });
 
     } catch (error) {
-        console.error('Delete product error:', error);
+        console.error('Delete car error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في حذف المنتج' },
+            { success: false, message: 'حدث خطأ في حذف السيارة' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }

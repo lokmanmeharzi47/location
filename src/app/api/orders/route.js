@@ -1,51 +1,61 @@
 import { NextResponse } from 'next/server';
-import { query, insert } from '@/lib/db';
+import { pool } from '@/lib/db';
 
-// GET - Fetch all orders
+// GET - Fetch all bookings
 export async function GET(request) {
+    const client = await pool.connect();
+
     try {
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
         const limit = searchParams.get('limit');
 
         let sql = `
-      SELECT o.*, p.name as product_name_ref 
-      FROM orders o 
-      LEFT JOIN products p ON o.product_id = p.id 
-      WHERE 1=1
-    `;
+            SELECT b.*, c.name as car_name
+            FROM bookings b
+            LEFT JOIN cars c ON b.car_id = c.id
+            WHERE 1=1
+        `;
         const params = [];
+        let paramIndex = 1;
 
         if (status && status !== 'all') {
-            sql += ' AND o.status = ?';
+            sql += ` AND b.status = $${paramIndex}`;
             params.push(status);
+            paramIndex++;
         }
 
-        sql += ' ORDER BY o.order_date DESC';
+        sql += ' ORDER BY b.created_at DESC';
 
         if (limit) {
-            sql += ' LIMIT ?';
+            sql += ` LIMIT $${paramIndex}`;
             params.push(parseInt(limit));
         }
 
-        const orders = await query(sql, params);
+        const result = await client.query(sql, params);
+        const bookings = result.rows;
 
-        // Format orders for frontend
-        const formattedOrders = orders.map(o => ({
-            id: o.order_number,
-            dbId: o.id,
-            customer: o.customer_name,
-            phone: o.phone,
-            product: o.product_name || o.product_name_ref || 'غير محدد',
-            color: o.color || '-',
-            size: o.size || '-',
-            total: `${Math.floor(o.total || 0).toLocaleString('ar-DZ')} د.ج`,
-            totalRaw: o.total,
-            status: o.status,
-            wilaya: o.wilaya || '-',
-            date: o.order_date ? new Date(o.order_date).toISOString().split('T')[0] : '-',
-            address: o.address,
-            notes: o.notes,
+        // Format bookings for frontend
+        const formattedOrders = bookings.map(b => ({
+            id: b.id,
+            dbId: b.id,
+            customer: b.customer_name,
+            phone: b.customer_phone,
+            email: b.customer_email,
+            product: b.car_name || 'غير محدد',
+            carId: b.car_id,
+            total: `${Math.floor(b.total_amount || 0).toLocaleString('ar-DZ')} د.ج`,
+            totalRaw: b.total_amount,
+            status: b.status || 'قيد التنفيذ',
+            pickupLocation: b.pickup_location || '-',
+            returnLocation: b.return_location || '-',
+            pickupDate: b.pickup_date ? new Date(b.pickup_date).toISOString().split('T')[0] : '-',
+            returnDate: b.return_date ? new Date(b.return_date).toISOString().split('T')[0] : '-',
+            totalDays: b.total_days || 0,
+            address: b.customer_address || '-',
+            city: b.customer_city || '-',
+            notes: b.notes || '',
+            date: b.created_at ? new Date(b.created_at).toISOString().split('T')[0] : '-',
         }));
 
         return NextResponse.json({
@@ -55,75 +65,94 @@ export async function GET(request) {
         });
 
     } catch (error) {
-        console.error('Get orders error:', error);
+        console.error('Get bookings error:', error);
         return NextResponse.json(
             { success: false, message: 'حدث خطأ في جلب الطلبات', error: error.message },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// POST - Create new order
+// POST - Create new booking
 export async function POST(request) {
+    const client = await pool.connect();
+
     try {
         const body = await request.json();
         const {
             customer_name,
-            phone,
-            product_id,
-            product_name,
-            color,
-            size,
-            total,
-            wilaya,
-            address,
-            notes
+            customer_phone,
+            customer_email,
+            customer_address,
+            customer_city,
+            car_id,
+            pickup_date,
+            return_date,
+            pickup_location,
+            return_location,
+            daily_rate,
+            total_days,
+            subtotal,
+            extras_amount,
+            discount_amount,
+            total_amount,
+            notes,
+            extras
         } = body;
 
         // Validate required fields
-        if (!customer_name || !phone || !total) {
+        if (!customer_name || !customer_phone || !car_id) {
             return NextResponse.json(
-                { success: false, message: 'اسم العميل والهاتف والمجموع مطلوبون' },
+                { success: false, message: 'اسم العميل والهاتف والسيارة مطلوبون' },
                 { status: 400 }
             );
         }
 
-        // Generate order number
-        const orderNumber = `#${Date.now().toString().slice(-4)}`;
-
-        const orderId = await insert(
-            `INSERT INTO orders 
-       (order_number, customer_name, phone, product_id, product_name, color, size, total, wilaya, address, notes) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        const result = await client.query(
+            `INSERT INTO bookings 
+             (customer_name, customer_phone, customer_email, customer_address, customer_city, 
+              car_id, pickup_date, return_date, pickup_location, return_location,
+              daily_rate, total_days, subtotal, extras_amount, discount_amount, total_amount,
+              notes, extras, status, created_at, updated_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, 'قيد التنفيذ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+             RETURNING id`,
             [
-                orderNumber,
                 customer_name,
-                phone,
-                product_id || null,
-                product_name || null,
-                color || null,
-                size || null,
-                parseFloat(total),
-                wilaya || null,
-                address || null,
-                notes || null
+                customer_phone,
+                customer_email || null,
+                customer_address || null,
+                customer_city || null,
+                parseInt(car_id),
+                pickup_date || null,
+                return_date || null,
+                pickup_location || null,
+                return_location || null,
+                parseFloat(daily_rate) || 0,
+                parseInt(total_days) || 0,
+                parseFloat(subtotal) || 0,
+                parseFloat(extras_amount) || 0,
+                parseFloat(discount_amount) || 0,
+                parseFloat(total_amount) || 0,
+                notes || null,
+                extras || null
             ]
         );
 
-        // Note: Sales are NOT incremented here. They are incremented when order status changes to "مكتمل"
-
         return NextResponse.json({
             success: true,
-            message: 'تم إنشاء الطلب بنجاح',
-            orderId: orderId,
-            orderNumber: orderNumber,
+            message: 'تم إنشاء الحجز بنجاح',
+            bookingId: result.rows[0].id,
         });
 
     } catch (error) {
-        console.error('Create order error:', error);
+        console.error('Create booking error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في إنشاء الطلب', error: error.message },
+            { success: false, message: 'حدث خطأ في إنشاء الحجز', error: error.message },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }

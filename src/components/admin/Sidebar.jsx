@@ -17,8 +17,8 @@ import {
 const menuItems = [
   { icon: FiHome, label: "الرئيسية", href: "/admin/dashboard" },
   { icon: FiGrid, label: "الفئات", href: "/admin/dashboard/categories" },
-  { icon: FiPackage, label: "المنتجات", href: "/admin/dashboard/products" },
-  { icon: FiFileText, label: "الطلبيات", href: "/admin/dashboard/orders" },
+  { icon: FiPackage, label: "السيارات", href: "/admin/dashboard/products" },
+  { icon: FiFileText, label: "الحجوزات", href: "/admin/dashboard/orders" },
   { icon: FiUsers, label: "العملاء", href: "/admin/dashboard/customers" },
   { icon: FiSettings, label: "الإعدادات", href: "/admin/dashboard/settings" },
 ];
@@ -39,9 +39,9 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       {/* Logo Section */}
       <div className="h-20 flex items-center justify-center border-b border-white/10">
         {collapsed ? (
-          <span className="text-2xl font-bold text-gold-400">B</span>
+          <span className="text-2xl font-bold text-gold-400">C</span>
         ) : (
-          <h1 className="text-xl font-bold text-gold-400">Boutique Rital</h1>
+          <h1 className="text-xl font-bold text-gold-400">CarRent Admin</h1>
         )}
       </div>
 

@@ -1,113 +1,117 @@
-// Prisma Schema for Boutique Rital
-// Database: PostgreSQL (Supabase)
-
 generator client {
   provider = "prisma-client-js"
-  output   = "./prisma/client"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
-
-// ============================================
-// User & Authentication Models
-// ============================================
 
 model User {
   id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  name      String?
-  role      String    @default("user") // 'admin' or 'user'
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  email     String    @unique @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  name      String?   @db.VarChar(255)
+  phone     String?   @db.VarChar(50)
+  role      String?   @default("user") @db.VarChar(20)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   sessions  Session[]
 
   @@map("users")
 }
 
 model Session {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  userId    Int      @map("user_id")
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  token     String    @unique @db.VarChar(255)
+  userId    Int       @map("user_id")
+  expiresAt DateTime  @map("expires_at") @db.Timestamp(6)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("sessions")
 }
 
-// ============================================
-// Product & Category Models
-// ============================================
-
 model Category {
   id           Int       @id @default(autoincrement())
-  name         String
-  slug         String    @unique
+  name         String    @db.VarChar(255)
+  slug         String    @unique @db.VarChar(255)
   description  String?
-  imagePath    String?   @map("image_path") // Cloudinary URL
-  href         String?
-  displayOrder Int       @default(0) @map("display_order")
-  isActive     Boolean   @default(true) @map("is_active")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  products     Product[]
+  imagePath    String?   @map("image_path") @db.VarChar(500)
+  href         String?   @db.VarChar(255)
+  displayOrder Int?      @default(0) @map("display_order")
+  isActive     Boolean?  @default(true) @map("is_active")
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  cars         Car[]
 
   @@map("categories")
 }
 
-model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  category    String? // Legacy text field
-  categoryId  Int?        @map("category_id")
-  price       Decimal     @db.Decimal(10, 2)
-  stock       Int         @default(0)
-  sales       Int         @default(0)
-  status      String      @default("متوفر") // 'متوفر' (available) or 'نفذ' (out of stock)
-  imagePath   String?     @map("image_path") // Legacy single image
-  description String?
-  colors      String? // Legacy: JSON array of HEX colors
-  variants    String? // JSON: [{colorName, colorCode, images[], stock?}]
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
-  categoryRef Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  orderItems  OrderItem[]
+model Car {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(255)
+  brand           String    @db.VarChar(100)
+  model           String    @db.VarChar(100)
+  year            Int
+  categoryId      Int?      @map("category_id")
+  pricePerDay     Decimal   @map("price_per_day") @db.Decimal(10, 2)
+  pricePerWeek    Decimal?  @map("price_per_week") @db.Decimal(10, 2)
+  pricePerMonth   Decimal?  @map("price_per_month") @db.Decimal(10, 2)
+  fuelType        String?   @default("Essence") @map("fuel_type") @db.VarChar(50)
+  transmission    String?   @default("Automatique") @db.VarChar(50)
+  seats           Int?      @default(5)
+  doors           Int?      @default(4)
+  luggage         Int?      @default(2)
+  airConditioning Boolean?  @default(true) @map("air_conditioning")
+  status          String?   @default("disponible") @db.VarChar(50)
+  licensePlate    String?   @map("license_plate") @db.VarChar(20)
+  mileage         Int?      @default(0)
+  imagePath       String?   @map("image_path") @db.VarChar(500)
+  images          String?
+  description     String?
+  features        String?
+  isActive        Boolean?  @default(true) @map("is_active")
+  createdAt       DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  bookings        Booking[]
+  category        Category? @relation(fields: [categoryId], references: [id], onUpdate: NoAction)
 
-  @@map("products")
+  @@index([categoryId], map: "idx_cars_category")
+  @@index([status], map: "idx_cars_status")
+  @@map("cars")
 }
 
-// ============================================
-// Order Models
-// ============================================
+model Booking {
+  id              Int       @id @default(autoincrement())
+  customerName    String    @map("customer_name") @db.VarChar(255)
+  customerPhone   String    @map("customer_phone") @db.VarChar(50)
+  customerEmail   String?   @map("customer_email") @db.VarChar(255)
+  customerAddress String?   @map("customer_address")
+  customerCity    String?   @map("customer_city") @db.VarChar(100)
+  licenseNumber   String?   @map("license_number") @db.VarChar(100)
+  carId           Int       @map("car_id")
+  pickupDate      DateTime  @map("pickup_date") @db.Timestamp(6)
+  returnDate      DateTime  @map("return_date") @db.Timestamp(6)
+  pickupLocation  String?   @map("pickup_location") @db.VarChar(255)
+  returnLocation  String?   @map("return_location") @db.VarChar(255)
+  dailyRate       Decimal   @map("daily_rate") @db.Decimal(10, 2)
+  totalDays       Int       @map("total_days")
+  subtotal        Decimal   @db.Decimal(10, 2)
+  extrasAmount    Decimal?  @default(0) @map("extras_amount") @db.Decimal(10, 2)
+  discountAmount  Decimal?  @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  totalAmount     Decimal   @map("total_amount") @db.Decimal(10, 2)
+  status          String?   @default("pending") @db.VarChar(50)
+  paymentStatus   String?   @default("unpaid") @map("payment_status") @db.VarChar(50)
+  notes           String?
+  extras          String?
+  createdAt       DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  car             Car       @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-model Order {
-  id            Int         @id @default(autoincrement())
-  customerName  String      @map("customer_name")
-  customerPhone String      @map("customer_phone")
-  customerEmail String?     @map("customer_email")
-  address       String?
-  city          String?
-  totalAmount   Decimal     @map("total_amount") @db.Decimal(10, 2)
-  status        String      @default("pending") // 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled'
-  notes         String?
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
-  items         OrderItem[]
-
-  @@map("orders")
-}
-
-model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int     @map("order_id")
-  productId Int     @map("product_id")
-  quantity  Int
-  price     Decimal @db.Decimal(10, 2)
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@map("order_items")
+  @@index([carId], map: "idx_bookings_car")
+  @@index([pickupDate, returnDate], map: "idx_bookings_dates")
+  @@index([status], map: "idx_bookings_status")
+  @@map("bookings")
 }

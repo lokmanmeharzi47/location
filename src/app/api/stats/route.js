@@ -1,102 +1,159 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-// GET - Fetch dashboard statistics
+// GET - Fetch dashboard statistics for CarRent
 export async function GET() {
     try {
         /* =========================
-           TOTAL ORDERS
+           TOTAL BOOKINGS (Reservations)
         ========================= */
-        const [ordersResult] = await query(
-            'SELECT COUNT(*)::int AS count FROM orders'
-        )
-        const totalOrders = ordersResult?.count || 0
+        let totalBookings = 0
+        try {
+            const [bookingsResult] = await query(
+                'SELECT COUNT(*)::int AS count FROM bookings'
+            )
+            totalBookings = bookingsResult?.count || 0
+        } catch {
+            // Table might not exist yet
+            totalBookings = 0
+        }
 
         /* =========================
            TOTAL REVENUE
         ========================= */
-        const [revenueResult] = await query(
-            `
-      SELECT COALESCE(SUM(total), 0)::numeric AS total
-      FROM orders
-      WHERE status IN ('confirmed', 'shipped', 'delivered')
-      `
-        )
-        const totalRevenue = Number(revenueResult?.total || 0)
+        let totalRevenue = 0
+        try {
+            const [revenueResult] = await query(
+                `SELECT COALESCE(SUM(total_amount), 0)::numeric AS total
+                 FROM bookings
+                 WHERE status IN ('confirmed', 'active', 'completed')`
+            )
+            totalRevenue = Number(revenueResult?.total || 0)
+        } catch {
+            totalRevenue = 0
+        }
 
         /* =========================
-           PRODUCTS COUNT
+           CARS COUNT
         ========================= */
-        const [productsResult] = await query(
-            'SELECT COUNT(*)::int AS count FROM products'
-        )
-        const totalProducts = productsResult?.count || 0
+        let totalCars = 0
+        try {
+            const [carsResult] = await query(
+                'SELECT COUNT(*)::int AS count FROM cars'
+            )
+            totalCars = carsResult?.count || 0
+        } catch {
+            // Try products table as fallback
+            try {
+                const [productsResult] = await query(
+                    'SELECT COUNT(*)::int AS count FROM products'
+                )
+                totalCars = productsResult?.count || 0
+            } catch {
+                totalCars = 0
+            }
+        }
 
         /* =========================
            CUSTOMERS COUNT
         ========================= */
-        const [customersResult] = await query(
-            'SELECT COUNT(DISTINCT phone)::int AS count FROM orders'
-        )
-        const totalCustomers = customersResult?.count || 0
+        let totalCustomers = 0
+        try {
+            const [customersResult] = await query(
+                'SELECT COUNT(DISTINCT customer_phone)::int AS count FROM bookings'
+            )
+            totalCustomers = customersResult?.count || 0
+        } catch {
+            totalCustomers = 0
+        }
 
         /* =========================
-           ORDERS BY STATUS
+           BOOKINGS BY STATUS
         ========================= */
-        const ordersByStatusRows = await query(
-            'SELECT status, COUNT(*)::int AS count FROM orders GROUP BY status'
-        )
-
-        const ordersByStatus = ordersByStatusRows.reduce((acc, row) => {
-            acc[row.status] = row.count
-            return acc
-        }, {})
+        let bookingsByStatus = {}
+        try {
+            const bookingsByStatusRows = await query(
+                'SELECT status, COUNT(*)::int AS count FROM bookings GROUP BY status'
+            )
+            bookingsByStatus = bookingsByStatusRows.reduce((acc, row) => {
+                acc[row.status] = row.count
+                return acc
+            }, {})
+        } catch {
+            bookingsByStatus = {}
+        }
 
         /* =========================
-           RECENT ORDERS (last 5)
+           RECENT BOOKINGS (last 5)
         ========================= */
-        const recentOrdersRows = await query(`
-      SELECT
-        o.order_number,
-        o.customer_name,
-        o.total,
-        o.status,
-        o.order_date
-      FROM orders o
-      ORDER BY o.order_date DESC
-      LIMIT 5
-    `)
+        let recentBookings = []
+        try {
+            const recentBookingsRows = await query(`
+                SELECT
+                    b.id,
+                    b.customer_name,
+                    b.total_amount,
+                    b.status,
+                    b.created_at,
+                    c.name as car_name
+                FROM bookings b
+                LEFT JOIN cars c ON c.id = b.car_id
+                ORDER BY b.created_at DESC
+                LIMIT 5
+            `)
 
-        const recentOrders = recentOrdersRows.map(o => ({
-            id: o.order_number,
-            customer: o.customer_name,
-            total: `${Math.floor(Number(o.total || 0)).toLocaleString('ar-DZ')} د.ج`,
-            status: o.status,
-            date: o.order_date
-                ? new Date(o.order_date).toISOString().split('T')[0]
-                : '-',
-        }))
+            recentBookings = recentBookingsRows.map(b => ({
+                id: b.id,
+                customer: b.customer_name,
+                product: b.car_name || 'N/A',
+                total: `${Math.floor(Number(b.total_amount || 0)).toLocaleString('ar-DZ')} د.ج`,
+                status: b.status,
+                date: b.created_at
+                    ? new Date(b.created_at).toISOString().split('T')[0]
+                    : '-',
+            }))
+        } catch {
+            recentBookings = []
+        }
 
         /* =========================
-           TOP SELLING PRODUCTS
-           (from order_items)
+           TOP RENTED CARS
         ========================= */
-        const topProductsRows = await query(`
-      SELECT
-        oi.product_name AS name,
-        SUM(oi.quantity)::int AS sales
-      FROM order_items oi
-      JOIN orders o ON o.id = oi.order_id
-      WHERE o.status IN ('confirmed', 'shipped', 'delivered')
-      GROUP BY oi.product_name
-      ORDER BY sales DESC
-      LIMIT 5
-    `)
+        let topCars = []
+        try {
+            const topCarsRows = await query(`
+                SELECT
+                    c.name,
+                    COUNT(b.id)::int AS rentals
+                FROM cars c
+                LEFT JOIN bookings b ON b.car_id = c.id AND b.status IN ('confirmed', 'active', 'completed')
+                GROUP BY c.id, c.name
+                ORDER BY rentals DESC
+                LIMIT 5
+            `)
 
-        const topProducts = topProductsRows.map(p => ({
-            name: p.name,
-            sales: p.sales,
-        }))
+            topCars = topCarsRows.map(p => ({
+                name: p.name,
+                sales: p.rentals,
+            }))
+        } catch {
+            topCars = []
+        }
+
+        /* =========================
+           SALES (Total completed bookings revenue)
+        ========================= */
+        let totalSales = 0
+        try {
+            const [salesResult] = await query(
+                `SELECT COALESCE(SUM(total_amount), 0)::numeric AS total
+                 FROM bookings
+                 WHERE status = 'completed'`
+            )
+            totalSales = Number(salesResult?.total || 0)
+        } catch {
+            totalSales = 0
+        }
 
         /* =========================
            FINAL RESPONSE
@@ -105,20 +162,23 @@ export async function GET() {
             success: true,
             stats: {
                 totalOrders: {
-                    value: totalOrders.toLocaleString('ar-DZ'),
+                    value: totalBookings.toLocaleString('ar-DZ'),
                 },
                 totalRevenue: {
                     value: `${Math.floor(totalRevenue).toLocaleString('ar-DZ')} د.ج`,
                 },
                 totalProducts: {
-                    value: totalProducts.toLocaleString('ar-DZ'),
+                    value: totalCars.toLocaleString('ar-DZ'),
                 },
                 totalCustomers: {
                     value: totalCustomers.toLocaleString('ar-DZ'),
                 },
-                ordersByStatus,
-                recentOrders,
-                topProducts,
+                totalSales: {
+                    value: `${Math.floor(totalSales).toLocaleString('ar-DZ')} د.ج`,
+                },
+                ordersByStatus: bookingsByStatus,
+                recentOrders: recentBookings,
+                topProducts: topCars,
             },
         })
     } catch (error) {

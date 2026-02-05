@@ -7,52 +7,36 @@ import { useState, useEffect } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function RootLayout({ children }) {
+  const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Wait for client-side mount to avoid hydration mismatch
   useEffect(() => {
-    const videoPromise = new Promise((resolve) => {
-      const video = document.createElement("video");
-      video.onloadeddata = resolve;
-      video.onerror = resolve; // Handle error gracefully
-    });
-
-    const imagesToLoad = ["/images/logo.png"];
-    const imagePromises = imagesToLoad.map(
-      (src) =>
-        new Promise((resolve) => {
-          const img = new Image();
-          img.src = src;
-          img.onload = resolve;
-          img.onerror = resolve; // Handle error gracefully
-        })
-    );
-
-    Promise.all([videoPromise, ...imagePromises]).then(() => {
+    setMounted(true);
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    });
+    }, 500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/images/logo.png" type="image/png" />
-        <title>Rital – أناقتك تبدأ من هنا</title>
-        <meta name="description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات. اكتشفي تشكيلتنا الفريدة من الفساتين والبلايز والأطقم النسائية." />
-        <meta property="og:url" content="https://embrocraft-dz.vercel.app/" />
+        <link rel="icon" href="/images/logo.jpg" type="image/jpg" />
+        <title>CarRent – أفضل خدمة تأجير سيارات</title>
+        <meta name="description" content="CarRent - خدمة تأجير السيارات الأفضل في الجزائر. سيارات حديثة، أسعار منافسة، وخدمة عملاء متميزة." />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Rital – أناقتك تبدأ من هنا" />
-        <meta property="og:description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات. اكتشفي تشكيلتنا الفريدة من الفساتين والبلايز والأطقم النسائية." />
-        <meta property="og:image" content="https://embrocraft-dz.vercel.app/images/logo.png" />
+        <meta property="og:title" content="CarRent – أفضل خدمة تأجير سيارات" />
+        <meta property="og:description" content="CarRent - خدمة تأجير السيارات الأفضل في الجزائر. سيارات حديثة، أسعار منافسة، وخدمة عملاء متميزة." />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="rital.vercel.app" />
-        <meta property="twitter:url" content="https://rital.vercel.app/" />
-        <meta name="twitter:title" content="Rital – أناقتك تبدأ من هنا" />
-        <meta name="twitter:description" content="ملابس نسائية مصممة بذوق راقٍ، تطريز أنيق وجودة عالية تناسب كل المناسبات." />
-        <meta name="twitter:image" content="https://embrocraft-dz.vercel.app/images/logo.png" />
+        <meta name="twitter:title" content="CarRent – أفضل خدمة تأجير سيارات" />
+        <meta name="twitter:description" content="CarRent - خدمة تأجير السيارات الأفضل في الجزائر." />
       </head>
-      <body className="bg-cream-50 min-h-screen">
+      <body className="bg-cream-50 min-h-screen" suppressHydrationWarning>
         <SpeedInsights />
-        {isLoading ? <Loading /> : (
+        {!mounted || isLoading ? (
+          <Loading />
+        ) : (
           <>
             <Header />
             <main>{children}</main>

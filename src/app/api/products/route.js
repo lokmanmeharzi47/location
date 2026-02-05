@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-import { query, insert } from '@/lib/db';
+import { pool } from '@/lib/db';
 
-// GET - Fetch all products with category info
+// GET - Fetch all cars with category info and images
 export async function GET(request) {
+    const client = await pool.connect();
+
     try {
         const { searchParams } = new URL(request.url);
         const category = searchParams.get('category');
@@ -10,121 +12,128 @@ export async function GET(request) {
         const status = searchParams.get('status');
 
         let sql = `
-            SELECT p.*, c.name as category_name, c.slug as category_slug
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
+            SELECT 
+                c.*,
+                cat.name as category_name,
+                cat.slug as category_slug,
+                COALESCE(
+                    json_agg(
+                        json_build_object(
+                            'id', ci.id,
+                            'url', ci.image_url,
+                            'order', ci.display_order,
+                            'isPrimary', ci.is_primary
+                        ) ORDER BY ci.display_order
+                    ) FILTER (WHERE ci.id IS NOT NULL),
+                    '[]'::json
+                ) as images_data
+            FROM cars c
+            LEFT JOIN categories cat ON c.category_id = cat.id
+            LEFT JOIN car_images ci ON c.id = ci.car_id
             WHERE 1=1
         `;
         const params = [];
+        let paramIndex = 1;
 
-        // Filter by category_id (preferred)
+        // Filter by category_id
         if (categoryId && categoryId !== 'all') {
-            sql += ' AND p.category_id = ?';
+            sql += ` AND c.category_id = $${paramIndex}`;
             params.push(parseInt(categoryId));
+            paramIndex++;
         }
         // Fallback to text category
         else if (category && category !== 'all') {
-            sql += ' AND (p.category ILIKE ? OR c.name ILIKE ? OR c.slug ILIKE ?)';
-            params.push(category, category, category);
+            sql += ` AND (cat.name ILIKE $${paramIndex} OR cat.slug ILIKE $${paramIndex})`;
+            params.push(`%${category}%`);
+            paramIndex++;
         }
 
         if (status && status !== 'all') {
-            sql += ' AND p.status = ?';
+            sql += ` AND c.status = $${paramIndex}`;
             params.push(status);
+            paramIndex++;
         }
 
-        sql += ' ORDER BY p.created_at DESC';
+        sql += ' GROUP BY c.id, cat.name, cat.slug ORDER BY c.created_at DESC';
 
-        const products = await query(sql, params);
+        const result = await client.query(sql, params);
+        const cars = result.rows;
 
-        // Format products for frontend
-        const formattedProducts = products.map(p => {
-            // Parse variants JSON
-            let variants = [];
-            try {
-                variants = p.variants ? JSON.parse(p.variants) : [];
-            } catch {
-                variants = [];
-            }
+        // Format cars for frontend
+        const formattedCars = cars.map(car => {
+            // Extract image URLs from images_data
+            const images = car.images_data.map(img => img.url);
 
-            // Parse legacy colors (for backward compatibility)
-            let colors = [];
-            try {
-                colors = p.colors ? JSON.parse(p.colors) : [];
-            } catch {
-                colors = [];
-            }
-
-            // If no variants but has legacy data, create default variant
-            if (variants.length === 0 && (p.image_path || colors.length > 0)) {
-                const defaultColor = colors[0] || '#C9A86C';
-                variants = [{
-                    colorName: 'اللون الافتراضي',
-                    colorCode: defaultColor,
-                    images: p.image_path ? [p.image_path] : [],
-                    stock: p.stock
-                }];
-                // Add additional colors as separate variants if they exist
-                colors.slice(1).forEach(color => {
-                    variants.push({
-                        colorName: color,
-                        colorCode: color,
-                        images: [],
-                        stock: 0
-                    });
-                });
-            }
+            // Create variants structure for compatibility
+            const variants = [{
+                colorName: 'Default',
+                colorCode: '#333333',
+                images: images,
+                stock: 1
+            }];
 
             return {
-                id: p.id,
-                name: p.name,
-                category: p.category_name || p.category,
-                categoryId: p.category_id,
-                categorySlug: p.category_slug,
-                price: `${Math.floor(p.price).toLocaleString('ar-DZ')} د.ج`,
-                priceRaw: p.price,
-                stock: p.stock,
-                sales: p.sales || 0,
-                status: p.status,
-                image: variants[0]?.images?.[0] || p.image_path || '/images/placeholder.jpg',
-                description: p.description,
-                colors: colors, // Keep for backward compatibility
+                id: car.id,
+                name: car.name,
+                category: car.category_name || 'غير مصنف',
+                categoryId: car.category_id,
+                categorySlug: car.category_slug,
+                price: `${Math.floor(car.price_per_day).toLocaleString('ar-DZ')} د.ج`,
+                priceRaw: car.price_per_day,
+                stock: car.status === 'disponible' ? 1 : 0,
+                sales: 0,
+                status: car.status === 'disponible' ? 'متوفر' : 'محجوز',
+                image: images[0] || '/images/placeholder.svg',
+                description: car.description,
+                colors: [],
                 variants: variants,
-                createdAt: p.created_at,
+                // Car-specific fields
+                brand: car.brand,
+                model: car.model,
+                year: car.year,
+                fuelType: car.fuel_type,
+                transmission: car.transmission,
+                seats: car.seats,
+                doors: car.doors,
+                createdAt: car.created_at,
             };
         });
 
         const response = NextResponse.json({
             success: true,
-            products: formattedProducts,
-            total: formattedProducts.length,
+            products: formattedCars,
+            total: formattedCars.length,
         });
 
-        // Cache for 2 minutes
         response.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=300');
 
         return response;
 
     } catch (error) {
-        console.error('Get products error:', error);
+        console.error('Get cars error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في جلب المنتجات', error: error.message },
+            { success: false, message: 'حدث خطأ في جلب السيارات', error: error.message },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// POST - Create new product with category_id
+// POST - Create new car with images
 export async function POST(request) {
-    try {
-        const body = await request.json();
-        const { name, category_id, price, stock, image_path, description, colors, variants } = body;
+    const client = await pool.connect();
 
-        // ====== VALIDATION ======
-        // 1. Validate required fields
+    try {
+        await client.query('BEGIN');
+
+        const body = await request.json();
+        const { name, category_id, price, stock, description, variants } = body;
+
+        // Validation
         if (!name || typeof name !== 'string' || name.trim() === '') {
             return NextResponse.json(
-                { success: false, message: 'اسم المنتج مطلوب' },
+                { success: false, message: 'اسم السيارة مطلوب' },
                 { status: 400 }
             );
         }
@@ -143,7 +152,6 @@ export async function POST(request) {
             );
         }
 
-        // 2. Parse and validate price
         const parsedPrice = parseFloat(price);
         if (isNaN(parsedPrice) || parsedPrice < 0) {
             return NextResponse.json(
@@ -152,82 +160,90 @@ export async function POST(request) {
             );
         }
 
-        // 3. Validate category_id exists in database
-        const catResult = await query('SELECT id, name FROM categories WHERE id = ?', [parseInt(category_id)]);
-        if (catResult.length === 0) {
+        // Validate category exists
+        const catResult = await client.query('SELECT id, name FROM categories WHERE id = $1', [parseInt(category_id)]);
+        if (catResult.rows.length === 0) {
             return NextResponse.json(
                 { success: false, message: 'الفئة المحددة غير موجودة' },
                 { status: 400 }
             );
         }
-        const categoryName = catResult[0].name;
 
-        // 4. Handle variants - validate and stringify
-        let variantsJson = null;
-        if (variants && Array.isArray(variants) && variants.length > 0) {
-            // Validate variant structure
-            for (const variant of variants) {
-                if (!variant.colorCode || !variant.colorName) {
-                    return NextResponse.json(
-                        { success: false, message: 'كل متغير يجب أن يحتوي على اسم اللون ورمزه' },
-                        { status: 400 }
-                    );
-                }
-                if (!Array.isArray(variant.images)) {
-                    variant.images = [];
-                }
+        // Extract images from variants
+        let imageUrls = [];
+        if (variants && Array.isArray(variants) && variants.length > 0 && variants[0].images) {
+            imageUrls = variants[0].images;
+        }
+
+        // Parse description for car details
+        let brand = '', model = '', year = new Date().getFullYear();
+        let fuelType = 'Essence', transmission = 'Automatique', seats = 5;
+
+        if (description) {
+            const parts = description.split(' | ');
+            if (parts[0]) {
+                const nameParts = parts[0].split(' ');
+                brand = nameParts[0] || '';
+                model = nameParts[1] || '';
+                year = parseInt(nameParts[2]) || new Date().getFullYear();
             }
-            variantsJson = JSON.stringify(variants);
+            if (parts[1]) fuelType = parts[1];
+            if (parts[2]) transmission = parts[2];
+            if (parts[3]) seats = parseInt(parts[3]) || 5;
         }
 
-        // 5. Handle legacy colors (for backward compatibility)
-        let colorsValue = null;
-        if (colors && Array.isArray(colors) && colors.length > 0) {
-            colorsValue = JSON.stringify(colors);
-        } else if (variants && variants.length > 0) {
-            // Extract colors from variants for backward compatibility
-            colorsValue = JSON.stringify(variants.map(v => v.colorCode));
+        // Insert car
+        const carStatus = stock > 0 ? 'disponible' : 'loué';
+
+        const insertQuery = `
+            INSERT INTO cars (name, brand, model, year, category_id, price_per_day, fuel_type, transmission, seats, status, description, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            RETURNING id
+        `;
+
+        const result = await client.query(insertQuery, [
+            name.trim(),
+            brand,
+            model,
+            year,
+            parseInt(category_id),
+            parsedPrice,
+            fuelType,
+            transmission,
+            seats,
+            carStatus,
+            description || null
+        ]);
+
+        const carId = result.rows[0].id;
+
+        // Insert images into car_images table
+        if (imageUrls.length > 0) {
+            for (let i = 0; i < imageUrls.length; i++) {
+                await client.query(
+                    `INSERT INTO car_images (car_id, image_url, display_order, is_primary, created_at)
+                     VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)`,
+                    [carId, imageUrls[i], i, i === 0]
+                );
+            }
         }
 
-        // Get first image from first variant for legacy image_path
-        let primaryImage = image_path || null;
-        if (!primaryImage && variants && variants.length > 0 && variants[0].images?.length > 0) {
-            primaryImage = variants[0].images[0];
-        }
-
-        // ====== INSERT PRODUCT ======
-        // Determine status based on stock
-        const parsedStock = parseInt(stock) || 0;
-        const status = parsedStock > 0 ? 'متوفر' : 'نفذ';
-
-        const productId = await insert(
-            `INSERT INTO products (name, category, category_id, price, stock, status, image_path, description, colors, variants, created_at, updated_at) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-            [
-                name.trim(),
-                categoryName,
-                parseInt(category_id),
-                parsedPrice,
-                parsedStock,
-                status,
-                primaryImage,
-                description || null,
-                colorsValue,
-                variantsJson
-            ]
-        );
+        await client.query('COMMIT');
 
         return NextResponse.json({
             success: true,
-            message: 'تم إضافة المنتج بنجاح',
-            productId: productId,
+            message: 'تم إضافة السيارة بنجاح',
+            productId: carId,
         });
 
     } catch (error) {
-        console.error('Create product error:', error);
+        await client.query('ROLLBACK');
+        console.error('Create car error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في إضافة المنتج', error: error.message },
+            { success: false, message: 'حدث خطأ في إضافة السيارة', error: error.message },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }

@@ -3,21 +3,18 @@ const ComingSoon = () => {
     <section className="py-16 px-4">
       <div className="max-w-4xl mx-auto">
         <div
-          className="relative rounded-3xl overflow-hidden shadow-2xl"
+          className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800"
           style={{
-            backgroundImage: "url('/images/costumise.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
             minHeight: "450px",
           }}
         >
           {/* Elegant Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blush-800/80 via-blush-700/70 to-rose-gold/60"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-700/60"></div>
 
           {/* Decorative Elements */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-10 right-10 w-32 h-32 bg-gold-400/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 left-10 w-40 h-40 bg-blush-300/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-10 left-10 w-40 h-40 bg-auto-400/20 rounded-full blur-3xl"></div>
           </div>
 
           {/* Content */}
@@ -27,17 +24,17 @@ const ComingSoon = () => {
 
             {/* Main Title */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              لمسة خاصة لكِ
+              خدمات قريباً
             </h2>
 
             {/* Subtitle */}
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
-              اختاري الألوان، النقوش، والتطريز الذي يعكس أنوثتك وتميّزك
+              نعمل على إضافة خدمات جديدة لتجربة تأجير أفضل وأسهل
             </p>
 
             {/* Features */}
             <div className="flex flex-wrap justify-center gap-4 mb-8">
-              {["ألوان متنوعة", "نقوش حصرية", "تطريز مخصص"].map((feature, index) => (
+              {["تأمين شامل", "سائق خاص", "توصيل للمطار"].map((feature, index) => (
                 <div
                   key={index}
                   className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm border border-white/30"
@@ -49,7 +46,7 @@ const ComingSoon = () => {
 
             {/* CTA Button */}
             <button
-              className="px-8 py-4 bg-gold-500/80 text-white font-semibold rounded-full cursor-not-allowed opacity-90 hover:opacity-100 transition-opacity duration-300 shadow-lg"
+              className="px-8 py-4 bg-gold-500/80 text-slate-900 font-semibold rounded-full cursor-not-allowed opacity-90 hover:opacity-100 transition-opacity duration-300 shadow-lg"
               disabled
             >
               <span className="flex items-center gap-2">

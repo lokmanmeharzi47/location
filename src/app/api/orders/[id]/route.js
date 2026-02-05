@@ -1,22 +1,26 @@
 import { NextResponse } from 'next/server';
-import { queryOne, update, remove } from '@/lib/db';
+import { pool } from '@/lib/db';
 
-// GET - Fetch single order
+// GET - Fetch single booking
 export async function GET(request, { params }) {
+    const client = await pool.connect();
+
     try {
         const { id } = await params;
 
-        const order = await queryOne(
-            `SELECT o.*, p.name as product_name_ref 
-       FROM orders o 
-       LEFT JOIN products p ON o.product_id = p.id 
-       WHERE o.id = ?`,
+        const result = await client.query(
+            `SELECT b.*, c.name as car_name
+             FROM bookings b
+             LEFT JOIN cars c ON b.car_id = c.id
+             WHERE b.id = $1`,
             [id]
         );
 
-        if (!order) {
+        const booking = result.rows[0];
+
+        if (!booking) {
             return NextResponse.json(
-                { success: false, message: 'الطلب غير موجود' },
+                { success: false, message: 'الحجز غير موجود' },
                 { status: 404 }
             );
         }
@@ -24,147 +28,130 @@ export async function GET(request, { params }) {
         return NextResponse.json({
             success: true,
             order: {
-                id: order.order_number,
-                dbId: order.id,
-                customer: order.customer_name,
-                phone: order.phone,
-                product: order.product_name || order.product_name_ref || 'غير محدد',
-                productId: order.product_id,
-                color: order.color || '-',
-                size: order.size || '-',
-                total: `${Math.floor(order.total || 0).toLocaleString('ar-DZ')} د.ج`,
-                totalRaw: order.total,
-                status: order.status,
-                wilaya: order.wilaya || '-',
-                date: order.order_date ? new Date(order.order_date).toISOString().split('T')[0] : '-',
-                address: order.address,
-                notes: order.notes,
+                id: booking.id,
+                dbId: booking.id,
+                customer: booking.customer_name,
+                phone: booking.customer_phone,
+                email: booking.customer_email,
+                product: booking.car_name || 'غير محدد',
+                carId: booking.car_id,
+                total: `${Math.floor(booking.total_amount || 0).toLocaleString('ar-DZ')} د.ج`,
+                totalRaw: booking.total_amount,
+                status: booking.status,
+                pickupLocation: booking.pickup_location || '-',
+                returnLocation: booking.return_location || '-',
+                pickupDate: booking.pickup_date ? new Date(booking.pickup_date).toISOString().split('T')[0] : '-',
+                returnDate: booking.return_date ? new Date(booking.return_date).toISOString().split('T')[0] : '-',
+                totalDays: booking.total_days || 0,
+                address: booking.customer_address || '-',
+                city: booking.customer_city || '-',
+                notes: booking.notes || '',
+                date: booking.created_at ? new Date(booking.created_at).toISOString().split('T')[0] : '-',
             }
         });
 
     } catch (error) {
-        console.error('Get order error:', error);
+        console.error('Get booking error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في جلب الطلب' },
+            { success: false, message: 'حدث خطأ في جلب الحجز' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// PUT - Update order (mainly status)
+// PUT - Update booking (mainly status)
 export async function PUT(request, { params }) {
+    const client = await pool.connect();
+
     try {
         const { id } = await params;
         const body = await request.json();
-        const { status, customer_name, phone, color, size, total, wilaya, address, notes } = body;
+        const { status, customer_name, customer_phone, notes, payment_status } = body;
 
-        // Check if order exists
-        const existing = await queryOne('SELECT id FROM orders WHERE id = ?', [id]);
-        if (!existing) {
+        // Check if booking exists
+        const existing = await client.query('SELECT id FROM bookings WHERE id = $1', [id]);
+        if (existing.rows.length === 0) {
             return NextResponse.json(
-                { success: false, message: 'الطلب غير موجود' },
+                { success: false, message: 'الحجز غير موجود' },
                 { status: 404 }
             );
         }
 
         // If only updating status
         if (status && Object.keys(body).length === 1) {
-            // Get current order status and product_id before update
-            const currentOrder = await queryOne('SELECT status, product_id FROM orders WHERE id = ?', [id]);
-            const previousStatus = currentOrder?.status;
-            const productId = currentOrder?.product_id;
-
-            const affectedRows = await update(
-                'UPDATE orders SET status = ? WHERE id = ?',
+            await client.query(
+                'UPDATE bookings SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
                 [status, id]
             );
 
-            // Handle sales count based on status change
-            if (productId && previousStatus !== status) {
-                try {
-                    // If changing TO "مكتمل" - increment sales
-                    if (status === 'مكتمل' && previousStatus !== 'مكتمل') {
-                        await update('UPDATE products SET sales = sales + 1 WHERE id = ?', [productId]);
-                    }
-                    // If changing FROM "مكتمل" to something else - decrement sales
-                    else if (previousStatus === 'مكتمل' && status !== 'مكتمل') {
-                        await update('UPDATE products SET sales = GREATEST(sales - 1, 0) WHERE id = ?', [productId]);
-                    }
-                } catch (salesError) {
-                    console.error('Failed to update sales count:', salesError);
-                    // Don't fail the status update just because sales count failed
-                }
-            }
-
             return NextResponse.json({
                 success: true,
-                message: 'تم تحديث حالة الطلب بنجاح',
-                affectedRows,
+                message: 'تم تحديث حالة الحجز بنجاح',
             });
         }
 
         // Full update
-        const affectedRows = await update(
-            `UPDATE orders 
-       SET status = ?, customer_name = ?, phone = ?, color = ?, size = ?, 
-           total = ?, wilaya = ?, address = ?, notes = ?
-       WHERE id = ?`,
+        await client.query(
+            `UPDATE bookings 
+             SET status = $1, customer_name = $2, customer_phone = $3, 
+                 notes = $4, payment_status = $5, updated_at = CURRENT_TIMESTAMP
+             WHERE id = $6`,
             [
                 status || 'قيد التنفيذ',
                 customer_name,
-                phone,
-                color || null,
-                size || null,
-                total ? parseFloat(total) : null,
-                wilaya || null,
-                address || null,
+                customer_phone,
                 notes || null,
+                payment_status || 'pending',
                 id
             ]
         );
 
         return NextResponse.json({
             success: true,
-            message: 'تم تحديث الطلب بنجاح',
-            affectedRows,
+            message: 'تم تحديث الحجز بنجاح',
         });
 
     } catch (error) {
-        console.error('Update order error:', error);
+        console.error('Update booking error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في تحديث الطلب' },
+            { success: false, message: 'حدث خطأ في تحديث الحجز' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }
 
-// DELETE - Delete order
+// DELETE - Delete booking
 export async function DELETE(request, { params }) {
+    const client = await pool.connect();
+
     try {
         const { id } = await params;
 
-        const affectedRows = await remove(
-            'DELETE FROM orders WHERE id = ?',
-            [id]
-        );
+        const result = await client.query('DELETE FROM bookings WHERE id = $1 RETURNING id', [id]);
 
-        if (affectedRows === 0) {
+        if (result.rows.length === 0) {
             return NextResponse.json(
-                { success: false, message: 'الطلب غير موجود' },
+                { success: false, message: 'الحجز غير موجود' },
                 { status: 404 }
             );
         }
 
         return NextResponse.json({
             success: true,
-            message: 'تم حذف الطلب بنجاح',
+            message: 'تم حذف الحجز بنجاح',
         });
 
     } catch (error) {
-        console.error('Delete order error:', error);
+        console.error('Delete booking error:', error);
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في حذف الطلب' },
+            { success: false, message: 'حدث خطأ في حذف الحجز' },
             { status: 500 }
         );
+    } finally {
+        client.release();
     }
 }

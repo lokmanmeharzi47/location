@@ -1,9 +1,9 @@
-import ClothingCategories from '@/components/ClothingCategories'
+import CarCategories from '@/components/CarCategories'
 
 const page = () => {
   return (
-    <div className='min-h-screen flex justify-center items-center'>
-      <ClothingCategories />
+    <div className='min-h-screen flex justify-center items-center bg-slate-50'>
+      <CarCategories />
     </div>
   )
 }
