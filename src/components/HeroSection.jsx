@@ -29,13 +29,12 @@ export default function HeroSection() {
       {/* Video Background */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/videos/hero.mp4"
         autoPlay
         loop
         muted
         playsInline
         preload="metadata"
-        poster="/images/hero-poster.jpg"
+        poster="/images/hero-poster.png"
       />
 
       {/* Elegant Gradient Overlay */}

@@ -4,6 +4,7 @@ import Loading from "../components/Loading";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function RootLayout({ children }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +12,6 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     const videoPromise = new Promise((resolve) => {
       const video = document.createElement("video");
-      video.src = "/videos/hero.mp4";
       video.onloadeddata = resolve;
       video.onerror = resolve; // Handle error gracefully
     });
@@ -51,6 +51,7 @@ export default function RootLayout({ children }) {
         <meta name="twitter:image" content="https://embrocraft-dz.vercel.app/images/logo.png" />
       </head>
       <body className="bg-cream-50 min-h-screen">
+        <SpeedInsights />
         {isLoading ? <Loading /> : (
           <>
             <Header />
