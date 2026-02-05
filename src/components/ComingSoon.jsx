@@ -3,24 +3,28 @@ const ComingSoon = () => {
     <section className="py-16 px-4">
       <div className="max-w-4xl mx-auto">
         <div
-          className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800"
+          className="relative rounded-3xl overflow-hidden shadow-2xl"
           style={{
             minHeight: "450px",
+            backgroundImage: "url('/images/hero.png')",
+            backgroundSize: "100%",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
-          {/* Elegant Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-700/60"></div>
+          {/* Dark Navy Gradient Overlay for text readability */}
+          <div
+  className="absolute inset-0"
+  style={{
+    background:
+      "linear-gradient(135deg, rgba(5, 10, 20, 0.92) 0%, rgba(10, 15, 30, 0.88) 50%, rgba(5, 10, 20, 0.92) 100%)",
+  }}
+></div>
 
-          {/* Decorative Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-10 right-10 w-32 h-32 bg-gold-400/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 left-10 w-40 h-40 bg-auto-400/20 rounded-full blur-3xl"></div>
-          </div>
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center justify-center min-h-[450px] p-8 text-center">
             {/* Gold Accent */}
-            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-gold-400 to-transparent mb-6"></div>
 
             {/* Main Title */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -58,7 +62,6 @@ const ComingSoon = () => {
             </button>
 
             {/* Gold Accent Bottom */}
-            <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-gold-400 to-transparent mt-8"></div>
           </div>
         </div>
       </div>
