@@ -5,27 +5,43 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Optimized pool configuration for Supabase
-const pool = new Pool({
+// Optimized pool configuration for Supabase
+const poolConfig = {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
     max: 5, // Reduced pool size for faster initial connections
     idleTimeoutMillis: 60000, // Keep connections alive longer
-    connectionTimeoutMillis: 10000, // Timeout after 10s
+    connectionTimeoutMillis: 20000, // Increased timeout to 20s
     keepAlive: true, // Keep TCP connections alive
     keepAliveInitialDelayMillis: 10000,
-});
+};
 
-// Prewarm connection on module load
+let pool;
+
+// Use global singleton in development to prevent connection exhaustion during HMR
+if (process.env.NODE_ENV === 'production') {
+    pool = new Pool(poolConfig);
+} else {
+    if (!global.dbPool) {
+        global.dbPool = new Pool(poolConfig);
+    }
+    pool = global.dbPool;
+}
+
+// Prewarm connection on module load (only if not already warmed in this process)
 let connectionWarmed = false;
 async function warmConnection() {
     if (connectionWarmed) return;
     try {
+        // Just a simple query to ensure connection is established
         await pool.query("SELECT 1");
         connectionWarmed = true;
+        console.log("Database connection warmed up");
     } catch (e) {
         console.error("Failed to warm connection:", e.message);
     }
 }
+// Don't await this, let it happen in background
 warmConnection();
 
 /**

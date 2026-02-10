@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 
-export default function Footer() {
+export default function Footer({ dict, lang }) {
     const [twitch, setTwitch] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
@@ -50,49 +50,49 @@ export default function Footer() {
                                 priority
                             />
                             <div>
-                                <h3 className="text-xl font-bold text-white">CarRent</h3>
-                                <p className="text-gold-400 text-sm">تأجير السيارات في الجزائر</p>
+                                <h3 className="text-xl font-bold text-white">{dict?.header?.rights || 'CarRent'}</h3>
+                                <p className="text-gold-400 text-sm">{dict?.header?.subtitle}</p>
                             </div>
                         </div>
                         <p className="text-slate-300 mt-4 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
-                            نحن نوفر أفضل السيارات بأسعار تنافسية وخدمة موثوقة. أسطول متنوع يناسب جميع احتياجاتك.
+                            {dict?.footer?.description}
                         </p>
                     </div>
 
                     {/* Quick Links */}
                     <div className="text-center">
-                        <h4 className="text-lg font-bold text-white mb-6">روابط سريعة</h4>
+                        <h4 className="text-lg font-bold text-white mb-6">{dict?.footer?.quick_links}</h4>
                         <nav className="flex flex-col gap-3">
                             <Link
-                                href="/"
+                                href={`/${lang}`}
                                 className="text-slate-300 hover:text-gold-400 transition-colors duration-300"
                             >
-                                الرئيسية
+                                {dict?.header?.home}
                             </Link>
                             <Link
-                                href="/design"
+                                href={`/${lang}/design`}
                                 className="text-slate-300 hover:text-gold-400 transition-colors duration-300"
                             >
-                                السيارات
+                                {dict?.header?.cars}
                             </Link>
                             <button
                                 onClick={() => handleNavigateAndScroll("#car-categories")}
                                 className="text-slate-300 hover:text-gold-400 transition-colors duration-300"
                             >
-                                أنواع السيارات
+                                {dict?.header?.categories}
                             </button>
                             <button
                                 onClick={handleContactClick}
                                 className="text-slate-300 hover:text-gold-400 transition-colors duration-300"
                             >
-                                تواصل معنا
+                                {dict?.header?.contact}
                             </button>
                         </nav>
                     </div>
 
                     {/* Contact & Social */}
                     <div className="text-center md:text-left">
-                        <h4 className="text-lg font-bold text-white mb-6">تواصل معنا</h4>
+                        <h4 className="text-lg font-bold text-white mb-6">{dict?.footer?.contact_us}</h4>
                         <div className="flex justify-center md:justify-start gap-4 mb-6">
                             <Link
                                 href="https://www.instagram.com/carrent_dz/"
@@ -132,7 +132,7 @@ export default function Footer() {
                             </Link>
                         </div>
                         <p className="text-slate-300 text-sm">
-                            نسعد بتواصلك معنا في أي وقت
+                            {dict?.footer?.contact_text}
                         </p>
                     </div>
                 </div>
@@ -143,14 +143,14 @@ export default function Footer() {
                 {/* Bottom Footer */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-slate-400 text-center md:text-right">
-                        © {new Date().getFullYear()} CarRent. جميع الحقوق محفوظة
+                        © {new Date().getFullYear()} {dict?.header?.rights}. {dict?.footer?.rights}
                     </p>
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-slate-400">صُنع بـ</span>
+                        <span className="text-sm text-slate-400">{dict?.footer?.made_by}</span>
                         <svg className="w-4 h-4 text-gold-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                         </svg>
-                        <span className="text-sm text-slate-400">في الجزائر</span>
+                        <span className="text-sm text-slate-400">{dict?.footer?.in_algeria}</span>
                     </div>
                 </div>
             </div>

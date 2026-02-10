@@ -26,7 +26,7 @@ const getCachedCategories = unstable_cache(
     { revalidate: 60 } // Cache for 60 seconds
 );
 
-export default async function CarCategories() {
+export default async function CarCategories({ dict }) {
     const categories = await getCachedCategories();
 
     // Don't render if no categories
@@ -39,13 +39,15 @@ export default async function CarCategories() {
             <div className="max-w-7xl mx-auto">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2 block">أسطول سياراتنا</span>
+                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2 block">
+                        {dict?.categories?.fleet}
+                    </span>
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
-                        اختر نوع السيارة
+                        {dict?.categories?.title}
                     </h2>
                     <div className="w-24 h-1 bg-gradient-to-r from-slate-400 via-gold-400 to-slate-400 mx-auto rounded-full"></div>
                     <p className="text-slate-600 mt-6 max-w-2xl mx-auto text-lg">
-                        اكتشف مجموعتنا المتنوعة من السيارات الحديثة والمريحة المناسبة لكل احتياجاتك
+                        {dict?.categories?.subtitle}
                     </p>
                 </div>
 
@@ -90,11 +92,11 @@ export default async function CarCategories() {
                                 {/* CTA */}
                                 <div className="flex items-center justify-between">
                                     <span className="text-gold-600 font-medium text-sm group-hover:text-gold-700 transition-colors">
-                                        عرض السيارات
+                                        {dict?.categories?.view_cars}
                                     </span>
                                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-gold-500 transition-all duration-300">
                                         <svg
-                                            className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors duration-300 rotate-180"
+                                            className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors duration-300 rotate-180 rtl:rotate-0"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"

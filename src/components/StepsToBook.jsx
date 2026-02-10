@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function StepsToBook() {
+export default function StepsToBook({ dict }) {
     const [activeStep, setActiveStep] = useState(null);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -17,9 +17,9 @@ export default function StepsToBook() {
 
     const steps = [
         {
-            number: "١",
-            title: "اختر السيارة",
-            description: "تصفح أسطول سياراتنا المتنوع واختر السيارة التي تناسب احتياجاتك وميزانيتك.",
+            number: "1",
+            title: dict?.steps?.step_1_title,
+            description: dict?.steps?.step_1_desc,
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -28,9 +28,9 @@ export default function StepsToBook() {
             ),
         },
         {
-            number: "٢",
-            title: "حدد موعد الاستلام",
-            description: "اختر تاريخ ووقت استلام السيارة وتاريخ الإرجاع حسب جدولك.",
+            number: "2",
+            title: dict?.steps?.step_2_title,
+            description: dict?.steps?.step_2_desc,
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -38,9 +38,9 @@ export default function StepsToBook() {
             ),
         },
         {
-            number: "٣",
-            title: "أكمل الحجز",
-            description: "املأ بيانات الحجز البسيطة وأكد حجزك بكل سهولة.",
+            number: "3",
+            title: dict?.steps?.step_3_title,
+            description: dict?.steps?.step_3_desc,
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -48,9 +48,9 @@ export default function StepsToBook() {
             ),
         },
         {
-            number: "٤",
-            title: "استلم سيارتك",
-            description: "استلم سيارتك من موقعنا أو نوصلها لك أينما كنت في الجزائر.",
+            number: "4",
+            title: dict?.steps?.step_4_title,
+            description: dict?.steps?.step_4_desc,
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -65,9 +65,9 @@ export default function StepsToBook() {
             <div className="max-w-6xl mx-auto">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2 block">خطوات بسيطة</span>
+                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2 block">{dict?.steps?.title_small}</span>
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
-                        كيف تحجز من CarRent
+                        {dict?.steps?.title_large}
                     </h2>
                     <div className="w-24 h-1 bg-gradient-to-r from-slate-400 via-gold-400 to-slate-400 mx-auto rounded-full"></div>
                 </div>

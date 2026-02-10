@@ -1,0 +1,64 @@
+{
+    "header": {
+        "home": "Accueil",
+        "cars": "Voitures",
+        "categories": "Catégories",
+        "contact": "Contact",
+        "book": "Réserver",
+        "subtitle": "Location de voitures",
+        "mobile_subtitle": "Location simple et rapide",
+        "rights": "CarRent",
+        "copyright": "© CarRent"
+    },
+    "hero": {
+        "title": "Louez votre voiture idéale",
+        "subtitle": "Meilleurs prix et voitures récentes en Algérie",
+        "badge_clean": "Voitures propres",
+        "badge_price": "Prix compétitifs",
+        "badge_delivery": "Livraison rapide",
+        "cta_browse": "Voir les voitures",
+        "cta_types": "Catégories",
+        "trust_customers": "+500 Clients satisfaits",
+        "trust_rating": "Note 4.9/5",
+        "main_title_1": "CarRent",
+        "main_title_2": "Location de voitures facile",
+        "main_subtitle": "Voitures propres, prix abordables, service fiable partout en Algérie"
+    },
+    "categories": {
+        "fleet": "Notre flotte",
+        "title": "Choisissez votre type de véhicule",
+        "subtitle": "Découvrez notre gamme variée de voitures modernes et confortables pour tous vos besoins",
+        "view_cars": "Voir les véhicules"
+    },
+    "steps": {
+        "title_small": "Étapes simples",
+        "title_large": "Comment réserver chez CarRent",
+        "step_1_title": "Choisissez une voiture",
+        "step_1_desc": "Parcourez notre flotte diversifiée et choisissez la voiture qui convient à vos besoins et votre budget.",
+        "step_2_title": "Date de prise en charge",
+        "step_2_desc": "Choisissez la date et l'heure de prise en charge et de retour selon votre emploi du temps.",
+        "step_3_title": "Complétez la réservation",
+        "step_3_desc": "Remplissez les détails simples de réservation et confirmez votre réservation facilement.",
+        "step_4_title": "Recevez votre voiture",
+        "step_4_desc": "Récupérez votre voiture à notre emplacement ou nous vous la livrons partout en Algérie."
+    },
+    "coming_soon": {
+        "title": "Services Bientôt",
+        "subtitle": "Nous travaillons à l'ajout de nouveaux services pour une meilleure expérience de location",
+        "features": [
+            "Assurance complète",
+            "Chauffeur privé",
+            "Transfert aéroport"
+        ],
+        "button": "Bientôt"
+    },
+    "footer": {
+        "description": "Nous fournissons les meilleures voitures à des prix compétitifs et un service fiable. Une flotte diversifiée pour répondre à tous vos besoins.",
+        "quick_links": "Liens rapides",
+        "contact_us": "Contactez-nous",
+        "contact_text": "Nous sommes heureux de vous entendre",
+        "rights": "Tous droits réservés",
+        "made_by": "Fait avec",
+        "in_algeria": "en Algérie"
+    }
+}

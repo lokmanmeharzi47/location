@@ -13,7 +13,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
+
     console.log("Attempting login with:", { email, password });
 
     try {
@@ -91,7 +91,6 @@ export default function AdminLogin() {
           </button>
         </form>
       </div>
-      );
     </div>
   );
 }
