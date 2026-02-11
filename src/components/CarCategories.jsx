@@ -26,7 +26,7 @@ const getCachedCategories = unstable_cache(
     { revalidate: 60 } // Cache for 60 seconds
 );
 
-export default async function CarCategories({ dict }) {
+export default async function CarCategories({ dict, lang }) {
     const categories = await getCachedCategories();
 
     // Don't render if no categories
@@ -56,7 +56,7 @@ export default async function CarCategories({ dict }) {
                     {categories.map((category, index) => (
                         <Link
                             key={category.id || index}
-                            href={category.href || `/design/${category.slug}`}
+                            href={category.href ? `/${lang}${category.href}` : `/${lang}/design/${category.slug}`}
                             className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-sm"
                         >
                             {/* Image Container */}

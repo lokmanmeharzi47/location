@@ -11,13 +11,26 @@ export default function HeroSection({ dict, lang }) {
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background - Gradient instead of video for faster load */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 right-20 w-96 h-96 bg-gold-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-auto-600 rounded-full blur-3xl"></div>
-        </div>
+      {/* Background Video */}
+      <div className="absolute inset-0">
+       <video
+  autoPlay
+  muted
+  playsInline
+  preload="metadata"
+  className="w-full h-full object-cover"
+>
+
+          <source src="/videos/lambo.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/60"></div>
+      </div>
+      {/* Decorative elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-gold-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-gold-600 rounded-full blur-3xl"></div>
       </div>
 
       {/* Content */}

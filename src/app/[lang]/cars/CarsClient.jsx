@@ -145,17 +145,18 @@ export default function CarsClient({ dict, lang }) {
                 )}
             </div>
 
-            {/* Details Modal */}
+            {/* Step 1: Car Details Modal */}
             {isDetailsModalOpen && selectedCar && (
                 <CarDetailsModal
                     product={selectedCar}
                     category={{ name: selectedCar.category }}
                     onClose={() => setIsDetailsModalOpen(false)}
                     onOrder={handleProceedToBooking}
+                    dict={dict}
                 />
             )}
 
-            {/* Booking Modal */}
+            {/* Step 2: Booking Modal */}
             {isBookingModalOpen && selectedCar && (
                 <BookingModal
                     product={selectedCar}
@@ -165,6 +166,7 @@ export default function CarsClient({ dict, lang }) {
                         setIsBookingModalOpen(false);
                         setIsDetailsModalOpen(true);
                     }}
+                    dict={dict}
                 />
             )}
         </main>

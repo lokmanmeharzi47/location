@@ -106,7 +106,7 @@ export async function GET() {
                 id: b.id,
                 customer: b.customer_name,
                 product: b.car_name || 'N/A',
-                total: `${Math.floor(Number(b.total_amount || 0)).toLocaleString('ar-DZ')} مليون`,
+                total: `${Math.floor(Number(b.total_amount || 0)).toLocaleString('ar-DZ')} million`,
                 status: b.status,
                 date: b.created_at
                     ? new Date(b.created_at).toISOString().split('T')[0]
@@ -165,7 +165,7 @@ export async function GET() {
                     value: totalBookings.toLocaleString('ar-DZ'),
                 },
                 totalRevenue: {
-                    value: `${Math.floor(totalRevenue).toLocaleString('ar-DZ')} مليون`,
+                    value: `${Math.floor(totalRevenue).toLocaleString('ar-DZ')} million`,
                 },
                 totalProducts: {
                     value: totalCars.toLocaleString('ar-DZ'),
@@ -174,7 +174,7 @@ export async function GET() {
                     value: totalCustomers.toLocaleString('ar-DZ'),
                 },
                 totalSales: {
-                    value: `${Math.floor(totalSales).toLocaleString('ar-DZ')} مليون`,
+                    value: `${Math.floor(totalSales).toLocaleString('ar-DZ')} million`,
                 },
                 ordersByStatus: bookingsByStatus,
                 recentOrders: recentBookings,

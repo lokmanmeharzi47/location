@@ -5,13 +5,6 @@ import { FiX, FiArrowRight, FiMapPin, FiCheckCircle, FiAlertCircle, FiCalendar, 
 import { BiLoaderAlt } from "react-icons/bi";
 import wilayaCommunes from "@/data/wilaya_communes.json";
 
-/**
- * BookingModal - Car rental booking form modal
- * 
- * Second step in the two-step booking flow:
- * Appears after user clicks "احجز الآن" in CarDetailsModal
- */
-
 // Get wilayas list from communes data
 const wilayasList = Object.keys(wilayaCommunes);
 
@@ -25,22 +18,19 @@ function calculateDays(pickupDate, returnDate) {
     return Math.max(diffDays, 1); // Minimum 1 day
 }
 
-// Extract numeric price from string like "2500 دج" or "2,500 DA"
+// Extract numeric price from string
 function extractPrice(priceStr) {
     if (!priceStr) return 0;
     const num = priceStr.toString().replace(/[^\d]/g, "");
     return parseInt(num, 10) || 0;
 }
 
-function formatPrice(price) {
-    return Math.floor(price).toLocaleString("ar-DZ") + " مليون";
-}
-
 export default function BookingModal({
     product,
     category,
     onClose,
-    onBack
+    onBack,
+    dict
 }) {
     const [formData, setFormData] = useState({
         fullName: "",
@@ -91,6 +81,10 @@ export default function BookingModal({
     const rentalDays = useMemo(() => calculateDays(formData.pickupDate, formData.returnDate), [formData.pickupDate, formData.returnDate]);
     const totalPrice = dailyPrice * rentalDays;
 
+    function formatPrice(price) {
+        return Math.floor(price).toLocaleString("en-US") + " " + (dict?.booking?.currency || "DA");
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -101,7 +95,7 @@ export default function BookingModal({
             customer_phone: formData.phoneNumber,
             car_id: product?.id,
             customer_city: formData.wilaya,
-            customer_address: `${formData.pickupLocation === "agency" ? "استلام من الوكالة" : "توصيل للموقع"} - ${formData.commune}`,
+            customer_address: `${formData.pickupLocation === "agency" ? "Agency" : "Delivery"} - ${formData.commune}`,
             pickup_date: formData.pickupDate,
             return_date: formData.returnDate,
             pickup_location: formData.pickupLocation,
@@ -126,17 +120,29 @@ export default function BookingModal({
             if (result.success) {
                 setIsSuccess(true);
             } else {
-                setError(result.message || "حدث خطأ أثناء إرسال الحجز");
+                setError(result.message || (dict?.common?.error || "Error submitting booking"));
             }
         } catch (err) {
             console.error("Booking submission error:", err);
-            setError("فشل الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
+            setError(dict?.common?.network_error || "Connection failed. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     if (!product) return null;
+
+    // Generate WhatsApp message
+    const openWhatsApp = () => {
+        const template = dict?.messages?.whatsapp_template || "Hello, I want to book a {carName}. Details: Name: {name}, Phone: {phone}.";
+        const message = template
+            .replace("{carName}", product?.name || "")
+            .replace("{name}", formData.fullName)
+            .replace("{phone}", formData.phoneNumber);
+
+        const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    };
 
     // Success View
     if (isSuccess) {
@@ -147,15 +153,26 @@ export default function BookingModal({
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <FiCheckCircle className="text-green-500 text-4xl" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">تم استلام حجزك بنجاح!</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{dict?.booking?.success_title}</h2>
                     <p className="text-gray-600 mb-8">
-                        شكراً لثقتك بنا. سيقوم فريقنا بالاتصال بك قريباً لتأكيد الحجز وترتيب استلام السيارة.
+                        {dict?.booking?.success_msg}
                     </p>
+
+                    <button
+                        onClick={openWhatsApp}
+                        className="w-full py-3.5 bg-[#25D366] text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-[#128C7E] transition-all mb-3 flex items-center justify-center gap-2"
+                    >
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.7c.997.551 2.113.845 3.249.845h.001c3.181 0 5.768-2.586 5.769-5.766.001-3.181-2.586-5.767-5.768-5.767zm6.756 3.013c.241.676.697 1.121 1.054 1.48.358.358.804.814 1.48 1.055.677.241.77.303.882.355.112.052.26.121.36.17.101.05.19.091.24.12.051.029.071.042.081.051.01.011.021.031.03.051.011.02.011.041.011.061 0 0 0 .041-.01.091-.01.051-.04.22-.191.67-.15.451-.55.991-1.121 1.422-.57.431-1.35.851-2.481.851-.08 0-.16-.01-.24-.01-.89-.01-1.74-.26-2.52-.72l-.39-.23-1.89.5-.5-1.89-.23-.39c-.46-.78-.71-1.63-.72-2.52 0-.08-.01-.16-.01-.24 0-1.13.42-1.91.85-2.48.43-.57.97-.97 1.42-1.12.45-.15.62-.18.67-.19.05-.01.09-.01.09-.01.02 0 .04 0 .06.01.02.01.04.02.05.03.01.01.02.03.05.08.03.05.07.14.12.24.05.11.12.26.17.36.05.11.11.21.35.88z" />
+                        </svg>
+                        WhatsApp
+                    </button>
+
                     <button
                         onClick={onClose}
-                        className="w-full py-3.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                        className="w-full py-3.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all"
                     >
-                        متابعة التصفح
+                        {dict?.common?.close || "Close"}
                     </button>
                 </div>
             </div>
@@ -183,13 +200,13 @@ export default function BookingModal({
                         className="flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm font-medium"
                     >
                         <FiArrowRight size={18} />
-                        رجوع
+                        {dict?.booking?.back}
                     </button>
-                    <h2 className="text-lg font-bold text-white">إتمام الحجز</h2>
+                    <h2 className="text-lg font-bold text-white">{dict?.booking?.modal_title}</h2>
                     <button
                         onClick={onClose}
                         className="p-1.5 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
-                        aria-label="إغلاق"
+                        aria-label="Close"
                     >
                         <FiX size={18} className="text-white" />
                     </button>
@@ -226,9 +243,9 @@ export default function BookingModal({
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs text-gold-600 font-medium">{category?.name || "سيارة"}</p>
+                                <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
                                 <h3 className="font-bold text-slate-800 truncate">{product.name}</h3>
-                                <p className="text-gold-600 font-bold">{product.price} / يوم</p>
+                                <p className="text-gold-600 font-bold">{product.price} / {dict?.booking?.currency || "day"}</p>
                             </div>
                         </div>
 
@@ -238,7 +255,7 @@ export default function BookingModal({
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                                     <FiCalendar className="inline ml-1" />
-                                    تاريخ الاستلام
+                                    {dict?.booking?.pickup_date}
                                 </label>
                                 <input
                                     type="date"
@@ -255,7 +272,7 @@ export default function BookingModal({
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                                     <FiCalendar className="inline ml-1" />
-                                    تاريخ الإرجاع
+                                    {dict?.booking?.return_date}
                                 </label>
                                 <input
                                     type="date"
@@ -272,7 +289,7 @@ export default function BookingModal({
                         {/* Pickup Location Type */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                طريقة الاستلام
+                                {dict?.booking?.pickup_location}
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
@@ -284,7 +301,7 @@ export default function BookingModal({
                                         }`}
                                 >
                                     <FiMapPin size={22} />
-                                    <span className="text-sm font-medium">من الوكالة</span>
+                                    <span className="text-sm font-medium">{dict?.booking?.agency}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -297,7 +314,7 @@ export default function BookingModal({
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                                     </svg>
-                                    <span className="text-sm font-medium">توصيل لموقعي</span>
+                                    <span className="text-sm font-medium">{dict?.booking?.delivery}</span>
                                 </button>
                             </div>
                         </div>
@@ -307,14 +324,14 @@ export default function BookingModal({
                             {/* Full Name */}
                             <div className="col-span-1 md:col-span-2">
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    الاسم الكامل
+                                    {dict?.booking?.full_name}
                                 </label>
                                 <input
                                     type="text"
                                     name="fullName"
                                     value={formData.fullName}
                                     onChange={handleChange}
-                                    placeholder="أدخل اسمك الكامل"
+                                    placeholder={dict?.booking?.full_name}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
                                     required
                                 />
@@ -323,7 +340,7 @@ export default function BookingModal({
                             {/* Phone Number */}
                             <div className="col-span-1 md:col-span-2">
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    رقم الهاتف
+                                    {dict?.booking?.phone}
                                 </label>
                                 <input
                                     type="tel"
@@ -340,7 +357,7 @@ export default function BookingModal({
                             {/* Wilaya Dropdown */}
                             <div className="col-span-1">
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    الولاية
+                                    {dict?.booking?.wilaya}
                                 </label>
                                 <select
                                     name="wilaya"
@@ -349,7 +366,7 @@ export default function BookingModal({
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all appearance-none cursor-pointer"
                                     required
                                 >
-                                    <option value="">اختر الولاية</option>
+                                    <option value="">{dict?.booking?.wilaya}</option>
                                     {wilayasList.map((wilaya) => (
                                         <option key={wilaya} value={wilaya}>
                                             {wilaya}
@@ -361,7 +378,7 @@ export default function BookingModal({
                             {/* Commune Dropdown */}
                             <div className="col-span-1">
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    البلدية
+                                    {dict?.booking?.commune}
                                 </label>
                                 <select
                                     name="commune"
@@ -371,7 +388,7 @@ export default function BookingModal({
                                     disabled={!formData.wilaya}
                                 >
                                     <option value="">
-                                        {formData.wilaya ? "اختر البلدية" : "---"}
+                                        {formData.wilaya ? dict?.booking?.commune : "---"}
                                     </option>
                                     {formData.wilaya && wilayaCommunes[formData.wilaya]?.map((commune, index) => (
                                         <option key={index} value={commune}>
@@ -385,13 +402,13 @@ export default function BookingModal({
                         {/* Notes */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                ملاحظات إضافية (اختياري)
+                                {dict?.booking?.notes}
                             </label>
                             <textarea
                                 name="notes"
                                 value={formData.notes}
                                 onChange={handleChange}
-                                placeholder="أي ملاحظات أو طلبات خاصة..."
+                                placeholder={dict?.booking?.notes}
                                 rows={2}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all resize-none"
                             />
@@ -400,7 +417,7 @@ export default function BookingModal({
                         {/* Payment Method */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                طريقة الدفع
+                                {dict?.booking?.payment_method}
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
@@ -432,16 +449,16 @@ export default function BookingModal({
                         {formData.pickupDate && formData.returnDate && (
                             <div className="bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl p-4 border border-slate-200 animate-fadeIn">
                                 <div className="flex justify-between text-sm text-slate-600 mb-2">
-                                    <span>سعر اليوم:</span>
+                                    <span>{dict?.booking?.price_per_day}:</span>
                                     <span className="font-medium">{product.price}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-slate-600 mb-2">
-                                    <span>عدد الأيام:</span>
-                                    <span className="font-medium">{rentalDays} يوم</span>
+                                    <span>{dict?.booking?.total_days}:</span>
+                                    <span className="font-medium">{rentalDays} {dict?.cars_page?.per_day || "days"}</span>
                                 </div>
                                 <div className="border-t border-slate-200 pt-2 mt-2">
                                     <div className="flex justify-between text-lg font-bold text-slate-800">
-                                        <span>الإجمالي:</span>
+                                        <span>{dict?.booking?.total_amount}:</span>
                                         <span className="text-gold-600">{formatPrice(totalPrice)}</span>
                                     </div>
                                 </div>
@@ -459,18 +476,18 @@ export default function BookingModal({
                             {loading ? (
                                 <>
                                     <BiLoaderAlt className="animate-spin text-xl" />
-                                    جاري الإرسال...
+                                    {dict?.booking?.loading}
                                 </>
                             ) : (
                                 <>
-                                    تأكيد الحجز
+                                    {dict?.booking?.confirm}
                                     <FiArrowRight className="rotate-180" />
                                 </>
                             )}
                         </button>
                         <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
                             <FiCheckCircle size={10} className="text-green-500" />
-                            الدفع عند الاستلام - حجز آمن 100%
+                            {dict?.hero?.badge_clean || "Trusted"}
                         </p>
                     </div>
                 </form>

@@ -1,0 +1,147 @@
+{
+    "header": {
+        "home": "Accueil",
+        "cars": "Voitures",
+        "categories": "Catégories",
+        "contact": "Contact",
+        "book": "Réserver",
+        "mobile_subtitle": "Location simple et rapide",
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
+    },
+    "hero": {
+        "title": "Louez votre voiture idéale",
+        "subtitle": "Meilleurs prix et voitures récentes en Algérie",
+        "badge_clean": "confiance",
+        "badge_price": "Prix compétitifs",
+        "badge_delivery": "Livraison rapide",
+        "cta_browse": "Voir les voitures",
+        "cta_types": "Catégories",
+        "trust_customers": "+500 Clients satisfaits",
+        "trust_rating": "Note 4.5",
+        "main_title_1": "Luxury location",
+        "main_title_2": "Le choix intelligent pour vos déplacements",
+        "main_subtitle": "Prix abordables, service fiable partout en Algérie"
+    },
+    "categories": {
+        "fleet": "Notre flotte",
+        "title": "Choisissez votre type de véhicule",
+        "subtitle": "Découvrez notre gamme variée de voitures modernes et confortables pour tous vos besoins",
+        "view_cars": "Voir les véhicules"
+    },
+    "steps": {
+        "title_small": "Étapes simples",
+        "title_large": "Comment réserver chez Luxury location",
+        "step_1_title": "Choisissez une voiture",
+        "step_1_desc": "Parcourez notre flotte diversifiée et choisissez la voiture qui convient à vos besoins et votre budget.",
+        "step_2_title": "Date de prise en charge",
+        "step_2_desc": "Choisissez la date et l'heure de prise en charge et de retour selon votre emploi du temps.",
+        "step_3_title": "Complétez la réservation",
+        "step_3_desc": "Remplissez les détails simples de réservation et confirmez votre réservation facilement.",
+        "step_4_title": "Recevez votre voiture",
+        "step_4_desc": "Récupérez votre voiture à notre emplacement ou nous vous la livrons partout en Algérie."
+    },
+    "coming_soon": {
+        "title": "Services Bientôt",
+        "subtitle": "Nous travaillons à l'ajout de nouveaux services pour une meilleure expérience de location",
+        "features": [
+            "Assurance complète",
+            "Chauffeur privé",
+            "Transfert aéroport"
+        ],
+        "button": "Bientôt"
+    },
+    "footer": {
+        "description": "Nous fournissons les meilleures voitures à des prix compétitifs et un service fiable. Une flotte diversifiée pour répondre à tous vos besoins.",
+        "quick_links": "Liens rapides",
+        "contact_us": "Contactez-nous",
+        "contact_text": "Nous sommes heureux de vous entendre",
+        "rights": "Tous droits réservés",
+        "made_by": "Fait avec",
+        "in_algeria": "en Algérie"
+    },
+    "cars_page": {
+        "title": "Notre Flotte de Luxe",
+        "subtitle": "Choisissez la voiture parfaite pour votre voyage parmi notre collection premium",
+        "filter_title": "Filtrer la recherche",
+        "search_label": "Modèle de voiture",
+        "search_placeholder": "Mercedes, Audi...",
+        "category_label": "Catégorie",
+        "transmission_label": "Transmission",
+        "price_range_label": "Fourchette de prix (Jour)",
+        "price_min": "Min",
+        "price_max": "Max",
+        "all": "Tout",
+        "no_results": "Aucune voiture ne correspond à vos critères",
+        "reset_filters": "Réinitialiser les filtres",
+        "currency": "Million",
+        "per_day": "/ jour",
+        "book_now": "Réserver",
+        "transmission_auto": "Automatique",
+        "transmission_manual": "Manuelle",
+        "categories_list": {
+            "economy": "Économique",
+            "luxury": "Luxe",
+            "wedding": "Mariage",
+            "suv": "SUV",
+            "sport": "Sport"
+        }
+    },
+    "booking": {
+        "modal_title": "Finaliser la réservation",
+        "step_1_title": "Infos client",
+        "step_2_title": "Détails de réservation",
+        "full_name": "Nom complet",
+        "phone": "Numéro de téléphone",
+        "wilaya": "Wilaya",
+        "commune": "Commune",
+        "pickup_date": "Date de retrait",
+        "return_date": "Date de retour",
+        "pickup_location": "Lieu de retrait",
+        "agency": "À l'agence",
+        "delivery": "Livraison à ma position",
+        "notes": "Remarques supplémentaires (Optionnel)",
+        "payment_method": "Méthode de paiement",
+        "confirm": "Confirmer la réservation",
+        "success_title": "Réservation reçue !",
+        "success_msg": "Merci pour votre confiance. Notre équipe vous contactera bientôt pour confirmer.",
+        "back": "Retour",
+        "loading": "Envoi...",
+        "price_per_day": "Prix par jour",
+        "total_days": "Nombre de jours",
+        "total_amount": "Total",
+        "currency": "DA",
+        "available": "Disponible",
+        "unavailable": "Indisponible"
+    },
+    "admin": {
+        "dashboard": "Tableau de bord",
+        "orders": "Commandes",
+        "stats": "Statistiques",
+        "recent_orders": "Commandes récentes",
+        "total_orders": "Total commandes",
+        "total_revenue": "Revenus",
+        "new_customers": "Nouveaux clients",
+        "total_products": "Produits",
+        "top_products": "Meilleurs produits",
+        "monthly_performance": "Performance mensuelle",
+        "out_of_stock": "Rupture de stock",
+        "status": {
+            "pending": "En attente",
+            "completed": "Terminé",
+            "shipped": "En livraison",
+            "cancelled": "Annulé"
+        }
+    },
+    "specs": {
+        "transmission_auto": "Automatique",
+        "transmission_manual": "Manuelle",
+        "fuel_petrol": "Essence",
+        "fuel_diesel": "Diesel",
+        "seats": "Sièges",
+        "year": "Année"
+    },
+    "messages": {
+        "whatsapp_template": "Bonjour, je souhaite réserver une {carName}. Détails : Nom : {name}, Tél : {phone}."
+    }
+}

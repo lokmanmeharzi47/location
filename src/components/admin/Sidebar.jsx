@@ -14,21 +14,21 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 
-const menuItems = [
-  { icon: FiHome, label: "الرئيسية", href: "/admin/dashboard" },
-  { icon: FiGrid, label: "الفئات", href: "/admin/dashboard/categories" },
-  { icon: FiPackage, label: "السيارات", href: "/admin/dashboard/products" },
-  { icon: FiFileText, label: "الحجوزات", href: "/admin/dashboard/orders" },
-  { icon: FiUsers, label: "العملاء", href: "/admin/dashboard/customers" },
-  { icon: FiSettings, label: "الإعدادات", href: "/admin/dashboard/settings" },
-];
-
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({ collapsed, setCollapsed, dict, lang }) {
   const pathname = usePathname();
+
+  const menuItems = [
+    { icon: FiHome, label: dict?.admin?.dashboard || "Dashboard", href: `/${lang}/admin/dashboard` },
+    { icon: FiGrid, label: dict?.admin?.categories || "Categories", href: `/${lang}/admin/dashboard/categories` },
+    { icon: FiPackage, label: dict?.admin?.cars || "Cars", href: `/${lang}/admin/dashboard/products` },
+    { icon: FiFileText, label: dict?.admin?.orders || "Orders", href: `/${lang}/admin/dashboard/orders` },
+    { icon: FiUsers, label: dict?.admin?.customers || "Customers", href: `/${lang}/admin/dashboard/customers` },
+    { icon: FiSettings, label: dict?.admin?.settings || "Settings", href: `/${lang}/admin/dashboard/settings` },
+  ];
 
   const handleLogout = () => {
     sessionStorage.removeItem("adminAuth");
-    window.location.href = "/admin";
+    window.location.href = `/${lang}/admin`;
   };
 
   return (
@@ -84,7 +84,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             }`}
         >
           <FiLogOut size={20} />
-          {!collapsed && <span className="font-medium">تسجيل الخروج</span>}
+          {!collapsed && <span className="font-medium">{dict?.admin?.logout || "Logout"}</span>}
         </button>
       </div>
     </aside>

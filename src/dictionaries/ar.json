@@ -1,0 +1,147 @@
+{
+    "header": {
+        "home": "الرئيسية",
+        "cars": "السيارات",
+        "categories": "أنواع السيارات",
+        "contact": "تواصل معنا",
+        "book": "احجز الآن",
+        "mobile_subtitle": "تأجير السيارات بسهولة",
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
+    },
+    "hero": {
+        "title": "استأجر سيارتك المثالية",
+        "subtitle": "أفضل الأسعار وأحدث السيارات في الجزائر",
+        "badge_clean": "ثقة",
+        "badge_price": "أسعار تنافسية",
+        "badge_delivery": "توصيل سريع",
+        "cta_browse": "استعرض السيارات",
+        "cta_types": "أنواع السيارات",
+        "trust_customers": "+500 عميل راضي",
+        "trust_rating": "تقييم 4.5",
+        "main_title_1": "Luxury location",
+        "main_title_2": "الخيار الذكي لتنقلاتكم",
+        "main_subtitle": "أسعار مناسبة، خدمة موثوقة في جميع أنحاء الجزائر"
+    },
+    "categories": {
+        "fleet": "أسطول سياراتنا",
+        "title": "اختر نوع السيارة",
+        "subtitle": "اكتشف مجموعتنا المتنوعة من السيارات الحديثة والمريحة المناسبة لكل احتياجاتك",
+        "view_cars": "عرض السيارات"
+    },
+    "steps": {
+        "title_small": "خطوات بسيطة",
+        "title_large": "كيف تحجز من Luxury location",
+        "step_1_title": "اختر السيارة",
+        "step_1_desc": "تصفح أسطول سياراتنا المتنوع واختر السيارة التي تناسب احتياجاتك وميزانيتك.",
+        "step_2_title": "حدد موعد الاستلام",
+        "step_2_desc": "اختر تاريخ ووقت استلام السيارة وتاريخ الإرجاع حسب جدولك.",
+        "step_3_title": "أكمل الحجز",
+        "step_3_desc": "املأ بيانات الحجز البسيطة وأكد حجزك بكل سهولة.",
+        "step_4_title": "استلم سيارتك",
+        "step_4_desc": "استلم سيارتك من موقعنا أو نوصلها لك أينما كنت في الجزائر."
+    },
+    "coming_soon": {
+        "title": "خدمات قريباً",
+        "subtitle": "نعمل على إضافة خدمات جديدة لتجربة تأجير أفضل وأسهل",
+        "features": [
+            "تأمين شامل",
+            "سائق خاص",
+            "توصيل للمطار"
+        ],
+        "button": "قريبًا"
+    },
+    "footer": {
+        "description": "نحن نوفر أفضل السيارات بأسعار تنافسية وخدمة موثوقة. أسطول متنوع يناسب جميع احتياجاتك.",
+        "quick_links": "روابط سريعة",
+        "contact_us": "تواصل معنا",
+        "contact_text": "نسعد بتواصلك معنا في أي وقت",
+        "rights": "جميع الحقوق محفوظة",
+        "made_by": "صُنع بـ",
+        "in_algeria": "في الجزائر"
+    },
+    "cars_page": {
+        "title": "أسطولنا الفاخر",
+        "subtitle": "اختر السيارة المثالية لرحلتك من مجموعتنا المتميزة",
+        "filter_title": "تصفية البحث",
+        "search_label": "فئة السيارة",
+        "search_placeholder": "مرسيدس، أودي...",
+        "category_label": "الفئة",
+        "transmission_label": "ناقل الحركة",
+        "price_range_label": "نطاق السعر (يوم)",
+        "price_min": "من",
+        "price_max": "إلى",
+        "all": "الكل",
+        "no_results": "لا توجد سيارات تطابق معايير البحث",
+        "reset_filters": "إعادة تعيين المرشحات",
+        "currency": "مليون",
+        "per_day": "/ يوم",
+        "book_now": "احجز الآن",
+        "transmission_auto": "أوتوماتيك",
+        "transmission_manual": "يدوي",
+        "categories_list": {
+            "economy": "اقتصادية",
+            "luxury": "فاخرة",
+            "wedding": "زفاف",
+            "suv": "دفع رباعي",
+            "sport": "رياضية"
+        }
+    },
+    "booking": {
+        "modal_title": "إتمام الحجز",
+        "step_1_title": "معلومات العميل",
+        "step_2_title": "تفاصيل الحجز",
+        "full_name": "الاسم الكامل",
+        "phone": "رقم الهاتف",
+        "wilaya": "الولاية",
+        "commune": "البلدية",
+        "pickup_date": "تاريخ الاستلام",
+        "return_date": "تاريخ الإرجاع",
+        "pickup_location": "طريقة الاستلام",
+        "agency": "من الوكالة",
+        "delivery": "توصيل لموقعي",
+        "notes": "ملاحظات إضافية (اختياري)",
+        "payment_method": "طريقة الدفع",
+        "confirm": "تأكيد الحجز",
+        "success_title": "تم استلام حجزك بنجاح!",
+        "success_msg": "شكراً لثقتك بنا. سيقوم فريقنا بالاتصال بك قريباً لتأكيد الحجز.",
+        "back": "رجوع",
+        "loading": "جاري الإرسال...",
+        "price_per_day": "سعر اليوم",
+        "total_days": "عدد الأيام",
+        "total_amount": "الإجمالي",
+        "currency": "دج",
+        "available": "متوفر",
+        "unavailable": "غير متوفر"
+    },
+    "admin": {
+        "dashboard": "لوحة التحكم",
+        "orders": "الطلبات",
+        "stats": "الإحصائيات",
+        "recent_orders": "أحدث الطلبات",
+        "total_orders": "إجمالي الطلبات",
+        "total_revenue": "الإيرادات",
+        "new_customers": "العملاء الجدد",
+        "total_products": "المنتجات",
+        "top_products": "المنتجات الأكثر مبيعاً",
+        "monthly_performance": "الأداء الشهري",
+        "out_of_stock": "المنتجات النافذة",
+        "status": {
+            "pending": "قيد التنفيذ",
+            "completed": "مكتمل",
+            "shipped": "جاري الشحن",
+            "cancelled": "ملغي"
+        }
+    },
+    "specs": {
+        "transmission_auto": "أوتوماتيك",
+        "transmission_manual": "يدوي",
+        "fuel_petrol": "بنزين",
+        "fuel_diesel": "مازوت",
+        "seats": "مقاعد",
+        "year": "سنة"
+    },
+    "messages": {
+        "whatsapp_template": "مرحباً، أريد حجز سيارة {carName}. التفاصيل: الاسم: {name}، الهاتف: {phone}."
+    }
+}

@@ -1,23 +1,17 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { FiX, FiCalendar } from "react-icons/fi";
 import { BsFuelPump, BsSpeedometer2 } from "react-icons/bs";
 import { TbManualGearbox } from "react-icons/tb";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
 import ImageCarousel from "./ImageCarousel";
 
-/**
- * CarDetailsModal - Car preview modal for rental
- * 
- * First step in the two-step booking flow:
- * 1. User clicks car → CarDetailsModal (specs + price + book button)
- * 2. User clicks "احجز الآن" → BookingModal (form)
- */
 export default function CarDetailsModal({
     product,
     category,
     onClose,
-    onOrder
+    onOrder,
+    dict
 }) {
     const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -51,10 +45,25 @@ export default function CarDetailsModal({
             ? [product.image]
             : ['/images/placeholder.svg'];
 
-    // Mock car specifications (in production, these would come from the database)
+    // Mock car specifications (using dictionary mapping)
+    // We assume backend returns standard keys like "Automatic" or we map "أوتوماتيك" to dict key
+    const getTransmissionLabel = (val) => {
+        if (!val) return dict?.specs?.transmission_auto;
+        const lower = val.toLowerCase();
+        if (lower.includes('auto') || lower.includes('أوتو')) return dict?.specs?.transmission_auto;
+        return dict?.specs?.transmission_manual;
+    };
+
+    const getFuelLabel = (val) => {
+        if (!val) return dict?.specs?.fuel_petrol;
+        const lower = val.toLowerCase();
+        if (lower.includes('die') || lower.includes('مازوت')) return dict?.specs?.fuel_diesel;
+        return dict?.specs?.fuel_petrol;
+    };
+
     const carSpecs = {
-        transmission: product.transmission || "أوتوماتيك",
-        fuel: product.fuel || "بنزين",
+        transmission: getTransmissionLabel(product.transmission),
+        fuel: getFuelLabel(product.fuel),
         seats: product.seats || "5",
         year: product.year || "2024",
     };
@@ -80,7 +89,7 @@ export default function CarDetailsModal({
                 <button
                     onClick={onClose}
                     className="absolute top-4 left-4 z-20 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 group"
-                    aria-label="إغلاق"
+                    aria-label="Close"
                 >
                     <FiX size={20} className="text-slate-700 group-hover:text-slate-900 transition-colors" />
                 </button>
@@ -90,7 +99,7 @@ export default function CarDetailsModal({
                     ? 'bg-green-500 text-white'
                     : 'bg-red-500 text-white'
                     }`}>
-                    {isAvailable ? 'متوفر' : 'غير متوفر'}
+                    {isAvailable ? (dict?.booking?.available || 'Available') : (dict?.booking?.unavailable || 'Unavailable')}
                 </div>
 
                 {/* Image Carousel */}
@@ -116,7 +125,7 @@ export default function CarDetailsModal({
                         </div>
                         <div className="flex flex-col items-center text-center">
                             <MdAirlineSeatReclineNormal className="text-gold-600 text-xl mb-1" />
-                            <span className="text-xs text-slate-600">{carSpecs.seats} مقاعد</span>
+                            <span className="text-xs text-slate-600">{carSpecs.seats} {dict?.specs?.seats}</span>
                         </div>
                         <div className="flex flex-col items-center text-center">
                             <BsSpeedometer2 className="text-gold-600 text-xl mb-1" />
@@ -129,7 +138,7 @@ export default function CarDetailsModal({
                 <div className="p-6 pt-4 text-center space-y-4">
                     {/* Category Badge */}
                     <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 text-xs font-semibold rounded-full border border-slate-300">
-                        {category?.name || "سيارة"}
+                        {category?.name || dict?.cars_page?.category_label}
                     </span>
 
                     {/* Car Name */}
@@ -149,7 +158,7 @@ export default function CarDetailsModal({
                         <p className="text-3xl font-bold bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
                             {product.price}
                         </p>
-                        <p className="text-sm text-slate-500">لليوم الواحد</p>
+                        <p className="text-sm text-slate-500">{dict?.cars_page?.per_day}</p>
                     </div>
 
                     {/* Decorative Line */}
@@ -165,13 +174,13 @@ export default function CarDetailsModal({
                             }`}
                     >
                         <FiCalendar size={20} />
-                        احجز الآن
+                        {dict?.cars_page?.book_now}
                     </button>
 
                     {/* Trust Badge */}
                     <p className="text-xs text-slate-500 flex items-center justify-center gap-2">
                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                        استلام من الوكالة أو توصيل لموقعك
+                        {dict?.booking?.pickup_location}
                     </p>
                 </div>
             </div>
