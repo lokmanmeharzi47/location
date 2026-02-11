@@ -65,7 +65,7 @@ export default function DashboardPage() {
     // Fallback stats for when database is not connected
     const fallbackCards = [
         { title: "إجمالي الطلبات", value: "0", change: 0, changeType: "increase", icon: FiShoppingBag, color: "gold" },
-        { title: "الإيرادات", value: "0 د.ج", change: 0, changeType: "increase", icon: FiDollarSign, color: "green" },
+        { title: "الإيرادات", value: "0 مليون", change: 0, changeType: "increase", icon: FiDollarSign, color: "green" },
         { title: "العملاء الجدد", value: "0", change: 0, changeType: "increase", icon: FiUsers, color: "purple" },
         { title: "المنتجات", value: "0", change: 0, changeType: "increase", icon: FiPackage, color: "blush" },
         { title: "المبيعات", value: "0", change: 0, changeType: "increase", icon: FiTrendingUp, color: "green" },
@@ -73,7 +73,7 @@ export default function DashboardPage() {
 
     const statsCards = stats ? [
         { title: "إجمالي الطلبات", value: stats.totalOrders?.value || "0", change: stats.totalOrders?.change || 0, changeType: stats.totalOrders?.changeType || "increase", icon: FiShoppingBag, color: "gold" },
-        { title: "الإيرادات", value: stats.totalRevenue?.value || "0 د.ج", change: stats.totalRevenue?.change || 0, changeType: stats.totalRevenue?.changeType || "increase", icon: FiDollarSign, color: "green" },
+        { title: "الإيرادات", value: stats.totalRevenue?.value || "0 مليون", change: stats.totalRevenue?.change || 0, changeType: stats.totalRevenue?.changeType || "increase", icon: FiDollarSign, color: "green" },
         { title: "العملاء الجدد", value: "89", change: 5, changeType: "decrease", icon: FiUsers, color: "purple" },
         { title: "المنتجات", value: stats.totalProducts?.value || "0", change: stats.totalProducts?.change || 0, changeType: stats.totalProducts?.changeType || "increase", icon: FiPackage, color: "blush" },
         { title: "المبيعات", value: stats.totalSales?.value || "0", change: stats.totalSales?.change || 0, changeType: stats.totalSales?.changeType || "increase", icon: FiTrendingUp, color: "green" },

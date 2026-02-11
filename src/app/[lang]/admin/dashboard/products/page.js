@@ -396,29 +396,7 @@ export default function CarsPage() {
                                 />
                             </div>
 
-                            {/* Brand & Model */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">الماركة</label>
-                                    <input
-                                        type="text"
-                                        value={formData.brand}
-                                        onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                        placeholder="Toyota"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">الموديل</label>
-                                    <input
-                                        type="text"
-                                        value={formData.model}
-                                        onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                        placeholder="Corolla"
-                                    />
-                                </div>
-                            </div>
+
 
                             {/* Year & Category */}
                             <div className="grid grid-cols-2 gap-4">
@@ -450,13 +428,13 @@ export default function CarsPage() {
 
                             {/* Price per Day */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (د.ج) *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (مليون) *</label>
                                 <input
                                     type="text"
                                     value={formData.price_per_day}
                                     onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
                                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    placeholder="5000"
+                                    placeholder="1"
                                 />
                             </div>
 

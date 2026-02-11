@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { FiX, FiArrowRight, FiMapPin, FiCheckCircle, FiAlertCircle, FiCalendar } from "react-icons/fi";
+import { FiX, FiArrowRight, FiMapPin, FiCheckCircle, FiAlertCircle, FiCalendar, FiCreditCard, FiDollarSign } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
 import wilayaCommunes from "@/data/wilaya_communes.json";
 
@@ -50,6 +50,7 @@ export default function BookingModal({
         pickupDate: "",
         returnDate: "",
         pickupLocation: "agency", // 'agency' or 'delivery'
+        paymentMethod: "espece",
         notes: "",
     });
 
@@ -105,6 +106,7 @@ export default function BookingModal({
             total: totalPrice,
             wilaya: formData.wilaya,
             address: `${formData.pickupLocation === "agency" ? "استلام من الوكالة" : "توصيل للموقع"} - ${formData.commune}`,
+            payment_method: formData.paymentMethod,
             notes: `تاريخ الاستلام: ${formData.pickupDate} | تاريخ الإرجاع: ${formData.returnDate} | عدد الأيام: ${rentalDays} | ${formData.notes}`
         };
 
@@ -391,6 +393,37 @@ export default function BookingModal({
                                 rows={2}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all resize-none"
                             />
+                        </div>
+
+                        {/* Payment Method */}
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                طريقة الدفع
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, paymentMethod: "cheque" })}
+                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.paymentMethod === "cheque"
+                                        ? "border-gold-500 bg-gold-50 text-gold-700"
+                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                        }`}
+                                >
+                                    <FiCreditCard size={22} />
+                                    <span className="text-sm font-medium">Chèque</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, paymentMethod: "espece" })}
+                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.paymentMethod === "espece"
+                                        ? "border-gold-500 bg-gold-50 text-gold-700"
+                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                        }`}
+                                >
+                                    <FiDollarSign size={22} />
+                                    <span className="text-sm font-medium">Espèce</span>
+                                </button>
+                            </div>
                         </div>
 
                         {/* Price Summary */}

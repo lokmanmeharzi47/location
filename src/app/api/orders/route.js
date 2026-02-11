@@ -44,10 +44,11 @@ export async function GET(request) {
             email: b.customer_email,
             product: b.car_name || 'غير محدد',
             carId: b.car_id,
-            total: `${Math.floor(b.total_amount || 0).toLocaleString('ar-DZ')} د.ج`,
+            total: `${Math.floor(b.total_amount || 0).toLocaleString('ar-DZ')} مليون`,
             totalRaw: b.total_amount,
             status: b.status || 'قيد التنفيذ',
             pickupLocation: b.pickup_location || '-',
+            paymentMethod: b.payment_method || 'espece',
             returnLocation: b.return_location || '-',
             pickupDate: b.pickup_date ? new Date(b.pickup_date).toISOString().split('T')[0] : '-',
             returnDate: b.return_date ? new Date(b.return_date).toISOString().split('T')[0] : '-',
@@ -99,7 +100,8 @@ export async function POST(request) {
             discount_amount,
             total_amount,
             notes,
-            extras
+            extras,
+            payment_method
         } = body;
 
         // Validate required fields
@@ -115,8 +117,8 @@ export async function POST(request) {
              (customer_name, customer_phone, customer_email, customer_address, customer_city, 
               car_id, pickup_date, return_date, pickup_location, return_location,
               daily_rate, total_days, subtotal, extras_amount, discount_amount, total_amount,
-              notes, extras, status, created_at, updated_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, 'قيد التنفيذ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+              notes, extras, payment_method, status, created_at, updated_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, 'قيد التنفيذ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
              RETURNING id`,
             [
                 customer_name,
@@ -136,7 +138,8 @@ export async function POST(request) {
                 parseFloat(discount_amount) || 0,
                 parseFloat(total_amount) || 0,
                 notes || null,
-                extras || null
+                extras || null,
+                payment_method || 'espece'
             ]
         );
 

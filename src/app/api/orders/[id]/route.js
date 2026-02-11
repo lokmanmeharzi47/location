@@ -35,7 +35,7 @@ export async function GET(request, { params }) {
                 email: booking.customer_email,
                 product: booking.car_name || 'غير محدد',
                 carId: booking.car_id,
-                total: `${Math.floor(booking.total_amount || 0).toLocaleString('ar-DZ')} د.ج`,
+                total: `${Math.floor(booking.total_amount || 0).toLocaleString('ar-DZ')} مليون`,
                 totalRaw: booking.total_amount,
                 status: booking.status,
                 pickupLocation: booking.pickup_location || '-',

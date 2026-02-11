@@ -138,7 +138,7 @@ export default function SettingsPage() {
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">العملة</label>
                                             <select className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400">
-                                                <option>دينار جزائري (د.ج)</option>
+                                                <option>دينار جزائري (مليون)</option>
                                                 <option>دولار أمريكي ($)</option>
                                                 <option>يورو (€)</option>
                                             </select>
