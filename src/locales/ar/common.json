@@ -18,7 +18,7 @@
         "cta_browse": "استعرض السيارات",
         "cta_types": "أنواع السيارات",
         "trust_customers": "+500 عميل راضي",
-        "trust_rating": "تقييم 4.5/5",
+        "trust_rating": "تقييم 4.5",
         "main_title_1": "Luxury location",
         "main_title_2": "تأجير السيارات بكل سهولة",
         "main_subtitle": "أسعار مناسبة، خدمة موثوقة في جميع أنحاء الجزائر"
@@ -64,6 +64,7 @@
         "title": "أسطولنا الفاخر",
         "subtitle": "اختر السيارة المثالية لرحلتك من مجموعتنا المتميزة",
         "filter_title": "تصفية البحث",
+        "search_label": "فئة السيارة",
         "search_placeholder": "مرسيدس، أودي...",
         "category_label": "الفئة",
         "transmission_label": "ناقل الحركة",

@@ -18,7 +18,7 @@
         "cta_browse": "Voir les voitures",
         "cta_types": "Catégories",
         "trust_customers": "+500 Clients satisfaits",
-        "trust_rating": "Note 4.9/5",
+        "trust_rating": "Note 4.5",
         "main_title_1": "Luxury location",
         "main_title_2": "Location de voitures facile",
         "main_subtitle": "Prix abordables, service fiable partout en Algérie"
@@ -64,6 +64,7 @@
         "title": "Notre Flotte de Luxe",
         "subtitle": "Choisissez la voiture parfaite pour votre voyage parmi notre collection premium",
         "filter_title": "Filtrer la recherche",
+        "search_label": "Modèle de voiture",
         "search_placeholder": "Mercedes, Audi...",
         "category_label": "Catégorie",
         "transmission_label": "Transmission",

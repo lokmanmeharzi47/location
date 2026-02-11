@@ -18,7 +18,7 @@
         "cta_browse": "Browse Cars",
         "cta_types": "Car Types",
         "trust_customers": "+500 Satisfied Customers",
-        "trust_rating": "Rating 4.9/5",
+        "trust_rating": "Rating 4.5",
         "main_title_1": "Luxury location",
         "main_title_2": "Car Rental Made Easy",
         "main_subtitle": "affordable prices, reliable service across Algeria"
@@ -64,6 +64,7 @@
         "title": "Our Luxury Fleet",
         "subtitle": "Choose the perfect car for your trip from our premium collection",
         "filter_title": "Filter Search",
+        "search_label": "Car Name",
         "search_placeholder": "Mercedes, Audi...",
         "category_label": "Category",
         "transmission_label": "Transmission",

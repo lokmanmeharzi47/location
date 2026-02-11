@@ -90,7 +90,7 @@ export default function Header({ lang, dict }) {
               {dict?.header?.home}
             </Link>
             <Link
-              href={`/${lang}/design`}
+              href={`/${lang}/cars`}
               className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${isScrolled
                 ? 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                 : 'text-white hover:bg-white/20'
@@ -121,7 +121,7 @@ export default function Header({ lang, dict }) {
               <LanguageSwitcher lang={lang} />
             </div>
             <Link
-              href={`/${lang}/design`}
+              href={`/${lang}/cars`}
               className="mr-4 px-6 py-2 bg-gold-500 text-slate-900 rounded-full font-semibold hover:bg-gold-400 transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
               {dict?.header?.book}
@@ -188,7 +188,7 @@ export default function Header({ lang, dict }) {
                 {dict?.header?.home}
               </Link>
               <Link
-                href={`/${lang}/design`}
+                href={`/${lang}/cars`}
                 onClick={toggleMenu}
                 className="px-6 py-3 rounded-xl text-center font-medium text-slate-700 bg-white/60 hover:bg-slate-200 transition-all duration-300"
               >
@@ -210,7 +210,7 @@ export default function Header({ lang, dict }) {
                 <LanguageSwitcher lang={lang} />
               </div>
               <Link
-                href={`/${lang}/design`}
+                href={`/${lang}/cars`}
                 onClick={toggleMenu}
                 className="mt-4 px-6 py-4 rounded-full text-center font-semibold bg-gold-500 text-slate-900 hover:bg-gold-400 transition-all duration-300 shadow-lg"
               >

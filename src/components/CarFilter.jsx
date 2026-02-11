@@ -41,7 +41,7 @@ export default function CarFilter({ onFilterChange, dict, initialMinPrice = 0, i
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Search */}
                 <div className="space-y-2">
-                    <label className="text-sm text-slate-400">{dict?.cars_page?.search_placeholder || "Search by name..."}</label>
+                    <label className="text-sm text-slate-400">{dict?.cars_page?.search_label || "Car Name"}</label>
                     <div className="relative">
                         <input
                             type="text"
