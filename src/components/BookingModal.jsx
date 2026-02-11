@@ -33,7 +33,7 @@ function extractPrice(priceStr) {
 }
 
 function formatPrice(price) {
-    return Math.floor(price).toLocaleString("ar-DZ") + " دج";
+    return Math.floor(price).toLocaleString("ar-DZ") + " مليون";
 }
 
 export default function BookingModal({
@@ -98,16 +98,18 @@ export default function BookingModal({
 
         const orderData = {
             customer_name: formData.fullName,
-            phone: formData.phoneNumber,
-            product_id: product?.id,
-            product_name: product?.name,
-            color: "-",
-            size: "-",
-            total: totalPrice,
-            wilaya: formData.wilaya,
-            address: `${formData.pickupLocation === "agency" ? "استلام من الوكالة" : "توصيل للموقع"} - ${formData.commune}`,
+            customer_phone: formData.phoneNumber,
+            car_id: product?.id,
+            customer_city: formData.wilaya,
+            customer_address: `${formData.pickupLocation === "agency" ? "استلام من الوكالة" : "توصيل للموقع"} - ${formData.commune}`,
+            pickup_date: formData.pickupDate,
+            return_date: formData.returnDate,
+            pickup_location: formData.pickupLocation,
             payment_method: formData.paymentMethod,
-            notes: `تاريخ الاستلام: ${formData.pickupDate} | تاريخ الإرجاع: ${formData.returnDate} | عدد الأيام: ${rentalDays} | ${formData.notes}`
+            daily_rate: dailyPrice,
+            total_days: rentalDays,
+            total_amount: totalPrice,
+            notes: formData.notes
         };
 
         try {

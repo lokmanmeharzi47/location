@@ -70,7 +70,6 @@ export default function OrdersPage() {
         { key: "customer", label: "العميل" },
         { key: "phone", label: "الهاتف" },
         { key: "product", label: "المنتج" },
-        { key: "wilaya", label: "الولاية" },
         { key: "total", label: "المجموع" },
         {
             key: "status",
@@ -224,31 +223,43 @@ export default function OrdersPage() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">الهاتف</p>
-                                    <p className="font-medium text-gray-800">{selectedOrder.phone}</p>
+                                    <p className="font-medium text-gray-800" dir="ltr">{selectedOrder.phone}</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">المنتج</p>
+                                    <p className="text-sm text-gray-500">السيارة</p>
                                     <p className="font-medium text-gray-800">{selectedOrder.product}</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">اللون</p>
-                                    <p className="font-medium text-gray-800">{selectedOrder.color}</p>
+                                    <p className="text-sm text-gray-500">طريقة الدفع</p>
+                                    <p className="font-medium text-gray-800">
+                                        {selectedOrder.paymentMethod === 'cheque' ? 'شيك' : 'نقداً'}
+                                    </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">المقاس</p>
-                                    <p className="font-medium text-gray-800">{selectedOrder.size}</p>
+                                    <p className="text-sm text-gray-500">تاريخ الاستلام</p>
+                                    <p className="font-medium text-gray-800">{selectedOrder.pickupDate}</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">الولاية</p>
-                                    <p className="font-medium text-gray-800">{selectedOrder.wilaya}</p>
+                                    <p className="text-sm text-gray-500">تاريخ الإرجاع</p>
+                                    <p className="font-medium text-gray-800">{selectedOrder.returnDate}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">موقع الاستلام</p>
+                                    <p className="font-medium text-gray-800">
+                                        {selectedOrder.pickupLocation === 'agency' ? 'من الوكالة' : selectedOrder.pickupLocation === 'delivery' ? 'توصيل' : selectedOrder.pickupLocation}
+                                    </p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">المجموع</p>
                                     <p className="font-bold text-gold-600 text-lg">{selectedOrder.total}</p>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">التاريخ</p>
-                                    <p className="font-medium text-gray-800">{selectedOrder.date}</p>
+                                <div className="col-span-2">
+                                    <p className="text-sm text-gray-500">العنوان/الولاية</p>
+                                    <p className="font-medium text-gray-800">{selectedOrder.city} - {selectedOrder.address}</p>
+                                </div>
+                                <div className="col-span-2">
+                                    <p className="text-sm text-gray-500">ملاحظات</p>
+                                    <p className="font-medium text-gray-800 text-sm whitespace-pre-wrap">{selectedOrder.notes || "لا توجد ملاحظات"}</p>
                                 </div>
                             </div>
 
@@ -262,8 +273,8 @@ export default function OrdersPage() {
                                             onClick={() => updateOrderStatus(selectedOrder.dbId, status)}
                                             disabled={updating || selectedOrder.status === status}
                                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${selectedOrder.status === status
-                                                    ? "bg-gold-500 text-white"
-                                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                                ? "bg-gold-500 text-white"
+                                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                                 }`}
                                         >
                                             {status}

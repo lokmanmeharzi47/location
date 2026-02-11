@@ -139,14 +139,12 @@ export async function PUT(request, { params }) {
         // Update car
         await client.query(
             `UPDATE cars 
-             SET name = $1, brand = $2, model = $3, year = $4, category_id = $5, 
-                 price_per_day = $6, fuel_type = $7, transmission = $8, seats = $9,
-                 status = $10, description = $11, updated_at = CURRENT_TIMESTAMP
-             WHERE id = $12`,
+             SET name = $1, year = $2, category_id = $3, 
+                 price_per_day = $4, fuel_type = $5, transmission = $6, seats = $7,
+                 status = $8, description = $9, updated_at = CURRENT_TIMESTAMP
+             WHERE id = $10`,
             [
                 name,
-                brand,
-                model,
                 year,
                 category_id ? parseInt(category_id) : null,
                 parseFloat(price),

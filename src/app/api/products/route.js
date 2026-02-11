@@ -196,15 +196,13 @@ export async function POST(request) {
         const carStatus = stock > 0 ? 'disponible' : 'loué';
 
         const insertQuery = `
-            INSERT INTO cars (name, brand, model, year, category_id, price_per_day, fuel_type, transmission, seats, status, description, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            INSERT INTO cars (name, year, category_id, price_per_day, fuel_type, transmission, seats, status, description, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             RETURNING id
         `;
 
         const result = await client.query(insertQuery, [
             name.trim(),
-            brand,
-            model,
             year,
             parseInt(category_id),
             parsedPrice,
