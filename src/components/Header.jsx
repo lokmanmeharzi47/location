@@ -63,7 +63,7 @@ export default function Header({ lang, dict }) {
       <div className="flex items-center gap-3">
         <Image
           src="/images/logo.jpg"
-          alt="CarRent"
+          alt="Luxury location"
           width={80}
           height={80}
           className="rounded-full w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 border-gold-400 shadow-md"
@@ -71,11 +71,7 @@ export default function Header({ lang, dict }) {
         />
         <span className={`text-lg font-bold transition-colors duration-300 ${isScrolled ? 'text-slate-800' : 'text-white'
           }`}>
-          {dict?.header?.rights || 'CarRent'}
-        </span>
-        <span className={`text-xs transition-colors duration-300 ${isScrolled ? 'text-gold-600' : 'text-gold-300'
-          }`}>
-          {dict?.header?.subtitle || 'Car Rental'}
+          {dict?.header?.rights || 'Luxury location'}
         </span>
       </div>
 
@@ -172,13 +168,13 @@ export default function Header({ lang, dict }) {
             <div className="flex flex-col items-center mb-8">
               <Image
                 src="/images/logo.jpg"
-                alt="CarRent"
+                alt="Luxury location"
                 width={100}
                 height={100}
                 className="rounded-full w-20 h-20 border-3 border-gold-400 shadow-lg mb-3"
                 priority
               />
-              <span className="text-xl font-bold text-slate-800">CarRent</span>
+              <span className="text-xl font-bold text-slate-800">Luxury location</span>
               <span className="text-sm text-gold-600">{dict?.header?.mobile_subtitle}</span>
             </div>
 
@@ -225,7 +221,7 @@ export default function Header({ lang, dict }) {
             {/* Footer in Mobile Menu */}
             <div className="mt-auto pt-6 border-t border-slate-300">
               <p className="text-center text-sm text-slate-600">
-                © {new Date().getFullYear()} CarRent
+                © {new Date().getFullYear()} Luxury location
               </p>
             </div>
           </div>

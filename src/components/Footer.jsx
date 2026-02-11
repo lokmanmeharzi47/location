@@ -39,18 +39,18 @@ export default function Footer({ dict, lang }) {
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
                     {/* Brand Section */}
-                    <div className="text-center md:text-right">
+                    <div className="text-center md:text-start">
                         <div className="flex flex-col items-center md:items-start gap-4">
                             <Image
                                 src="/images/logo.jpg"
-                                alt="CarRent"
+                                alt="Luxury location"
                                 width={100}
                                 height={100}
                                 className="rounded-full w-20 h-20 border-3 border-gold-400 shadow-lg"
                                 priority
                             />
                             <div>
-                                <h3 className="text-xl font-bold text-white">{dict?.header?.rights || 'CarRent'}</h3>
+                                <h3 className="text-xl font-bold text-white">{dict?.header?.rights || 'Luxury location'}</h3>
                                 <p className="text-gold-400 text-sm">{dict?.header?.subtitle}</p>
                             </div>
                         </div>
@@ -91,11 +91,11 @@ export default function Footer({ dict, lang }) {
                     </div>
 
                     {/* Contact & Social */}
-                    <div className="text-center md:text-left">
+                    <div className="text-center md:text-end">
                         <h4 className="text-lg font-bold text-white mb-6">{dict?.footer?.contact_us}</h4>
-                        <div className="flex justify-center md:justify-start gap-4 mb-6">
+                        <div className="flex justify-center md:justify-end gap-4 mb-6">
                             <Link
-                                href="https://www.instagram.com/carrent_dz/"
+                                href="https://www.instagram.com/luxury_location_de_voiture/"
                                 aria-label="Instagram"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -104,16 +104,7 @@ export default function Footer({ dict, lang }) {
                                 <FaInstagram className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="mailto:meharzibr@gmail.com"
-                                aria-label="Email"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full bg-slate-700 shadow-md flex items-center justify-center hover:shadow-lg hover:-translate-y-1 hover:bg-gold-500 transition-all duration-300 group"
-                            >
-                                <FaEnvelope className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
-                            </Link>
-                            <Link
-                                href="tel:0791084298"
+                                href="tel:0559 30 96 80"
                                 aria-label="Phone"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -122,7 +113,7 @@ export default function Footer({ dict, lang }) {
                                 <FaPhone className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="https://wa.me/213540207506"
+                                href="https://wa.me/213559309680"
                                 aria-label="WhatsApp"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -142,7 +133,7 @@ export default function Footer({ dict, lang }) {
 
                 {/* Bottom Footer */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-sm text-slate-400 text-center md:text-right">
+                    <p className="text-sm text-slate-400 text-center md:text-start">
                         © {new Date().getFullYear()} {dict?.header?.rights}. {dict?.footer?.rights}
                     </p>
                     <div className="flex items-center gap-2">

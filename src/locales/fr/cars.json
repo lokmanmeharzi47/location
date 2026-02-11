@@ -1,0 +1,19 @@
+{
+    "title": "Notre Flotte de Luxe",
+    "subtitle": "Choisissez la voiture parfaite pour votre voyage parmi notre collection premium",
+    "filter_title": "Filtrer la recherche",
+    "search_placeholder": "Mercedes, Audi...",
+    "category_label": "Catégorie",
+    "transmission_label": "Boîte de vitesse",
+    "price_range_label": "Fourchette de prix (Jour)",
+    "price_min": "Min",
+    "price_max": "Max",
+    "all": "Tout",
+    "no_results": "Aucune voiture ne correspond à vos critères",
+    "reset_filters": "Réinitialiser les filtres",
+    "currency": "Million",
+    "per_day": "/ jour",
+    "book_now": "Réserver",
+    "transmission_auto": "Automatique",
+    "transmission_manual": "Manuelle"
+}

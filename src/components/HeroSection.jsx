@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
-export default function HeroSection({ dict }) {
+export default function HeroSection({ dict, lang }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function HeroSection({ dict }) {
 
         {/* Main Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-          <span className="text-gold-400">{dict?.hero?.main_title_1 || 'CarRent'}</span>
+          <span className="text-gold-400">{dict?.hero?.main_title_1 || 'Luxury location'}</span>
           <br />
           <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium">
             {dict?.hero?.main_title_2}
@@ -49,12 +50,12 @@ export default function HeroSection({ dict }) {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a
-            href="/design"
+          <Link
+            href={`/${lang}/cars`}
             className="px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-900 font-bold text-lg rounded-full shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:-translate-y-1 transition-all duration-300"
           >
             {dict?.hero?.cta_browse}
-          </a>
+          </Link>
           <a
             href="#car-categories"
             className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold text-lg rounded-full border border-white/30 hover:bg-white/20 hover:-translate-y-1 transition-all duration-300"

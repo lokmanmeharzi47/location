@@ -7,22 +7,22 @@
         "book": "Book Now",
         "subtitle": "Car Rental",
         "mobile_subtitle": "Easy Car Rental",
-        "rights": "CarRent",
-        "copyright": "© CarRent"
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
     },
     "hero": {
         "title": "Rent Your Ideal Car",
         "subtitle": "Best prices and modern cars in Algeria",
-        "badge_clean": "Clean Cars",
+        "badge_clean": "Trust",
         "badge_price": "Competitive Prices",
         "badge_delivery": "Fast Delivery",
         "cta_browse": "Browse Cars",
         "cta_types": "Car Types",
         "trust_customers": "+500 Satisfied Customers",
         "trust_rating": "Rating 4.9/5",
-        "main_title_1": "CarRent",
+        "main_title_1": "Luxury location",
         "main_title_2": "Car Rental Made Easy",
-        "main_subtitle": "Clean cars, affordable prices, reliable service across Algeria"
+        "main_subtitle": "affordable prices, reliable service across Algeria"
     },
     "categories": {
         "fleet": "Our Fleet",
@@ -32,7 +32,7 @@
     },
     "steps": {
         "title_small": "Simple Steps",
-        "title_large": "How to Book with CarRent",
+        "title_large": "How to Book with Luxury location",
         "step_1_title": "Choose Car",
         "step_1_desc": "Browse our diverse fleet and choose the car that suits your needs and budget.",
         "step_2_title": "Pick-up Date",
@@ -60,5 +60,31 @@
         "rights": "All rights reserved",
         "made_by": "Made with",
         "in_algeria": "in Algeria"
+    },
+    "cars_page": {
+        "title": "Our Luxury Fleet",
+        "subtitle": "Choose the perfect car for your trip from our premium collection",
+        "filter_title": "Filter Search",
+        "search_placeholder": "Mercedes, Audi...",
+        "category_label": "Category",
+        "transmission_label": "Transmission",
+        "price_range_label": "Price Range (Day)",
+        "price_min": "Min",
+        "price_max": "Max",
+        "all": "All",
+        "no_results": "No cars match your search criteria",
+        "reset_filters": "Reset Filters",
+        "currency": "Million",
+        "per_day": "/ day",
+        "book_now": "Book Now",
+        "transmission_auto": "Automatic",
+        "transmission_manual": "Manual",
+        "categories_list": {
+            "economy": "Economy",
+            "luxury": "Luxury",
+            "wedding": "Wedding",
+            "suv": "SUV",
+            "sport": "Sport"
+        }
     }
 }

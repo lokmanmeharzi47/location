@@ -7,22 +7,22 @@
         "book": "Réserver",
         "subtitle": "Location de voitures",
         "mobile_subtitle": "Location simple et rapide",
-        "rights": "CarRent",
-        "copyright": "© CarRent"
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
     },
     "hero": {
         "title": "Louez votre voiture idéale",
         "subtitle": "Meilleurs prix et voitures récentes en Algérie",
-        "badge_clean": "Voitures propres",
+        "badge_clean": "confiance",
         "badge_price": "Prix compétitifs",
         "badge_delivery": "Livraison rapide",
         "cta_browse": "Voir les voitures",
         "cta_types": "Catégories",
         "trust_customers": "+500 Clients satisfaits",
         "trust_rating": "Note 4.9/5",
-        "main_title_1": "CarRent",
+        "main_title_1": "Luxury location",
         "main_title_2": "Location de voitures facile",
-        "main_subtitle": "Voitures propres, prix abordables, service fiable partout en Algérie"
+        "main_subtitle": "Prix abordables, service fiable partout en Algérie"
     },
     "categories": {
         "fleet": "Notre flotte",
@@ -32,7 +32,7 @@
     },
     "steps": {
         "title_small": "Étapes simples",
-        "title_large": "Comment réserver chez CarRent",
+        "title_large": "Comment réserver chez Luxury location",
         "step_1_title": "Choisissez une voiture",
         "step_1_desc": "Parcourez notre flotte diversifiée et choisissez la voiture qui convient à vos besoins et votre budget.",
         "step_2_title": "Date de prise en charge",
@@ -60,5 +60,31 @@
         "rights": "Tous droits réservés",
         "made_by": "Fait avec",
         "in_algeria": "en Algérie"
+    },
+    "cars_page": {
+        "title": "Notre Flotte de Luxe",
+        "subtitle": "Choisissez la voiture parfaite pour votre voyage parmi notre collection premium",
+        "filter_title": "Filtrer la recherche",
+        "search_placeholder": "Mercedes, Audi...",
+        "category_label": "Catégorie",
+        "transmission_label": "Transmission",
+        "price_range_label": "Fourchette de prix (Jour)",
+        "price_min": "Min",
+        "price_max": "Max",
+        "all": "Tout",
+        "no_results": "Aucune voiture ne correspond à vos critères",
+        "reset_filters": "Réinitialiser les filtres",
+        "currency": "Million",
+        "per_day": "/ jour",
+        "book_now": "Réserver",
+        "transmission_auto": "Automatique",
+        "transmission_manual": "Manuelle",
+        "categories_list": {
+            "economy": "Économique",
+            "luxury": "Luxe",
+            "wedding": "Mariage",
+            "suv": "SUV",
+            "sport": "Sport"
+        }
     }
 }

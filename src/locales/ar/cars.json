@@ -1,0 +1,19 @@
+{
+    "title": "أسطولنا الفاخر",
+    "subtitle": "اختر السيارة المثالية لرحلتك من مجموعتنا المتميزة",
+    "filter_title": "تصفية البحث",
+    "search_placeholder": "برسيدس، أودي...",
+    "category_label": "الفئة",
+    "transmission_label": "ناقل الحركة",
+    "price_range_label": "نطاق السعر (يوم)",
+    "price_min": "من",
+    "price_max": "إلى",
+    "all": "الكل",
+    "no_results": "لا توجد سيارات تطابق معايير البحث",
+    "reset_filters": "إعادة تعيين المرشحات",
+    "currency": "مليون",
+    "per_day": "/ يوم",
+    "book_now": "احجز الآن",
+    "transmission_auto": "أوتوماتيك",
+    "transmission_manual": "يدوي"
+}

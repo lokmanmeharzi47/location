@@ -51,13 +51,13 @@ export default async function CarCategories({ dict }) {
                     </p>
                 </div>
 
-                {/* Categories Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                {/* Categories Grid - Centered */}
+                <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
                     {categories.map((category, index) => (
                         <Link
                             key={category.id || index}
                             href={category.href || `/design/${category.slug}`}
-                            className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300"
+                            className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-sm"
                         >
                             {/* Image Container */}
                             <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">

@@ -38,7 +38,7 @@ export default async function Home({ params }) {
 
     return (
         <div className="bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50">
-            <HeroSection dict={dict} />
+            <HeroSection dict={dict} lang={lang} />
             <Suspense fallback={<CategoriesLoading />}>
                 <CarCategories dict={dict} />
             </Suspense>

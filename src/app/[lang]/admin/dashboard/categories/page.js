@@ -329,7 +329,7 @@ export default function CategoriesPage() {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-cream-50/50"
-                                    placeholder="مثال: فساتين سهرة"
+                                    placeholder="مثال:اسم الفئة"
                                 />
                             </div>
 

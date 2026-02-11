@@ -41,7 +41,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         {collapsed ? (
           <span className="text-2xl font-bold text-gold-400">C</span>
         ) : (
-          <h1 className="text-xl font-bold text-gold-400">CarRent Admin</h1>
+          <h1 className="text-xl font-bold text-gold-400">Luxury location Admin</h1>
         )}
       </div>
 

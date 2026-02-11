@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-// GET - Fetch dashboard statistics for CarRent
+// GET - Fetch dashboard statistics for Luxury location
 export async function GET() {
     try {
         /* =========================

@@ -1,0 +1,19 @@
+{
+    "title": "Our Luxury Fleet",
+    "subtitle": "Choose the perfect car for your trip from our premium collection",
+    "filter_title": "Filter Search",
+    "search_placeholder": "Mercedes, Audi...",
+    "category_label": "Category",
+    "transmission_label": "Transmission",
+    "price_range_label": "Price Range (Day)",
+    "price_min": "Min",
+    "price_max": "Max",
+    "all": "All",
+    "no_results": "No cars match your search criteria",
+    "reset_filters": "Reset Filters",
+    "currency": "Million",
+    "per_day": "/ day",
+    "book_now": "Book Now",
+    "transmission_auto": "Automatic",
+    "transmission_manual": "Manual"
+}

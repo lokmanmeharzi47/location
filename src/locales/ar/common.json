@@ -7,22 +7,22 @@
         "book": "احجز الآن",
         "subtitle": "تأجير السيارات",
         "mobile_subtitle": "تأجير السيارات بسهولة",
-        "rights": "CarRent",
-        "copyright": "© CarRent"
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
     },
     "hero": {
         "title": "استأجر سيارتك المثالية",
         "subtitle": "أفضل الأسعار وأحدث السيارات في الجزائر",
-        "badge_clean": "سيارات نظيفة",
+        "badge_clean": "ثقة",
         "badge_price": "أسعار تنافسية",
         "badge_delivery": "توصيل سريع",
         "cta_browse": "استعرض السيارات",
         "cta_types": "أنواع السيارات",
         "trust_customers": "+500 عميل راضي",
-        "trust_rating": "تقييم 4.9/5",
-        "main_title_1": "CarRent",
+        "trust_rating": "تقييم 4.5/5",
+        "main_title_1": "Luxury location",
         "main_title_2": "تأجير السيارات بكل سهولة",
-        "main_subtitle": "سيارات نظيفة، أسعار مناسبة، خدمة موثوقة في جميع أنحاء الجزائر"
+        "main_subtitle": "أسعار مناسبة، خدمة موثوقة في جميع أنحاء الجزائر"
     },
     "categories": {
         "fleet": "أسطول سياراتنا",
@@ -32,7 +32,7 @@
     },
     "steps": {
         "title_small": "خطوات بسيطة",
-        "title_large": "كيف تحجز من CarRent",
+        "title_large": "كيف تحجز من Luxury location",
         "step_1_title": "اختر السيارة",
         "step_1_desc": "تصفح أسطول سياراتنا المتنوع واختر السيارة التي تناسب احتياجاتك وميزانيتك.",
         "step_2_title": "حدد موعد الاستلام",
@@ -60,5 +60,31 @@
         "rights": "جميع الحقوق محفوظة",
         "made_by": "صُنع بـ",
         "in_algeria": "في الجزائر"
+    },
+    "cars_page": {
+        "title": "أسطولنا الفاخر",
+        "subtitle": "اختر السيارة المثالية لرحلتك من مجموعتنا المتميزة",
+        "filter_title": "تصفية البحث",
+        "search_placeholder": "مرسيدس، أودي...",
+        "category_label": "الفئة",
+        "transmission_label": "ناقل الحركة",
+        "price_range_label": "نطاق السعر (يوم)",
+        "price_min": "من",
+        "price_max": "إلى",
+        "all": "الكل",
+        "no_results": "لا توجد سيارات تطابق معايير البحث",
+        "reset_filters": "إعادة تعيين المرشحات",
+        "currency": "مليون",
+        "per_day": "/ يوم",
+        "book_now": "احجز الآن",
+        "transmission_auto": "أوتوماتيك",
+        "transmission_manual": "يدوي",
+        "categories_list": {
+            "economy": "اقتصادية",
+            "luxury": "فاخرة",
+            "wedding": "زفاف",
+            "suv": "دفع رباعي",
+            "sport": "رياضية"
+        }
     }
 }
