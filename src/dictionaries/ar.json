@@ -131,7 +131,8 @@
             "completed": "مكتمل",
             "shipped": "جاري الشحن",
             "cancelled": "ملغي"
-        }
+        },
+        "status_label": "الحالة"
     },
     "specs": {
         "transmission_auto": "أوتوماتيك",

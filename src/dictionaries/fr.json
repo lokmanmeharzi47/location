@@ -131,7 +131,8 @@
             "completed": "Terminé",
             "shipped": "En livraison",
             "cancelled": "Annulé"
-        }
+        },
+        "status_label": "Statut"
     },
     "specs": {
         "transmission_auto": "Automatique",

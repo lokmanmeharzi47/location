@@ -1,11 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/admin/Sidebar";
-import TopHeader from "@/components/admin/TopHeader";
 
 export default function DashboardLayoutClient({ children, dict, lang }) {
-    const [collapsed, setCollapsed] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -36,26 +33,6 @@ export default function DashboardLayoutClient({ children, dict, lang }) {
         return null;
     }
 
-    return (
-        <div className="min-h-screen bg-gray-50" dir="rtl">
-            {/* Sidebar */}
-            <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} dict={dict} lang={lang} />
-
-            {/* Top Header */}
-            <TopHeader
-                collapsed={collapsed}
-                onMenuClick={() => setCollapsed(!collapsed)}
-            />
-
-            {/* Main Content */}
-            <main
-                className={`transition-all duration-300 pt-20 min-h-screen ${collapsed ? "mr-20" : "mr-64"
-                    }`}
-            >
-                <div className="p-6">
-                    {children}
-                </div>
-            </main>
-        </div>
-    );
+    // Return content directly (Layout is handled by AdminClientLayout)
+    return <>{children}</>;
 }

@@ -13,16 +13,13 @@ export default function TopHeader({ collapsed, onMenuClick }) {
     ];
 
     return (
-        <header
-            className={`fixed top-0 left-0 h-20 bg-white shadow-sm z-40 transition-all duration-300 ${collapsed ? "right-20" : "right-64"
-                }`}
-        >
+        <header className="h-20 bg-white shadow-sm border-b border-gray-100 z-20 shrink-0">
             <div className="h-full flex items-center justify-between px-6">
                 {/* Search Bar */}
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onMenuClick}
-                        className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+                        className="lg:hidden p-2 hover:bg-gray-100 rounded-lg text-gray-500"
                     >
                         <FiMenu size={24} />
                     </button>
@@ -52,7 +49,7 @@ export default function TopHeader({ collapsed, onMenuClick }) {
                         </button>
 
                         {showNotifications && (
-                            <div className="absolute left-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fadeIn">
+                            <div className="absolute left-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fadeIn z-50">
                                 <div className="p-4 border-b border-gray-100">
                                     <h3 className="font-bold text-gray-800">الإشعارات</h3>
                                 </div>
@@ -96,7 +93,7 @@ export default function TopHeader({ collapsed, onMenuClick }) {
                         </button>
 
                         {showProfile && (
-                            <div className="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fadeIn">
+                            <div className="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fadeIn z-50">
                                 <div className="p-4 border-b border-gray-100 bg-gradient-to-br from-gold-50 to-cream-50">
                                     <p className="font-bold text-gray-800">المسؤول</p>
                                     <p className="text-sm text-gray-500">admin@carrent.dz</p>

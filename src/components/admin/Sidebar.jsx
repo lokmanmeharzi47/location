@@ -33,59 +33,76 @@ export default function Sidebar({ collapsed, setCollapsed, dict, lang }) {
 
   return (
     <aside
-      className={`fixed right-0 top-0 h-screen bg-gradient-to-b from-brown-dark to-brown-medium text-white transition-all duration-300 z-50 ${collapsed ? "w-20" : "w-64"
-        }`}
+      className={`relative h-full flex-shrink-0 bg-slate-900 border-l border-white/5 text-white transition-all duration-300 z-30 ${collapsed ? "w-20" : "w-72"
+        } shadow-2xl flex flex-col`}
     >
-      {/* Logo Section */}
-      <div className="h-20 flex items-center justify-center border-b border-white/10">
-        {collapsed ? (
-          <span className="text-2xl font-bold text-gold-400">C</span>
-        ) : (
-          <h1 className="text-xl font-bold text-gold-400">Luxury location Admin</h1>
-        )}
-      </div>
+      {/* Background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 opacity-95 -z-10"></div>
 
-      {/* Toggle Button */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -left-3 top-24 bg-gold-500 text-white p-1.5 rounded-full shadow-lg hover:bg-gold-600 transition-colors"
-      >
-        {collapsed ? <FiChevronLeft size={16} /> : <FiChevronRight size={16} />}
-      </button>
+      {/* Content Container */}
+      <div className="relative z-10 h-full flex flex-col">
+        {/* Logo Section */}
+        <div className="h-20 flex items-center justify-center border-b border-white/5 mx-4 shrink-0">
+          {collapsed ? (
+            <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg shadow-gold-500/20">
+              <span className="text-xl font-bold text-white">L</span>
+            </div>
+          ) : (
+            <div className="text-center">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">LUXURY</h1>
+              <p className="text-[10px] text-gold-400 font-medium tracking-[0.2em] mt-0.5">RENTAL ADMIN</p>
+            </div>
+          )}
+        </div>
 
-      {/* Navigation Menu */}
-      <nav className="mt-8 px-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                    ? "bg-gold-500 text-white shadow-lg"
-                    : "hover:bg-white/10 text-white/80 hover:text-white"
-                    } ${collapsed ? "justify-center" : "justify-start"}`}
-                >
-                  <item.icon size={20} />
-                  {!collapsed && <span className="font-medium">{item.label}</span>}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      {/* Logout Button */}
-      <div className="absolute bottom-8 left-0 right-0 px-4">
+        {/* Toggle Button */}
         <button
-          onClick={handleLogout}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-all duration-200 ${collapsed ? "justify-center" : "justify-start"
-            }`}
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -left-3 top-24 bg-gold-500 text-white p-1 rounded-full shadow-lg hover:bg-gold-400 transition-all hover:scale-110 border-2 border-slate-900 z-50"
         >
-          <FiLogOut size={20} />
-          {!collapsed && <span className="font-medium">{dict?.admin?.logout || "Logout"}</span>}
+          {collapsed ? <FiChevronLeft size={12} /> : <FiChevronRight size={12} />}
         </button>
+
+        {/* Navigation Menu */}
+        <nav className="mt-6 px-3 flex-1 overflow-y-auto custom-scrollbar">
+          <ul className="space-y-1">
+            {menuItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group ${isActive
+                      ? "bg-gradient-to-r from-gold-500/20 to-transparent border-r-2 border-gold-500 text-gold-400"
+                      : "hover:bg-white/5 text-slate-400 hover:text-white"
+                      } ${collapsed ? "justify-center" : "justify-start"}`}
+                    title={collapsed ? item.label : ""}
+                  >
+                    <item.icon
+                      size={20}
+                      className={`transition-colors duration-300 flex-shrink-0 ${isActive ? "text-gold-400" : "group-hover:text-gold-400"
+                        }`}
+                    />
+                    {!collapsed && <span className="font-medium text-sm whitespace-nowrap">{item.label}</span>}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Logout Button */}
+        <div className="p-4 border-t border-white/5 shrink-0">
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-300 ${collapsed ? "justify-center" : "justify-start"
+              }`}
+            title={collapsed ? (dict?.admin?.logout || "تسجيل الخروج") : ""}
+          >
+            <FiLogOut size={20} className="flex-shrink-0" />
+            {!collapsed && <span className="font-medium text-sm whitespace-nowrap">{dict?.admin?.logout || "تسجيل الخروج"}</span>}
+          </button>
+        </div>
       </div>
     </aside>
   );
