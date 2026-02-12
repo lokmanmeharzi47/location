@@ -94,6 +94,8 @@ export default function BookingModal({
             customer_name: formData.fullName,
             customer_phone: formData.phoneNumber,
             car_id: product?.id,
+            car_name: product?.name, // Added for Google Sheets
+            car_image: product?.image, // Added for Google Sheets
             customer_city: formData.wilaya,
             customer_address: `${formData.pickupLocation === "agency" ? "Agency" : "Delivery"} - ${formData.commune}`,
             pickup_date: formData.pickupDate,
@@ -118,7 +120,30 @@ export default function BookingModal({
             const result = await response.json();
 
             if (result.success) {
+                // Determine SHEET_URL
+                const SHEET_URL = "https://script.google.com/macros/s/AKfycbxJ_o7jYCBhkkovfpOVex7MgR-BEtPRUJncwlvM1izgRNdwjc4ajYeWw7HrMu-YrKZZ/exec";
+
+                // Send to Google Sheets (fire and forget)
+                fetch(SHEET_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                    body: JSON.stringify(orderData),
+                }).catch(err => console.error("Sheet Error:", err));
+
                 setIsSuccess(true);
+
+                // Open WhatsApp automatically
+                const template = dict?.messages?.whatsapp_template || "Hello, I want to book a {carName}. Details: Name: {name}, Phone: {phone}.";
+                const message = template
+                    .replace("{carName}", product?.name || "")
+                    .replace("{name}", formData.fullName)
+                    .replace("{phone}", formData.phoneNumber);
+
+                const url = `https://wa.me/213779132534?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
             } else {
                 setError(result.message || (dict?.common?.error || "Error submitting booking"));
             }
@@ -132,17 +157,7 @@ export default function BookingModal({
 
     if (!product) return null;
 
-    // Generate WhatsApp message
-    const openWhatsApp = () => {
-        const template = dict?.messages?.whatsapp_template || "Hello, I want to book a {carName}. Details: Name: {name}, Phone: {phone}.";
-        const message = template
-            .replace("{carName}", product?.name || "")
-            .replace("{name}", formData.fullName)
-            .replace("{phone}", formData.phoneNumber);
 
-        const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
-    };
 
     // Success View
     if (isSuccess) {
@@ -158,15 +173,7 @@ export default function BookingModal({
                         {dict?.booking?.success_msg}
                     </p>
 
-                    <button
-                        onClick={openWhatsApp}
-                        className="w-full py-3.5 bg-[#25D366] text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-[#128C7E] transition-all mb-3 flex items-center justify-center gap-2"
-                    >
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.7c.997.551 2.113.845 3.249.845h.001c3.181 0 5.768-2.586 5.769-5.766.001-3.181-2.586-5.767-5.768-5.767zm6.756 3.013c.241.676.697 1.121 1.054 1.48.358.358.804.814 1.48 1.055.677.241.77.303.882.355.112.052.26.121.36.17.101.05.19.091.24.12.051.029.071.042.081.051.01.011.021.031.03.051.011.02.011.041.011.061 0 0 0 .041-.01.091-.01.051-.04.22-.191.67-.15.451-.55.991-1.121 1.422-.57.431-1.35.851-2.481.851-.08 0-.16-.01-.24-.01-.89-.01-1.74-.26-2.52-.72l-.39-.23-1.89.5-.5-1.89-.23-.39c-.46-.78-.71-1.63-.72-2.52 0-.08-.01-.16-.01-.24 0-1.13.42-1.91.85-2.48.43-.57.97-.97 1.42-1.12.45-.15.62-.18.67-.19.05-.01.09-.01.09-.01.02 0 .04 0 .06.01.02.01.04.02.05.03.01.01.02.03.05.08.03.05.07.14.12.24.05.11.12.26.17.36.05.11.11.21.35.88z" />
-                        </svg>
-                        WhatsApp
-                    </button>
+
 
                     <button
                         onClick={onClose}
