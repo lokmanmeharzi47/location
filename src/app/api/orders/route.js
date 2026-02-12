@@ -89,6 +89,8 @@ export async function POST(request) {
             customer_address,
             customer_city,
             car_id,
+            car_name,   // Extract for Sheets
+            car_image,  // Extract for Sheets
             pickup_date,
             return_date,
             pickup_location,
@@ -143,10 +145,44 @@ export async function POST(request) {
             ]
         );
 
+        const newBookingId = result.rows[0].id;
+
+        // --- GOOGLE SHEETS SYNC (Server-Side) ---
+        try {
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0EoNtAxsoLbDK1tXg0ZMT_Dk_wAjRjs2vQv7UsM2v7dpUQI7T4FSYhtipUYcxqW560w/exec";
+
+            // Construct payload for Google Sheets
+            const sheetPayload = {
+                order_id: newBookingId,
+                customer_name,
+                customer_phone,
+                car_name: car_name || `Car #${car_id}`,
+                car_image: car_image || "",
+                total_amount: parseFloat(total_amount) || 0,
+                status: 'New',
+                pickup_date,
+                return_date,
+                notes
+            };
+
+            // Fire and forget (or await if you want to ensure it sends)
+            // Using fetch without awaiting response body to speed things up
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(sheetPayload),
+            });
+
+        } catch (sheetError) {
+            console.error("Google Sheets Sync Error:", sheetError);
+            // We do not fail the request if Sheets sync fails
+        }
+        // ----------------------------------------
+
         return NextResponse.json({
             success: true,
             message: 'تم إنشاء الحجز بنجاح',
-            bookingId: result.rows[0].id,
+            bookingId: newBookingId,
         });
 
     } catch (error) {

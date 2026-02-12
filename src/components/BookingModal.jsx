@@ -120,19 +120,6 @@ export default function BookingModal({
             const result = await response.json();
 
             if (result.success) {
-                // Determine SHEET_URL
-                const SHEET_URL = "https://script.google.com/macros/s/AKfycbxJ_o7jYCBhkkovfpOVex7MgR-BEtPRUJncwlvM1izgRNdwjc4ajYeWw7HrMu-YrKZZ/exec";
-
-                // Send to Google Sheets (fire and forget)
-                fetch(SHEET_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type": "text/plain",
-                    },
-                    body: JSON.stringify(orderData),
-                }).catch(err => console.error("Sheet Error:", err));
-
                 setIsSuccess(true);
 
                 // Open WhatsApp automatically
