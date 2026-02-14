@@ -110,7 +110,7 @@
         "price_per_day": "Price per day",
         "total_days": "Number of days",
         "total_amount": "Total",
-        "currency": "DA",
+        "currency": "Million",
         "available": "Available",
         "unavailable": "Unavailable"
     },

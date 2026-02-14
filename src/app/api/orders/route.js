@@ -89,8 +89,6 @@ export async function POST(request) {
             customer_address,
             customer_city,
             car_id,
-            car_name,   // Extract for Sheets
-            car_image,  // Extract for Sheets
             pickup_date,
             return_date,
             pickup_location,
@@ -114,13 +112,16 @@ export async function POST(request) {
             );
         }
 
+        // Define initial status
+        const initialStatus = 'قيد التنفيذ';
+
         const result = await client.query(
             `INSERT INTO bookings 
              (customer_name, customer_phone, customer_email, customer_address, customer_city, 
               car_id, pickup_date, return_date, pickup_location, return_location,
               daily_rate, total_days, subtotal, extras_amount, discount_amount, total_amount,
               notes, extras, payment_method, status, created_at, updated_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, 'قيد التنفيذ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
              RETURNING id`,
             [
                 customer_name,
@@ -141,43 +142,44 @@ export async function POST(request) {
                 parseFloat(total_amount) || 0,
                 notes || null,
                 extras || null,
-                payment_method || 'espece'
+                payment_method || 'espece',
+                initialStatus
             ]
         );
 
         const newBookingId = result.rows[0].id;
 
-        // --- GOOGLE SHEETS SYNC (Server-Side) ---
+        // Fetch car details for Google Sheet
         try {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0EoNtAxsoLbDK1tXg0ZMT_Dk_wAjRjs2vQv7UsM2v7dpUQI7T4FSYhtipUYcxqW560w/exec";
+            const carResult = await client.query('SELECT name FROM cars WHERE id = $1', [parseInt(car_id)]);
+            const carName = carResult.rows[0]?.name || 'Unknown Car';
 
-            // Construct payload for Google Sheets
-            const sheetPayload = {
-                order_id: newBookingId,
-                customer_name,
-                customer_phone,
-                car_name: car_name || `Car #${car_id}`,
-                car_image: car_image || "",
-                total_amount: parseFloat(total_amount) || 0,
-                status: 'New',
-                pickup_date,
-                return_date,
-                notes
-            };
+            // Send to Google Sheet if configured
+            if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
+                const sheetData = {
+                    record: {
+                        id: newBookingId,
+                        customer_name,
+                        customer_phone,
+                        cars: { name: carName }, // Structure matches Apps Script expectation
+                        pickup_date,
+                        return_date,
+                        total_amount,
+                        status: initialStatus,
+                        notes,
+                    }
+                };
 
-            // Fire and forget (or await if you want to ensure it sends)
-            // Using fetch without awaiting response body to speed things up
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(sheetPayload),
-            });
-
+                // Don't await strictly to avoid blocking response, or await with timeout
+                fetch(process.env.GOOGLE_SHEET_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sheetData)
+                }).catch(err => console.error('Google Sheet Sync Error:', err));
+            }
         } catch (sheetError) {
-            console.error("Google Sheets Sync Error:", sheetError);
-            // We do not fail the request if Sheets sync fails
+            console.error('Error preparing sheet data:', sheetError);
         }
-        // ----------------------------------------
 
         return NextResponse.json({
             success: true,

@@ -94,8 +94,6 @@ export default function BookingModal({
             customer_name: formData.fullName,
             customer_phone: formData.phoneNumber,
             car_id: product?.id,
-            car_name: product?.name, // Added for Google Sheets
-            car_image: product?.image, // Added for Google Sheets
             customer_city: formData.wilaya,
             customer_address: `${formData.pickupLocation === "agency" ? "Agency" : "Delivery"} - ${formData.commune}`,
             pickup_date: formData.pickupDate,
