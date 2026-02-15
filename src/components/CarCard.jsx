@@ -1,14 +1,19 @@
 "use client";
-import Image from "next/image";
+
 import { FaCogs } from "react-icons/fa";
 
 export default function CarCard({ car, onBook, dict }) {
-    // Format price with localized currency
     const formatPrice = (priceStr) => {
-        // Assuming priceStr is something like "2500" or number
         const price = Number(priceStr);
         if (isNaN(price)) return priceStr;
-        return `${price.toLocaleString()} ${dict?.cars_page?.currency || 'DA'}`;
+
+        // If price is > 100, assume it's in DA and convert to "Million" (10,000 DA unit)
+        // Otherwise assume it's already in millions
+        if (price > 100) {
+            return `${(price / 10000).toLocaleString(undefined, { maximumFractionDigits: 1 })} ${dict?.cars_page?.currency || 'Million'}`;
+        }
+
+        return `${price.toLocaleString()} ${dict?.cars_page?.currency || 'Million'}`;
     };
 
     return (

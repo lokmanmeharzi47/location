@@ -13,6 +13,19 @@ export default function CarDetailsModal({
     onOrder,
     dict
 }) {
+    // Format price function (same as CarCard)
+    // Format price function (consistent with CategoryClient)
+    const formatPrice = (priceStr) => {
+        const price = Number(priceStr);
+        if (isNaN(price)) return priceStr;
+
+        if (price > 100) {
+            const formatted = price / 10000;
+            return `${formatted.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
+        }
+
+        return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
+    };
     const [carouselIndex, setCarouselIndex] = useState(0);
 
     // Close on Escape key
@@ -106,7 +119,7 @@ export default function CarDetailsModal({
                 <ImageCarousel
                     images={carImages}
                     productName={product.name}
-                    productPrice={product.price}
+                    productPrice={formatPrice(product.price)}
                     currentIndex={carouselIndex}
                     onIndexChange={setCarouselIndex}
                     showBadge={true}
@@ -156,7 +169,7 @@ export default function CarDetailsModal({
                     {/* Price per day */}
                     <div className="py-3">
                         <p className="text-3xl font-bold bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
-                            {product.price}
+                            {formatPrice(product.price)}
                         </p>
                         <p className="text-sm text-slate-500">{dict?.cars_page?.per_day}</p>
                     </div>

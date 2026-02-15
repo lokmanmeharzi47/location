@@ -77,12 +77,23 @@ export default function BookingModal({
     };
 
     // Calculate pricing
-    const dailyPrice = extractPrice(product?.price);
+    // Calculate pricing
+    const dailyPrice = Number(product?.price) || 0;
     const rentalDays = useMemo(() => calculateDays(formData.pickupDate, formData.returnDate), [formData.pickupDate, formData.returnDate]);
     const totalPrice = dailyPrice * rentalDays;
 
-    function formatPrice(price) {
-        return Math.floor(price).toLocaleString("en-US") + " " + (dict?.booking?.currency || "DA");
+    function formatPrice(priceInput) {
+        // Handle input could be string or number
+        const price = Number(priceInput);
+        if (isNaN(price)) return priceInput;
+
+        // Consistent formatting with other components
+        if (price > 100) {
+            const formatted = price / 10000;
+            return `${formatted.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${(dict?.cars_page?.currency || "Million")}`;
+        }
+
+        return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${(dict?.cars_page?.currency || "Million")}`;
     }
 
     const handleSubmit = async (e) => {
@@ -227,6 +238,7 @@ export default function BookingModal({
                                         alt={product.name}
                                         fill
                                         style={{ objectFit: 'cover' }}
+                                        unoptimized
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-slate-400">
@@ -237,7 +249,7 @@ export default function BookingModal({
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
                                 <h3 className="font-bold text-slate-800 truncate">{product.name}</h3>
-                                <p className="text-gold-600 font-bold">{product.price} / {dict?.booking?.currency || "day"}</p>
+                                <p className="text-gold-600 font-bold">{formatPrice(product.price)} / {dict?.booking?.currency || "day"}</p>
                             </div>
                         </div>
 
@@ -442,7 +454,7 @@ export default function BookingModal({
                             <div className="bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl p-4 border border-slate-200 animate-fadeIn">
                                 <div className="flex justify-between text-sm text-slate-600 mb-2">
                                     <span>{dict?.booking?.price_per_day}:</span>
-                                    <span className="font-medium">{product.price}</span>
+                                    <span className="font-medium">{formatPrice(product.price)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-slate-600 mb-2">
                                     <span>{dict?.booking?.total_days}:</span>

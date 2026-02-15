@@ -78,6 +78,19 @@ export default function CategoryClient({ slug, dict, lang }) {
         setShowBookingModal(false);
     };
 
+    // Helper to format price
+    const formatPrice = (priceStr) => {
+        const price = Number(priceStr);
+        if (isNaN(price)) return priceStr;
+
+        if (price > 100) {
+            const formatted = price / 10000;
+            return `${formatted.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
+        }
+
+        return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 flex items-center justify-center">
@@ -85,6 +98,10 @@ export default function CategoryClient({ slug, dict, lang }) {
             </div>
         );
     }
+
+    // ... (rest of render logic until price display)
+
+
 
     if (!category) {
         return (
@@ -143,6 +160,7 @@ export default function CategoryClient({ slug, dict, lang }) {
                                                 fill
                                                 style={{ objectFit: 'cover' }}
                                                 className="transition-transform duration-500 group-hover:scale-110"
+                                                unoptimized
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
@@ -186,7 +204,7 @@ export default function CategoryClient({ slug, dict, lang }) {
 
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-xl font-bold text-gold-600">{product.price}</p>
+                                                <p className="text-xl font-bold text-gold-600">{formatPrice(product.price)}</p>
                                                 <p className="text-xs text-slate-500">{dict?.cars_page?.per_day || "/ day"}</p>
                                             </div>
                                             <span className="text-xs text-slate-500 font-medium group-hover:text-gold-600 transition-colors">

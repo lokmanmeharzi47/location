@@ -78,7 +78,7 @@ export async function GET(request) {
                 category: car.category_name || 'غير مصنف',
                 categoryId: car.category_id,
                 categorySlug: car.category_slug,
-                price: `${Math.floor(car.price_per_day).toLocaleString('ar-DZ')} مليون`,
+                price: car.price_per_day,
                 priceRaw: car.price_per_day,
                 stock: car.status === 'disponible' ? 1 : 0,
                 sales: 0,

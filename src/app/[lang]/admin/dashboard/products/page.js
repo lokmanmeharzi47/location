@@ -30,6 +30,20 @@ export default function CarsPage() {
         images: [], // Multiple images support
     });
 
+    // Helper to format price
+    // Helper to format price
+    const formatPrice = (priceStr) => {
+        const price = Number(priceStr);
+        if (isNaN(price)) return priceStr;
+
+        if (price > 100) {
+            const formatted = price / 10000;
+            return `${formatted.toLocaleString('en-US', { maximumFractionDigits: 10 })} مليون`;
+        }
+
+        return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} مليون`;
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -337,7 +351,7 @@ export default function CarsPage() {
                             <p className="text-xs text-gold-600 font-medium mb-1">{car.category}</p>
                             <h3 className="font-bold text-gray-800 mb-2 group-hover:text-gold-600 transition-colors">{car.name}</h3>
                             <div className="flex items-center justify-between">
-                                <p className="text-lg font-bold text-gold-600">{car.price}/يوم</p>
+                                <p className="text-lg font-bold text-gold-600">{formatPrice(car.price)}/يوم</p>
                             </div>
                         </div>
 
@@ -360,205 +374,209 @@ export default function CarsPage() {
                 ))}
             </div>
 
-            {filteredCars.length === 0 && !loading && (
-                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
-                    <FiImage size={48} className="mx-auto text-slate-300 mb-4" />
-                    <p className="text-gray-500 mb-4">لا توجد سيارات في هذه الفئة</p>
-                </div>
-            )}
+            {
+                filteredCars.length === 0 && !loading && (
+                    <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+                        <FiImage size={48} className="mx-auto text-slate-300 mb-4" />
+                        <p className="text-gray-500 mb-4">لا توجد سيارات في هذه الفئة</p>
+                    </div>
+                )
+            }
 
             {/* Add/Edit Car Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-xl animate-fadeIn max-h-[90vh] overflow-y-auto">
-                        <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
-                            <h2 className="text-xl font-bold text-gray-800">
-                                {editCar ? "تعديل السيارة" : "إضافة سيارة جديدة"}
-                            </h2>
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                            >
-                                <FiX size={20} />
-                            </button>
-                        </div>
-
-                        <div className="p-6 space-y-5">
-                            {/* Car Name */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">اسم السيارة *</label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    placeholder="مثال: Toyota Corolla 2024"
-                                />
+            {
+                showModal && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-2xl w-full max-w-xl animate-fadeIn max-h-[90vh] overflow-y-auto">
+                            <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                                <h2 className="text-xl font-bold text-gray-800">
+                                    {editCar ? "تعديل السيارة" : "إضافة سيارة جديدة"}
+                                </h2>
+                                <button
+                                    onClick={() => setShowModal(false)}
+                                    className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                                >
+                                    <FiX size={20} />
+                                </button>
                             </div>
 
-
-
-                            {/* Year & Category */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="p-6 space-y-5">
+                                {/* Car Name */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">السنة</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">اسم السيارة *</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                        placeholder="مثال: Toyota Corolla 2024"
+                                    />
+                                </div>
+
+
+
+                                {/* Year & Category */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">السنة</label>
+                                        <input
+                                            type="number"
+                                            value={formData.year}
+                                            onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                            min="2000"
+                                            max="2030"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">الفئة *</label>
+                                        <select
+                                            value={formData.category_id}
+                                            onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                        >
+                                            <option value="">اختر الفئة</option>
+                                            {categories.map((cat) => (
+                                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Price per Day */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (million) *</label>
+                                    <input
+                                        type="text"
+                                        value={formData.price_per_day}
+                                        onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                        placeholder="1"
+                                    />
+                                </div>
+
+                                {/* Fuel & Transmission */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">نوع الوقود</label>
+                                        <select
+                                            value={formData.fuel_type}
+                                            onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                        >
+                                            <option value="Essence">بنزين</option>
+                                            <option value="Diesel">ديزل</option>
+                                            <option value="Électrique">كهربائي</option>
+                                            <option value="Hybride">هجين</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">ناقل الحركة</label>
+                                        <select
+                                            value={formData.transmission}
+                                            onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                        >
+                                            <option value="Automatique">أوتوماتيك</option>
+                                            <option value="Manuelle">يدوي</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Seats */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">عدد المقاعد</label>
                                     <input
                                         type="number"
-                                        value={formData.year}
-                                        onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                                        value={formData.seats}
+                                        onChange={(e) => setFormData({ ...formData, seats: parseInt(e.target.value) })}
                                         className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                        min="2000"
-                                        max="2030"
+                                        min="2"
+                                        max="12"
                                     />
                                 </div>
+
+                                {/* Car Images - Multiple */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">الفئة *</label>
-                                    <select
-                                        value={formData.category_id}
-                                        onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    >
-                                        <option value="">اختر الفئة</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        صور السيارة
+                                        <span className="text-xs text-gray-400 mr-2">({formData.images.length} صورة)</span>
+                                    </label>
+
+                                    <div className="flex flex-wrap gap-3">
+                                        {/* Existing Images */}
+                                        {formData.images.map((img, index) => (
+                                            <div key={index} className="relative group">
+                                                <img
+                                                    src={img}
+                                                    alt={`صورة ${index + 1}`}
+                                                    className="w-20 h-20 object-cover rounded-xl border border-slate-200"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveImage(index)}
+                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                >
+                                                    <FiX size={14} />
+                                                </button>
+                                                {index === 0 && (
+                                                    <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
+                                                        رئيسية
+                                                    </span>
+                                                )}
+                                            </div>
                                         ))}
-                                    </select>
-                                </div>
-                            </div>
 
-                            {/* Price per Day */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (million) *</label>
-                                <input
-                                    type="text"
-                                    value={formData.price_per_day}
-                                    onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
-                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    placeholder="1"
-                                />
-                            </div>
-
-                            {/* Fuel & Transmission */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">نوع الوقود</label>
-                                    <select
-                                        value={formData.fuel_type}
-                                        onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    >
-                                        <option value="Essence">بنزين</option>
-                                        <option value="Diesel">ديزل</option>
-                                        <option value="Électrique">كهربائي</option>
-                                        <option value="Hybride">هجين</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">ناقل الحركة</label>
-                                    <select
-                                        value={formData.transmission}
-                                        onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    >
-                                        <option value="Automatique">أوتوماتيك</option>
-                                        <option value="Manuelle">يدوي</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Seats */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">عدد المقاعد</label>
-                                <input
-                                    type="number"
-                                    value={formData.seats}
-                                    onChange={(e) => setFormData({ ...formData, seats: parseInt(e.target.value) })}
-                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                    min="2"
-                                    max="12"
-                                />
-                            </div>
-
-                            {/* Car Images - Multiple */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    صور السيارة
-                                    <span className="text-xs text-gray-400 mr-2">({formData.images.length} صورة)</span>
-                                </label>
-
-                                <div className="flex flex-wrap gap-3">
-                                    {/* Existing Images */}
-                                    {formData.images.map((img, index) => (
-                                        <div key={index} className="relative group">
-                                            <img
-                                                src={img}
-                                                alt={`صورة ${index + 1}`}
-                                                className="w-20 h-20 object-cover rounded-xl border border-slate-200"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveImage(index)}
-                                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                                            >
-                                                <FiX size={14} />
-                                            </button>
-                                            {index === 0 && (
-                                                <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
-                                                    رئيسية
-                                                </span>
+                                        {/* Add Image Button */}
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageUpload}
+                                            accept="image/*"
+                                            className="hidden"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploading}
+                                            className="w-20 h-20 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center hover:border-gold-400 transition-colors cursor-pointer bg-slate-50"
+                                        >
+                                            {uploading ? (
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gold-500"></div>
+                                            ) : (
+                                                <>
+                                                    <FiUpload size={20} className="text-slate-400 mb-1" />
+                                                    <span className="text-xs text-slate-400">إضافة</span>
+                                                </>
                                             )}
-                                        </div>
-                                    ))}
+                                        </button>
+                                    </div>
 
-                                    {/* Add Image Button */}
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleImageUpload}
-                                        accept="image/*"
-                                        className="hidden"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        disabled={uploading}
-                                        className="w-20 h-20 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center hover:border-gold-400 transition-colors cursor-pointer bg-slate-50"
-                                    >
-                                        {uploading ? (
-                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gold-500"></div>
-                                        ) : (
-                                            <>
-                                                <FiUpload size={20} className="text-slate-400 mb-1" />
-                                                <span className="text-xs text-slate-400">إضافة</span>
-                                            </>
-                                        )}
-                                    </button>
+                                    <p className="text-xs text-gray-400 mt-2">
+                                        الصورة الأولى ستكون الصورة الرئيسية. يمكنك إضافة عدة صور.
+                                    </p>
                                 </div>
-
-                                <p className="text-xs text-gray-400 mt-2">
-                                    الصورة الأولى ستكون الصورة الرئيسية. يمكنك إضافة عدة صور.
-                                </p>
                             </div>
-                        </div>
 
-                        <div className="p-6 border-t border-slate-100 flex gap-3 sticky bottom-0 bg-white">
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="flex-1 px-4 py-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-medium"
-                            >
-                                إلغاء
-                            </button>
-                            <button
-                                onClick={handleSubmit}
-                                disabled={saving}
-                                className="flex-1 px-4 py-3 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors font-medium disabled:opacity-50 shadow-lg shadow-gold-500/20"
-                            >
-                                {saving ? "جاري الحفظ..." : editCar ? "حفظ التعديلات" : "إضافة السيارة"}
-                            </button>
+                            <div className="p-6 border-t border-slate-100 flex gap-3 sticky bottom-0 bg-white">
+                                <button
+                                    onClick={() => setShowModal(false)}
+                                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                                >
+                                    إلغاء
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={saving}
+                                    className="flex-1 px-4 py-3 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors font-medium disabled:opacity-50 shadow-lg shadow-gold-500/20"
+                                >
+                                    {saving ? "جاري الحفظ..." : editCar ? "حفظ التعديلات" : "إضافة السيارة"}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
