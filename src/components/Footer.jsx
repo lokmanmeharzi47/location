@@ -104,7 +104,7 @@ export default function Footer({ dict, lang }) {
                                 <FaInstagram className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="tel:0559 30 96 80"
+                                href="tel:0779 13 25 34"
                                 aria-label="Phone"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -113,7 +113,7 @@ export default function Footer({ dict, lang }) {
                                 <FaPhone className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="https://wa.me/213559309680"
+                                href="https://wa.me/213779132534"
                                 aria-label="WhatsApp"
                                 target="_blank"
                                 rel="noopener noreferrer"
