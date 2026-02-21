@@ -5,7 +5,7 @@
       "destination": "/sitemap.xml"
     },
     {
-      "source": "/((?!sitemap.xml).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
