@@ -5,6 +5,10 @@
       "destination": "/sitemap.xml"
     },
     {
+      "source": "/(fr|en|ar)/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
       "source": "/((?!sitemap.xml).*)",
       "destination": "/index.html"
     }
