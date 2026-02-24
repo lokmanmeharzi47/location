@@ -155,22 +155,26 @@ export async function POST(request) {
             const carResult = await client.query('SELECT name FROM cars WHERE id = $1', [parseInt(car_id)]);
             const carName = carResult.rows[0]?.name || 'Unknown Car';
 
-            // Send Telegram notification (non-blocking)
-            sendOrderNotification({
-                id: newBookingId,
-                customer_name,
-                customer_phone,
-                car_name: carName,
-                total_amount,
-                customer_city,
-                payment_method: payment_method || 'espece',
-                pickup_date,
-                return_date,
-                total_days,
-                notes,
-            }).catch(err => console.error('Telegram Notification Error:', err));
+            // Send Telegram notification (MUST await on Vercel serverless!)
+            try {
+                await sendOrderNotification({
+                    id: newBookingId,
+                    customer_name,
+                    customer_phone,
+                    car_name: carName,
+                    total_amount,
+                    customer_city,
+                    payment_method: payment_method || 'espece',
+                    pickup_date,
+                    return_date,
+                    total_days,
+                    notes,
+                });
+            } catch (err) {
+                console.error('Telegram Notification Error:', err);
+            }
 
-            // Send to Google Sheet if configured
+            // Send to Google Sheet if configured (MUST await on Vercel serverless!)
             if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
                 const sheetData = {
                     record: {
@@ -186,11 +190,15 @@ export async function POST(request) {
                     }
                 };
 
-                fetch(process.env.GOOGLE_SHEET_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
-                }).catch(err => console.error('Google Sheet Sync Error:', err));
+                try {
+                    await fetch(process.env.GOOGLE_SHEET_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(sheetData)
+                    });
+                } catch (err) {
+                    console.error('Google Sheet Sync Error:', err);
+                }
             }
         } catch (notifyError) {
             console.error('Error preparing notification data:', notifyError);
