@@ -130,16 +130,6 @@ export default function BookingModal({
 
             if (result.success) {
                 setIsSuccess(true);
-
-                // Open WhatsApp automatically
-                const template = dict?.messages?.whatsapp_template || "Hello, I want to book a {carName}. Details: Name: {name}, Phone: {phone}.";
-                const message = template
-                    .replace("{carName}", product?.name || "")
-                    .replace("{name}", formData.fullName)
-                    .replace("{phone}", formData.phoneNumber);
-
-                const url = `https://wa.me/213779132534?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
             } else {
                 setError(result.message || (dict?.common?.error || "Error submitting booking"));
             }

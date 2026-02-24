@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
+import { sendOrderNotification } from '@/lib/telegram';
 
 // GET - Fetch all bookings
 export async function GET(request) {
@@ -149,10 +150,25 @@ export async function POST(request) {
 
         const newBookingId = result.rows[0].id;
 
-        // Fetch car details for Google Sheet
+        // Fetch car details for notifications
         try {
             const carResult = await client.query('SELECT name FROM cars WHERE id = $1', [parseInt(car_id)]);
             const carName = carResult.rows[0]?.name || 'Unknown Car';
+
+            // Send Telegram notification (non-blocking)
+            sendOrderNotification({
+                id: newBookingId,
+                customer_name,
+                customer_phone,
+                car_name: carName,
+                total_amount,
+                customer_city,
+                payment_method: payment_method || 'espece',
+                pickup_date,
+                return_date,
+                total_days,
+                notes,
+            }).catch(err => console.error('Telegram Notification Error:', err));
 
             // Send to Google Sheet if configured
             if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
@@ -161,7 +177,7 @@ export async function POST(request) {
                         id: newBookingId,
                         customer_name,
                         customer_phone,
-                        cars: { name: carName }, // Structure matches Apps Script expectation
+                        cars: { name: carName },
                         pickup_date,
                         return_date,
                         total_amount,
@@ -170,15 +186,14 @@ export async function POST(request) {
                     }
                 };
 
-                // Don't await strictly to avoid blocking response, or await with timeout
                 fetch(process.env.GOOGLE_SHEET_SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(sheetData)
                 }).catch(err => console.error('Google Sheet Sync Error:', err));
             }
-        } catch (sheetError) {
-            console.error('Error preparing sheet data:', sheetError);
+        } catch (notifyError) {
+            console.error('Error preparing notification data:', notifyError);
         }
 
         return NextResponse.json({
