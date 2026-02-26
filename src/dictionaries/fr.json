@@ -5,64 +5,197 @@
         "categories": "Catégories",
         "contact": "Contact",
         "book": "Réserver",
-        "mobile_subtitle": "Location simple et rapide",
+        "mobile_subtitle": "Location voiture Alger – Simple et rapide",
         "rights": "Luxury location",
         "copyright": "© Luxury location"
     },
+    "seo": {
+        "title": "Location Voiture Alger | Luxury Location – Tarifs dès 3000 DA/jour",
+        "description": "Location voiture Alger pas cher ✓ Aéroport Houari Boumediene ✓ Sans chauffeur ✓ Longue durée ✓ Livraison Bab Ezzouar, Hydra, Cheraga. Réservez en ligne !",
+        "h1": "Location de Voiture à Alger – Service Premium & Prix Compétitifs",
+        "keywords": "location voiture Alger, location voiture Alger pas cher, location voiture aéroport Alger, location voiture sans chauffeur Alger, location voiture longue durée Alger, louer voiture Alger, rent car Algiers"
+    },
     "hero": {
-        "title": "Louez votre voiture idéale",
-        "subtitle": "Meilleurs prix et voitures récentes en Algérie",
-        "badge_clean": "confiance",
+        "title": "Location de Voiture à Alger",
+        "subtitle": "Louez votre voiture idéale à Alger – Meilleurs prix et véhicules récents",
+        "badge_clean": "Confiance",
         "badge_price": "Prix compétitifs",
-        "badge_delivery": "Livraison rapide",
+        "badge_delivery": "Livraison gratuite",
         "cta_browse": "Voir les voitures",
         "cta_types": "Catégories",
         "trust_customers": "+500 Clients satisfaits",
-        "trust_rating": "Note 4.5",
-        "main_title_1": "Luxury location",
-        "main_title_2": "Le choix intelligent pour vos déplacements",
-        "main_subtitle": "Prix abordables, service fiable partout en Algérie"
+        "trust_rating": "Note 4.9",
+        "main_title_1": "Location Voiture Alger",
+        "main_title_2": "Le choix intelligent pour vos déplacements à Alger",
+        "main_subtitle": "Location voiture Alger pas cher – Service fiable, livraison aéroport et tous quartiers"
     },
     "categories": {
-        "fleet": "Notre flotte",
-        "title": "Choisissez votre type de véhicule",
-        "subtitle": "Découvrez notre gamme variée de voitures modernes et confortables pour tous vos besoins",
+        "fleet": "Notre flotte à Alger",
+        "title": "Choisissez votre type de véhicule à Alger",
+        "subtitle": "Découvrez notre gamme variée de voitures modernes et confortables disponibles en location à Alger et ses environs",
         "view_cars": "Voir les véhicules"
+    },
+    "why_choose_us": {
+        "title": "Pourquoi choisir Luxury Location à Alger ?",
+        "subtitle": "Des avantages exclusifs pour votre location de voiture à Alger",
+        "benefits": [
+            {
+                "icon": "price",
+                "title": "Tarifs compétitifs",
+                "description": "Location voiture Alger pas cher avec des tarifs à partir de 3000 DA/jour. Nos prix sont transparents, sans frais cachés ni surprises."
+            },
+            {
+                "icon": "airport",
+                "title": "Service aéroport Houari Boumediene",
+                "description": "Location voiture aéroport Alger avec prise en charge directe à l'aéroport international Houari Boumediene. Arrivée ou départ, nous sommes là."
+            },
+            {
+                "icon": "selfDrive",
+                "title": "Location sans chauffeur",
+                "description": "Location voiture sans chauffeur Alger – Profitez de votre liberté totale avec nos véhicules en excellent état, assurés et entretenus."
+            },
+            {
+                "icon": "longTerm",
+                "title": "Location longue durée",
+                "description": "Location voiture longue durée Alger avec des tarifs dégressifs pour les locations d'une semaine, d'un mois ou plus. Idéal pour les professionnels."
+            },
+            {
+                "icon": "delivery",
+                "title": "Livraison à domicile",
+                "description": "Livraison et récupération gratuites dans tous les quartiers d'Alger : Bab Ezzouar, Hydra, Cheraga, Dar El Beida, Zeralda et Staoueli."
+            },
+            {
+                "icon": "support",
+                "title": "Assistance 24h/24 7j/7",
+                "description": "Notre équipe est disponible jour et nuit pour vous assister en cas de besoin. Service client réactif par téléphone et WhatsApp."
+            }
+        ]
+    },
+    "coverage_areas": {
+        "title": "Zones de couverture – Location voiture à Alger",
+        "subtitle": "Nous livrons et récupérons votre voiture de location dans tous les quartiers d'Alger",
+        "airport_title": "Aéroport Houari Boumediene",
+        "airport_desc": "Service de location voiture aéroport Alger disponible 24h/24. Prise en charge à l'arrivée et restitution au départ, directement au terminal de l'aéroport international Houari Boumediene (ALG). Idéal pour les voyageurs d'affaires et les touristes.",
+        "areas": [
+            {
+                "name": "Bab Ezzouar",
+                "description": "Location voiture Bab Ezzouar – Proche de la foire internationale, universités et centres commerciaux. Livraison rapide en 30 minutes."
+            },
+            {
+                "name": "Dar El Beida",
+                "description": "Location voiture Dar El Beida – À proximité de l'aéroport Houari Boumediene et de la zone industrielle. Service express disponible."
+            },
+            {
+                "name": "Hydra",
+                "description": "Location voiture Hydra – Quartier résidentiel et diplomatique d'Alger. Véhicules premium disponibles pour les professionnels et ambassades."
+            },
+            {
+                "name": "Cheraga",
+                "description": "Location voiture Cheraga – Accès facile à l'autoroute et aux centres d'affaires d'Alger Ouest. Large choix de véhicules."
+            },
+            {
+                "name": "Zeralda",
+                "description": "Location voiture Zeralda – Idéal pour les séjours balnéaires et les vacances. Véhicules confortables pour profiter de la côte algéroise."
+            },
+            {
+                "name": "Staoueli",
+                "description": "Location voiture Staoueli – Proche des plages et zones résidentielles. Livraison rapide et tarifs avantageux toute l'année."
+            }
+        ]
+    },
+    "faq": {
+        "title": "Questions fréquentes – Location voiture Alger",
+        "subtitle": "Tout ce que vous devez savoir sur la location de voiture à Alger",
+        "questions": [
+            {
+                "question": "Combien coûte la location de voiture à Alger ?",
+                "answer": "Nos tarifs de location voiture Alger commencent à partir de 3000 DA/jour pour les véhicules économiques. Les SUV et voitures de luxe sont disponibles à des prix compétitifs. Nous proposons également des tarifs dégressifs pour la location longue durée à Alger : remise de 15% pour une semaine et 30% pour un mois."
+            },
+            {
+                "question": "Proposez-vous un service à l'aéroport Houari Boumediene ?",
+                "answer": "Oui, nous offrons un service de location voiture aéroport Alger avec prise en charge directe à l'aéroport international Houari Boumediene. Notre agent vous attend à la sortie du terminal avec le véhicule prêt. Le service est disponible 24h/24, y compris pour les vols de nuit."
+            },
+            {
+                "question": "Quels documents sont nécessaires pour louer une voiture à Alger ?",
+                "answer": "Pour la location de voiture à Alger, vous aurez besoin : d'une pièce d'identité (carte nationale ou passeport), d'un permis de conduire valide (minimum 2 ans), et d'un justificatif de domicile. Pour les étrangers, un permis international est accepté."
+            },
+            {
+                "question": "L'assurance est-elle incluse dans la location ?",
+                "answer": "Oui, toutes nos voitures en location à Alger incluent une assurance tous risques de base. Vous pouvez opter pour une assurance premium avec couverture étendue, assistance routière 24h/24 et protection contre le vol, pour une tranquillité totale."
+            },
+            {
+                "question": "Peut-on louer une voiture longue durée à Alger ?",
+                "answer": "Absolument ! Notre service de location voiture longue durée Alger est idéal pour les expatriés, les professionnels en mission et les entreprises. Nous proposons des contrats flexibles d'une semaine à plusieurs mois avec des tarifs très avantageux et un entretien inclus."
+            },
+            {
+                "question": "Louez-vous des voitures sans chauffeur à Alger ?",
+                "answer": "Oui, la location voiture sans chauffeur Alger est notre spécialité. Tous nos véhicules peuvent être loués en self-drive. Chaque voiture est maintenue en parfait état, assurée et prête à rouler. Vous gardez votre liberté totale de mouvement."
+            },
+            {
+                "question": "Dans quelles zones d'Alger livrez-vous les voitures ?",
+                "answer": "Nous couvrons tout Alger et ses environs : Bab Ezzouar, Dar El Beida, Hydra, Cheraga, Zeralda, Staoueli, Draria, Birtouta, Kouba, et bien d'autres. La livraison est gratuite dans un rayon de 20 km depuis notre agence. Nous livrons aussi à l'aéroport Houari Boumediene."
+            }
+        ]
+    },
+    "seo_content": {
+        "title": "Location de voiture à Alger – Votre partenaire de confiance",
+        "intro": "Bienvenue chez Luxury Location, votre agence de référence pour la location de voiture à Alger. Que vous soyez résident, voyageur d'affaires ou touriste, nous mettons à votre disposition une flotte de véhicules modernes, confortables et parfaitement entretenus. Notre objectif est simple : vous offrir le meilleur service de location voiture Alger au meilleur prix.",
+        "fleet_title": "Une flotte variée pour tous vos besoins",
+        "fleet_text": "Notre parc automobile comprend des voitures économiques idéales pour les trajets quotidiens à Alger, des berlines confortables pour les déplacements professionnels, des SUV spacieux pour les familles et les aventuriers, ainsi que des voitures de luxe pour les occasions spéciales comme les mariages et les événements. Chaque véhicule de notre flotte est régulièrement entretenu, assuré et prêt à vous accompagner sur les routes d'Algérie.",
+        "airport_title": "Location voiture aéroport Alger – Service sans stress",
+        "airport_text": "L'aéroport international Houari Boumediene est le point d'entrée principal pour les visiteurs à Alger. Notre service de location voiture aéroport Alger vous garantit une prise en charge rapide dès votre arrivée. Plus besoin d'attendre un taxi ou de chercher un transport – votre voiture vous attend directement au terminal. Nous assurons aussi la restitution au départ pour un voyage serein du début à la fin.",
+        "selfDrive_title": "Location voiture sans chauffeur – Liberté totale",
+        "selfDrive_text": "Avec notre service de location voiture sans chauffeur Alger, vous êtes maître de votre emploi du temps. Explorez les quartiers historiques de la Casbah, profitez des plages de Zeralda et Staoueli, ou parcourez les boulevards modernes d'Hydra et Cheraga en toute autonomie. Nos véhicules sont équipés de GPS et climatisation pour votre confort.",
+        "longTerm_title": "Location longue durée – Tarifs dégressifs avantageux",
+        "longTerm_text": "Pour les séjours prolongés, notre offre de location voiture longue durée Alger est la solution la plus économique. Que ce soit pour une mission professionnelle de plusieurs semaines ou un séjour prolongé, nous proposons des contrats flexibles avec des remises allant jusqu'à 30%. L'entretien régulier et l'assistance routière sont inclus dans nos formules longue durée.",
+        "pricing_title": "Tarifs transparents et compétitifs",
+        "pricing_text": "Chez Luxury Location, nous croyons en la transparence. Nos tarifs de location voiture Alger pas cher commencent à 3000 DA/jour pour les citadines, et incluent l'assurance de base, le kilométrage illimité en ville, et l'assistance téléphonique. Pas de frais cachés, pas de mauvaises surprises. Consultez nos catégories de véhicules et réservez en ligne en quelques clics.",
+        "bilingual_note": "كراء سيارات الجزائر العاصمة – خدمة توصيل لجميع أحياء العاصمة. كراء سيارة مطار الجزائر الدولي هواري بومدين. كراء سيارات بدون سائق الجزائر بأسعار تنافسية.",
+        "cta_text": "Réservez votre voiture maintenant",
+        "cta_subtitle": "Profitez de nos meilleurs tarifs de location voiture à Alger. Réservation rapide en ligne ou par WhatsApp."
+    },
+    "image_alts": {
+        "hero": "Location voiture Alger – Luxury Location flotte de véhicules premium",
+        "fleet": "Flotte de voitures disponibles en location à Alger – économique, berline, SUV, luxe",
+        "airport": "Location voiture aéroport Houari Boumediene Alger – prise en charge au terminal",
+        "booking": "Réservation location voiture Alger en ligne – processus simple et rapide",
+        "coverage": "Carte des zones de livraison location voiture Alger – Bab Ezzouar, Hydra, Cheraga",
+        "logo": "Luxury Location – Agence location voiture Alger logo"
     },
     "steps": {
         "title_small": "Étapes simples",
-        "title_large": "Comment réserver chez Luxury location",
+        "title_large": "Comment réserver votre location voiture à Alger",
         "step_1_title": "Choisissez une voiture",
-        "step_1_desc": "Parcourez notre flotte diversifiée et choisissez la voiture qui convient à vos besoins et votre budget.",
+        "step_1_desc": "Parcourez notre flotte diversifiée de voitures en location à Alger et choisissez celle qui convient à vos besoins et votre budget.",
         "step_2_title": "Date de prise en charge",
-        "step_2_desc": "Choisissez la date et l'heure de prise en charge et de retour selon votre emploi du temps.",
+        "step_2_desc": "Choisissez la date et l'heure de prise en charge, que ce soit à notre agence, à votre domicile ou à l'aéroport Houari Boumediene.",
         "step_3_title": "Complétez la réservation",
-        "step_3_desc": "Remplissez les détails simples de réservation et confirmez votre réservation facilement.",
+        "step_3_desc": "Remplissez les détails simples de réservation et confirmez votre location de voiture à Alger en quelques clics.",
         "step_4_title": "Recevez votre voiture",
-        "step_4_desc": "Récupérez votre voiture à notre emplacement ou nous vous la livrons partout en Algérie."
+        "step_4_desc": "Récupérez votre voiture de location à notre agence ou nous vous la livrons dans tous les quartiers d'Alger : Bab Ezzouar, Hydra, Cheraga et plus."
     },
     "coming_soon": {
-        "title": "Services Bientôt",
-        "subtitle": "Nous travaillons à l'ajout de nouveaux services pour une meilleure expérience de location",
+        "title": "Nouveaux Services Bientôt",
+        "subtitle": "Nous travaillons à l'ajout de nouveaux services pour améliorer votre expérience de location voiture à Alger",
         "features": [
-            "Assurance complète",
-            "Chauffeur privé",
-            "Transfert aéroport"
+            "Assurance tous risques premium",
+            "Chauffeur privé professionnel",
+            "Transfert aéroport Houari Boumediene"
         ],
         "button": "Bientôt"
     },
     "footer": {
-        "description": "Nous fournissons les meilleures voitures à des prix compétitifs et un service fiable. Une flotte diversifiée pour répondre à tous vos besoins.",
+        "description": "Luxury Location – Votre agence de location voiture à Alger. Flotte moderne, prix compétitifs et service fiable. Livraison aéroport Houari Boumediene et tous quartiers d'Alger.",
         "quick_links": "Liens rapides",
         "contact_us": "Contactez-nous",
-        "contact_text": "Nous sommes heureux de vous entendre",
+        "contact_text": "Disponibles 24h/24 pour votre location voiture à Alger",
         "rights": "Tous droits réservés",
         "made_by": "Fait avec",
         "in_algeria": "en Algérie"
     },
     "cars_page": {
-        "title": "Notre Flotte de Luxe",
-        "subtitle": "Choisissez la voiture parfaite pour votre voyage parmi notre collection premium",
+        "title": "Notre Flotte – Location Voiture Alger",
+        "subtitle": "Choisissez la voiture parfaite pour votre location à Alger parmi notre collection premium",
         "filter_title": "Filtrer la recherche",
         "search_label": "Modèle de voiture",
         "search_placeholder": "Mercedes, Audi...",
@@ -104,7 +237,7 @@
         "payment_method": "Méthode de paiement",
         "confirm": "Confirmer la réservation",
         "success_title": "Réservation reçue !",
-        "success_msg": "Merci pour votre confiance. Notre équipe vous contactera bientôt pour confirmer.",
+        "success_msg": "Merci pour votre confiance. Notre équipe vous contactera bientôt pour confirmer votre location de voiture à Alger.",
         "back": "Retour",
         "loading": "Envoi...",
         "price_per_day": "Prix par jour",
@@ -143,6 +276,12 @@
         "year": "Année"
     },
     "messages": {
-        "whatsapp_template": "Bonjour, je souhaite réserver une {carName}. Détails : Nom : {name}, Tél : {phone}."
+        "whatsapp_template": "Bonjour, je souhaite réserver une {carName} en location à Alger. Détails : Nom : {name}, Tél : {phone}."
+    },
+    "internal_links": {
+        "cars_page": "Voir toutes nos voitures disponibles en location à Alger",
+        "booking": "Réserver votre voiture maintenant",
+        "categories": "Découvrir nos catégories de véhicules",
+        "contact": "Contactez-nous pour votre location voiture à Alger"
     }
 }

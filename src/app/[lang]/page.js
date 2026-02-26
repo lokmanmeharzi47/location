@@ -2,6 +2,10 @@ import HeroSection from "../../components/HeroSection";
 import CarCategories from "../../components/CarCategories";
 import StepsToBook from "../../components/StepsToBook";
 import ComingSoon from "../../components/ComingSoon";
+import WhyChooseUs from "../../components/WhyChooseUs";
+import CoverageAreas from "../../components/CoverageAreas";
+import FAQSection from "../../components/FAQSection";
+import SEOContent from "../../components/SEOContent";
 import { Suspense } from "react";
 import { getDictionary } from "@/lib/dictionaries";
 
@@ -42,8 +46,13 @@ export default async function Home({ params }) {
             <Suspense fallback={<CategoriesLoading />}>
                 <CarCategories dict={dict} lang={lang} />
             </Suspense>
+            <WhyChooseUs dict={dict} />
+            <CoverageAreas dict={dict} />
+            <SEOContent dict={dict} lang={lang} />
+            <FAQSection dict={dict} lang={lang} />
             <StepsToBook dict={dict} />
             <ComingSoon dict={dict} />
         </div>
     );
 }
+
