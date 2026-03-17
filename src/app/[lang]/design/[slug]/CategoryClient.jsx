@@ -5,6 +5,14 @@ import { FiArrowRight } from "react-icons/fi";
 import CarDetailsModal from "@/components/CarDetailsModal";
 import BookingModal from "@/components/BookingModal";
 import CarCard from "@/components/CarCard";
+import Image from "next/image";
+import Link from "next/link";
+import { FiArrowRight } from "react-icons/fi";
+import { BsFuelPump } from "react-icons/bs";
+import { TbManualGearbox } from "react-icons/tb";
+import { MdAirlineSeatReclineNormal } from "react-icons/md";
+import CarDetailsModal from "@/components/CarDetailsModal";
+import BookingModal from "@/components/BookingModal";
 
 export default function CategoryClient({ slug, dict, lang }) {
     const [category, setCategory] = useState(null);
@@ -143,7 +151,77 @@ export default function CategoryClient({ slug, dict, lang }) {
                     {products.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map((product) => (
+<<<<<<< HEAD
                                 <CarCard key={product.id} car={product} onBook={handleProductClick} dict={dict} />
+=======
+                                <div
+                                    key={product.id}
+                                    onClick={() => handleProductClick(product)}
+                                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300 cursor-pointer"
+                                >
+                                    {/* Image */}
+                                    <div className="relative h-48 md:h-56 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+                                        {product.image && !product.image.includes("placeholder") ? (
+                                            <Image
+                                                src={product.image}
+                                                alt={product.name}
+                                                fill
+                                                style={{ objectFit: 'cover' }}
+                                                className="transition-transform duration-500 group-hover:scale-110"
+                                                unoptimized
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <svg className="w-16 h-16 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                        {/* Availability Badge */}
+                                        <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${product.stock !== 0
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-red-500 text-white'
+                                            }`}>
+                                            {product.stock !== 0 ? (dict?.booking?.available || 'Available') : (dict?.booking?.unavailable || 'Unavailable')}
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="p-4 md:p-5">
+                                        <h3 className="font-bold text-slate-800 group-hover:text-gold-600 transition-colors mb-2 text-lg">
+                                            {product.name}
+                                        </h3>
+
+                                        {/* Car Specs - Quick view */}
+                                        <div className="flex items-center gap-3 text-slate-500 text-sm mb-3">
+                                            <span className="flex items-center gap-1">
+                                                <TbManualGearbox className="text-gold-500" />
+                                                {dict?.specs?.transmission_auto || "Auto"}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <BsFuelPump className="text-gold-500" />
+                                                {dict?.specs?.fuel_petrol || "Petrol"}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <MdAirlineSeatReclineNormal className="text-gold-500" />
+                                                5
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-xl font-bold text-gold-600">{formatPrice(product.price)}</p>
+                                                <p className="text-xs text-slate-500">{dict?.cars_page?.per_day || "/ day"}</p>
+                                            </div>
+                                            <span className="text-xs text-slate-500 font-medium group-hover:text-gold-600 transition-colors">
+                                                {dict?.categories?.view_cars || "View Details"} ←
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+>>>>>>> fc1a37aa1da7f8a4a8643dd9913cd7b8505f680b
                             ))}
                         </div>
                     ) : (

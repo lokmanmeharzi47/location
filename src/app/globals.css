@@ -238,7 +238,6 @@ body {
 .animate-backdropFade {
   animation: backdropFade 0.3s ease-out forwards;
 }
-
 /* Step Fade In Animation */
 @keyframes stepFadeIn {
   from {
