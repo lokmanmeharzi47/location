@@ -1,0 +1,287 @@
+{
+    "header": {
+        "home": "Home",
+        "cars": "Cars",
+        "categories": "Categories",
+        "contact": "Contact",
+        "book": "Book Now",
+        "mobile_subtitle": "Car Rental Algiers – Easy & Fast",
+        "rights": "Luxury location",
+        "copyright": "© Luxury location"
+    },
+    "seo": {
+        "title": "Luxury Location",
+        "description": "Cheap car rental Algiers ✓ Houari Boumediene Airport ✓ Self-drive ✓ Long-term ✓ Delivery to Bab Ezzouar, Hydra, Cheraga. Book online!",
+        "h1": "Car Rental in Algiers – Premium Service & Competitive Prices",
+        "keywords": "car rental Algiers, cheap car rental Algiers, airport car rental Algiers, self-drive car rental Algiers, long-term car rental Algiers, location voiture Alger"
+    },
+    "hero": {
+        "title": "Car Rental in Algiers",
+        "subtitle": "Rent your ideal car in Algiers – Best prices and modern vehicles",
+        "badge_clean": "Trust",
+        "badge_price": "Competitive Prices",
+        "badge_delivery": "Free Delivery",
+        "cta_browse": "Browse Cars",
+        "cta_types": "Car Types",
+        "trust_customers": "+500 Satisfied Customers",
+        "trust_rating": "Rating 4.9",
+        "main_title_1": "Car Rental Algiers",
+        "main_title_2": "The smart choice for your travels in Algiers",
+        "main_subtitle": "Affordable car rental in Algiers – Reliable service, airport & neighborhood delivery"
+    },
+    "categories": {
+        "fleet": "Our Fleet in Algiers",
+        "title": "Choose Your Vehicle Type in Algiers",
+        "subtitle": "Discover our diverse range of modern and comfortable cars available for rental in Algiers and surroundings",
+        "view_cars": "View Cars"
+    },
+    "why_choose_us": {
+        "title": "Why Choose Luxury Location in Algiers?",
+        "subtitle": "Exclusive benefits for your car rental in Algiers",
+        "benefits": [
+            {
+                "icon": "price",
+                "title": "Competitive Rates",
+                "description": "Cheap car rental in Algiers starting from 10000DZD/day. Our prices are transparent with no hidden fees or surprises."
+            },
+            {
+                "icon": "airport",
+                "title": "Houari Boumediene Airport Service",
+                "description": "Airport car rental in Algiers with direct pickup at Houari Boumediene International Airport. Arrival or departure, we're there."
+            },
+            {
+                "icon": "selfDrive",
+                "title": "Self-Drive Rental",
+                "description": "Self-drive car rental in Algiers – Enjoy total freedom with our well-maintained, insured vehicles in excellent condition."
+            },
+            {
+                "icon": "longTerm",
+                "title": "Long-Term Rental",
+                "description": "Long-term car rental in Algiers with decreasing rates for weekly, monthly, or longer rentals. Ideal for professionals."
+            },
+            {
+                "icon": "delivery",
+                "title": "Home Delivery",
+                "description": "Free delivery and pickup in all Algiers neighborhoods: Bab Ezzouar, Hydra, Cheraga, Dar El Beida, Zeralda, and Staoueli."
+            },
+            {
+                "icon": "support",
+                "title": "24/7 Support",
+                "description": "Our team is available day and night to assist you. Responsive customer service via phone and WhatsApp."
+            }
+        ]
+    },
+    "coverage_areas": {
+        "title": "Coverage Areas – Car Rental in Algiers",
+        "subtitle": "We deliver and pick up your rental car in all Algiers neighborhoods",
+        "airport_title": "Houari Boumediene Airport",
+        "airport_desc": "Airport car rental service available 24/7. Pickup on arrival and drop-off at departure, directly at the terminal of Houari Boumediene International Airport (ALG). Ideal for business travelers and tourists.",
+        "areas": [
+            {
+                "name": "Bab Ezzouar",
+                "description": "Car rental Bab Ezzouar – Near the international fair, universities, and shopping centers. Fast delivery in 30 minutes."
+            },
+            {
+                "name": "Dar El Beida",
+                "description": "Car rental Dar El Beida – Close to Houari Boumediene Airport and the industrial zone. Express service available."
+            },
+            {
+                "name": "Hydra",
+                "description": "Car rental Hydra – Residential and diplomatic district of Algiers. Premium vehicles available for professionals and embassies."
+            },
+            {
+                "name": "Cheraga",
+                "description": "Car rental Cheraga – Easy access to the highway and West Algiers business centers. Wide selection of vehicles."
+            },
+            {
+                "name": "Zeralda",
+                "description": "Car rental Zeralda – Ideal for beach stays and vacations. Comfortable vehicles to enjoy the Algiers coast."
+            },
+            {
+                "name": "Staoueli",
+                "description": "Car rental Staoueli – Near beaches and residential areas. Fast delivery and competitive rates year-round."
+            }
+        ]
+    },
+    "faq": {
+        "title": "FAQ – Car Rental Algiers",
+        "subtitle": "Everything you need to know about renting a car in Algiers",
+        "questions": [
+            {
+                "question": "How much does car rental cost in Algiers?",
+                "answer": "Our car rental rates in Algiers start from 10000DZD/day for economy vehicles. SUVs and luxury cars are available at competitive prices. We also offer decreasing rates for long-term rentals: 15% off for a week and 30% off for a month."
+            },
+            {
+                "question": "Do you offer service at Houari Boumediene Airport?",
+                "answer": "Yes, we offer airport car rental in Algiers with direct pickup at Houari Boumediene International Airport. Our agent waits for you at the terminal exit with the vehicle ready. Service is available 24/7, including night flights."
+            },
+            {
+                "question": "What documents are needed to rent a car in Algiers?",
+                "answer": "To rent a car in Algiers, you'll need: a valid ID (national card or passport), a valid driving license (minimum 2 years), and proof of residence. For foreigners, an international driving permit is accepted."
+            },
+            {
+                "question": "Is insurance included in the rental?",
+                "answer": "Yes, all our rental cars in Algiers include basic comprehensive insurance. You can opt for premium insurance with extended coverage, 24/7 roadside assistance, and theft protection for total peace of mind."
+            },
+            {
+                "question": "Can I rent a car long-term in Algiers?",
+                "answer": "Absolutely! Our long-term car rental in Algiers is ideal for expats, professionals on assignment, and businesses. We offer flexible contracts from one week to several months with very competitive rates and maintenance included."
+            },
+            {
+                "question": "Do you rent self-drive cars in Algiers?",
+                "answer": "Yes, self-drive car rental in Algiers is our specialty. All our vehicles can be rented for self-driving. Each car is perfectly maintained, insured, and ready to go. You keep your total freedom of movement."
+            },
+            {
+                "question": "Which areas of Algiers do you deliver to?",
+                "answer": "We cover all of Algiers and its surroundings: Bab Ezzouar, Dar El Beida, Hydra, Cheraga, Zeralda, Staoueli, Draria, Birtouta, Kouba, and more. Delivery is free within a 20km radius from our agency. We also deliver to Houari Boumediene Airport."
+            }
+        ]
+    },
+    "seo_content": {
+        "title": "Car Rental in Algiers – Your Trusted Partner",
+        "intro": "Welcome to Luxury Location, your reference agency for car rental in Algiers. Whether you're a resident, business traveler, or tourist, we provide a fleet of modern, comfortable, and perfectly maintained vehicles. Our goal is simple: to offer you the best car rental service in Algiers at the best price.",
+        "fleet_title": "A Diverse Fleet for All Your Needs",
+        "fleet_text": "Our fleet includes economy cars ideal for daily commutes in Algiers, comfortable sedans for business travel, spacious SUVs for families and adventurers, and luxury cars for special occasions like weddings and events. Every vehicle in our fleet is regularly maintained, insured, and ready to accompany you on Algeria's roads.",
+        "airport_title": "Airport Car Rental Algiers – Stress-Free Service",
+        "airport_text": "Houari Boumediene International Airport is the main entry point for visitors to Algiers. Our airport car rental service guarantees quick pickup upon your arrival. No more waiting for a taxi or searching for transport – your car awaits you directly at the terminal.",
+        "selfDrive_title": "Self-Drive Car Rental – Total Freedom",
+        "selfDrive_text": "With our self-drive car rental in Algiers, you're in control of your schedule. Explore the historic Casbah neighborhoods, enjoy the beaches of Zeralda and Staoueli, or cruise the modern boulevards of Hydra and Cheraga with complete autonomy. Our vehicles are equipped with GPS and air conditioning for your comfort.",
+        "longTerm_title": "Long-Term Rental – Attractive Decreasing Rates",
+        "longTerm_text": "For extended stays, our long-term car rental in Algiers is the most economical solution. Whether for a multi-week business assignment or an extended stay, we offer flexible contracts with discounts up to 30%. Regular maintenance and roadside assistance are included.",
+        "pricing_title": "Transparent & Competitive Pricing",
+        "pricing_text": "At Luxury Location, we believe in transparency. Our affordable car rental rates in Algiers start at 10000DZD/day for city cars, including basic insurance, unlimited city mileage, and phone support. No hidden fees, no bad surprises. Browse our vehicle categories and book online in just a few clicks.",
+        "bilingual_note": "Location voiture Alger pas cher – كراء سيارات الجزائر العاصمة. Location voiture aéroport Houari Boumediene – كراء سيارة مطار الجزائر.",
+        "cta_text": "Book Your Car Now",
+        "cta_subtitle": "Take advantage of our best car rental rates in Algiers. Quick online booking or via WhatsApp."
+    },
+    "image_alts": {
+        "hero": "Car rental Algiers – Luxury Location premium vehicle fleet",
+        "fleet": "Fleet of cars available for rental in Algiers – economy, sedan, SUV, luxury",
+        "airport": "Airport car rental Houari Boumediene Algiers – terminal pickup",
+        "booking": "Online car rental booking Algiers – simple and fast process",
+        "coverage": "Delivery zone map car rental Algiers – Bab Ezzouar, Hydra, Cheraga",
+        "logo": "Luxury Location – Car rental Algiers agency logo"
+    },
+    "steps": {
+        "title_small": "Simple Steps",
+        "title_large": "How to Book Your Car Rental in Algiers",
+        "step_1_title": "Choose a Car",
+        "step_1_desc": "Browse our diverse fleet of cars for rental in Algiers and choose the one that suits your needs and budget.",
+        "step_2_title": "Pick-up Date",
+        "step_2_desc": "Choose the pick-up date and time, whether at our agency, your home, or Houari Boumediene Airport.",
+        "step_3_title": "Complete Booking",
+        "step_3_desc": "Fill in the simple booking details and confirm your car rental in Algiers in just a few clicks.",
+        "step_4_title": "Receive Your Car",
+        "step_4_desc": "Pick up your rental car at our agency or we deliver it to all Algiers neighborhoods: Bab Ezzouar, Hydra, Cheraga and more."
+    },
+    "coming_soon": {
+        "title": "New Services Coming Soon",
+        "subtitle": "We are working on adding new services to enhance your car rental experience in Algiers",
+        "features": [
+            "Premium Full Insurance",
+            "Professional Private Driver",
+            "Houari Boumediene Airport Transfer"
+        ],
+        "button": "Coming Soon"
+    },
+    "footer": {
+        "description": "Luxury Location – Your car rental agency in Algiers. Modern fleet, competitive prices, and reliable service. Delivery to Houari Boumediene Airport and all Algiers neighborhoods.",
+        "quick_links": "Quick Links",
+        "contact_us": "Contact Us",
+        "contact_text": "Available 24/7 for your car rental in Algiers",
+        "rights": "All rights reserved",
+        "made_by": "Made with",
+        "in_algeria": "in Algeria"
+    },
+    "cars_page": {
+        "title": "Our Fleet – Car Rental Algiers",
+        "subtitle": "Choose the perfect car for your rental in Algiers from our premium collection",
+        "filter_title": "Filter Search",
+        "search_label": "Car Name",
+        "search_placeholder": "Mercedes, Audi...",
+        "category_label": "Category",
+        "transmission_label": "Transmission",
+        "price_range_label": "Price Range (Day)",
+        "price_min": "Min",
+        "price_max": "Max",
+        "all": "All",
+        "no_results": "No cars match your search criteria",
+        "reset_filters": "Reset Filters",
+        "currency": "Million",
+        "per_day": "/ day",
+        "book_now": "Book Now",
+        "transmission_auto": "Automatic",
+        "transmission_manual": "Manual",
+        "categories_list": {
+            "economy": "Economy",
+            "luxury": "Luxury",
+            "wedding": "Wedding",
+            "suv": "SUV",
+            "sport": "Sport"
+        }
+    },
+    "booking": {
+        "modal_title": "Complete Booking",
+        "step_1_title": "Customer Info",
+        "step_2_title": "Booking Details",
+        "full_name": "Full Name",
+        "phone": "Phone Number",
+        "wilaya": "Wilaya",
+        "commune": "Commune",
+        "pickup_date": "Pickup Date",
+        "return_date": "Return Date",
+        "pickup_location": "Pickup Location",
+        "agency": "From Agency",
+        "delivery": "Delivery to my location",
+        "notes": "Additional Notes (Optional)",
+        "payment_method": "Payment Method",
+        "confirm": "Confirm Booking",
+        "success_title": "Booking Received!",
+        "success_msg": "Thank you for your trust. Our team will contact you shortly to confirm your car rental in Algiers.",
+        "back": "Back",
+        "loading": "Sending...",
+        "price_per_day": "Price per day",
+        "total_days": "Number of days",
+        "total_amount": "Total",
+        "currency": "Million",
+        "available": "Available",
+        "unavailable": "Unavailable"
+    },
+    "admin": {
+        "dashboard": "Dashboard",
+        "orders": "Orders",
+        "stats": "Statistics",
+        "recent_orders": "Recent Orders",
+        "total_orders": "Total Orders",
+        "total_revenue": "Revenue",
+        "new_customers": "New Customers",
+        "total_products": "Products",
+        "top_products": "Top Products",
+        "monthly_performance": "Monthly Performance",
+        "out_of_stock": "Out of Stock",
+        "status": {
+            "pending": "Pending",
+            "completed": "Completed",
+            "shipped": "Shipping",
+            "cancelled": "Cancelled"
+        },
+        "status_label": "Status"
+    },
+    "specs": {
+        "transmission_auto": "Automatic",
+        "transmission_manual": "Manual",
+        "fuel_petrol": "Petrol",
+        "fuel_diesel": "Diesel",
+        "seats": "Seats",
+        "year": "Year"
+    },
+    "messages": {
+        "whatsapp_template": "Hello, I want to rent a {carName} in Algiers. Details: Name: {name}, Phone: {phone}."
+    },
+    "internal_links": {
+        "cars_page": "View all our cars available for rental in Algiers",
+        "booking": "Book your car now",
+        "categories": "Discover our vehicle categories",
+        "contact": "Contact us for your car rental in Algiers"
+    }
+}
