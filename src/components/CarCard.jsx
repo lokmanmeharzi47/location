@@ -1,14 +1,11 @@
 "use client";
 
 import { FaCogs } from "react-icons/fa";
-<<<<<<< HEAD
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-=======
->>>>>>> fc1a37aa1da7f8a4a8643dd9913cd7b8505f680b
 
 export default function CarCard({ car, onBook, dict }) {
     const formatPrice = (priceStr) => {
@@ -24,7 +21,6 @@ export default function CarCard({ car, onBook, dict }) {
         return `${price.toLocaleString()} ${dict?.cars_page?.currency || 'Million'}`;
     };
 
-<<<<<<< HEAD
     const images = Array.isArray(car.images) && car.images.length > 0
         ? car.images
         : (car.image ? [car.image] : []);
@@ -38,16 +34,10 @@ export default function CarCard({ car, onBook, dict }) {
                 }
                 onBook && onBook(car);
             }}
-=======
-    return (
-        <div
-            onClick={() => onBook && onBook(car)}
->>>>>>> fc1a37aa1da7f8a4a8643dd9913cd7b8505f680b
             className="group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-gold-500/10 hover:-translate-y-1 cursor-pointer"
         >
             {/* Image Container */}
             <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-slate-800">
-<<<<<<< HEAD
                 {images.length > 0 ? (
                     <Swiper
                         modules={[Navigation, Pagination]}
@@ -65,21 +55,12 @@ export default function CarCard({ car, onBook, dict }) {
                             </SwiperSlide>
                         ))}
                     </Swiper>
-=======
-                {car.image ? (
-                    <img
-                        src={car.image}
-                        alt={car.name}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    />
->>>>>>> fc1a37aa1da7f8a4a8643dd9913cd7b8505f680b
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-500">
                         <span>No Image</span>
                     </div>
                 )}
                 {car.category && (
-<<<<<<< HEAD
                     <div className="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
                         <span className="text-xs font-medium text-gold-400">{car.category}</span>
                     </div>
@@ -92,12 +73,6 @@ export default function CarCard({ car, onBook, dict }) {
                         {car.stock !== 0 ? (dict?.booking?.available || 'Available') : (dict?.booking?.unavailable || 'Unavailable')}
                     </div>
                 )}
-=======
-                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                        <span className="text-xs font-medium text-gold-400">{car.category}</span>
-                    </div>
-                )}
->>>>>>> fc1a37aa1da7f8a4a8643dd9913cd7b8505f680b
             </div>
 
             {/* Content */}
