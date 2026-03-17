@@ -5,6 +5,7 @@ import { BsFuelPump, BsSpeedometer2 } from "react-icons/bs";
 import { TbManualGearbox } from "react-icons/tb";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
 import ImageCarousel from "./ImageCarousel";
+import ImageLightbox from "./ImageLightbox";
 
 export default function CarDetailsModal({
     product,
@@ -27,6 +28,8 @@ export default function CarDetailsModal({
         return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
     };
     const [carouselIndex, setCarouselIndex] = useState(0);
+    const [openImageViewer, setOpenImageViewer] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     // Close on Escape key
     useEffect(() => {
@@ -47,7 +50,14 @@ export default function CarDetailsModal({
     // Reset states when product changes
     useEffect(() => {
         setCarouselIndex(0);
+        setOpenImageViewer(false);
+        setCurrentImageIndex(0);
     }, [product?.id]);
+
+    const handleImageClick = (index) => {
+        setCurrentImageIndex(index);
+        setOpenImageViewer(true);
+    };
 
     if (!product) return null;
 
@@ -123,6 +133,7 @@ export default function CarDetailsModal({
                     currentIndex={carouselIndex}
                     onIndexChange={setCarouselIndex}
                     showBadge={true}
+                    onImageClick={handleImageClick}
                 />
 
                 {/* Car Specifications */}
@@ -197,6 +208,16 @@ export default function CarDetailsModal({
                     </p>
                 </div>
             </div>
+
+            {/* Image Lightbox */}
+            {openImageViewer && (
+                <ImageLightbox
+                    images={carImages}
+                    currentIndex={currentImageIndex}
+                    onClose={() => setOpenImageViewer(false)}
+                    onIndexChange={setCurrentImageIndex}
+                />
+            )}
         </div>
     );
 }

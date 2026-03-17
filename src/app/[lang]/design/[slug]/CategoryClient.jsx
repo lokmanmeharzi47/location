@@ -1,19 +1,17 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { FiArrowRight } from "react-icons/fi";
-import CarDetailsModal from "@/components/CarDetailsModal";
-import BookingModal from "@/components/BookingModal";
-import CarCard from "@/components/CarCard";
 import Image from "next/image";
 import Link from "next/link";
+
 import { FiArrowRight } from "react-icons/fi";
 import { BsFuelPump } from "react-icons/bs";
 import { TbManualGearbox } from "react-icons/tb";
 import { MdAirlineSeatReclineNormal } from "react-icons/md";
+
+import CarCard from "@/components/CarCard";
 import CarDetailsModal from "@/components/CarDetailsModal";
 import BookingModal from "@/components/BookingModal";
-
 export default function CategoryClient({ slug, dict, lang }) {
     const [category, setCategory] = useState(null);
     const [products, setProducts] = useState([]);

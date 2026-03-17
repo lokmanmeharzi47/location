@@ -19,9 +19,15 @@ export function getImages() {
       return { dresses: [], tops: [], sets: [], sweaters: [] };
     }
     const data = fs.readFileSync(IMAGES_FILE, 'utf8');
+    // Validate JSON before parsing
+    if (!data.trim()) {
+      console.warn('Images file is empty, returning default structure');
+      return { dresses: [], tops: [], sets: [], sweaters: [] };
+    }
     return JSON.parse(data);
   } catch (error) {
     console.error('Error reading images:', error);
+    // Return default structure on error
     return { dresses: [], tops: [], sets: [], sweaters: [] };
   }
 }
