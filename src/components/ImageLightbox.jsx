@@ -84,17 +84,16 @@ export default function ImageLightbox({
             )}
 
             {/* Image Container */}
-            <div 
-  className="relative w-[90vw] h-[90vh] flex items-center justify-center select-none"
+<div 
+  className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center select-none"
   onClick={(e) => e.stopPropagation()} 
 >
   <img 
     src={currentImage} 
     alt={`Fullscreen view ${currentIndex + 1}`} 
-    className="w-full h-full object-cover animate-modalZoomIn rounded-xl transition-all duration-300"
+    className="max-w-full max-h-[90vh] object-contain animate-modalZoomIn rounded-xl transition-all duration-300 shadow-2xl shadow-gold-500/10"
   />
 </div>
-
 {/* Image Counter */}
 {images.length > 1 && (
   <div className="absolute bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md text-white text-sm tracking-widest font-medium z-[10000]">
