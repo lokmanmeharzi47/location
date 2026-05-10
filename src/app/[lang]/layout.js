@@ -89,6 +89,20 @@ export default async function RootLayout({ children, params }) {
         <html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
             <head>
                 <link rel="icon" href="/images/logo.jpg" type="image/jpg" />
+        <Script
+    src="https://www.googletagmanager.com/gtag/js?id=AW-18020200952"
+    strategy="afterInteractive"
+/>
+
+<Script id="google-ads" strategy="afterInteractive">
+    {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18020200952');
+    `}
+</Script>
                 <Script
                     id="local-business-schema"
                     type="application/ld+json"
