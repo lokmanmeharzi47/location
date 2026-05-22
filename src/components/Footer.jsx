@@ -113,7 +113,7 @@ export default function Footer({ dict, lang }) {
                                 <FaPhone className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="https://wa.me/213779132534"
+                                href="https://wa.me/213559309680"
                                 aria-label="WhatsApp"
                                 target="_blank"
                                 rel="noopener noreferrer"
