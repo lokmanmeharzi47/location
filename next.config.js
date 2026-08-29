@@ -8,11 +8,7 @@ const nextConfig = {
         hostname: "*.supabase.co",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        pathname: "/**",
-      },
+
     ],
   },
   // Fix: Set turbopack root to prevent lockfile detection issues
