@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
-import { uploadImage } from '@/lib/cloudinary';
+import { uploadImage } from '@/lib/supabaseStorage';
 import { cookies } from 'next/headers';
 
 // Force Node.js runtime for file handling
@@ -59,6 +59,7 @@ export async function POST(request) {
         // 2. Parse form data
         const formData = await request.formData();
         const file = formData.get('file');
+        const folder = formData.get('folder') || 'cars';
 
         if (!file) {
             return NextResponse.json(
@@ -76,7 +77,7 @@ export async function POST(request) {
             );
         }
 
-        // 4. Validate file size (max 10MB for Cloudinary)
+        // 4. Validate file size (max 10MB)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
             return NextResponse.json(
@@ -89,17 +90,18 @@ export async function POST(request) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // 6. Upload to Cloudinary (server-side only)
+        // 6. Upload to Supabase Storage (server-side)
         const result = await uploadImage(buffer, {
-            folder: 'boutique-rital',
+            folder,
+            contentType: file.type,
         });
 
-        // 7. Return ONLY the secure URL (no credentials exposed)
+        // 7. Return the public URL
         return NextResponse.json({
             success: true,
             message: 'تم رفع الصورة بنجاح',
-            url: result.secure_url,
-            publicId: result.public_id,
+            url: result.url,
+            path: result.path,
         });
 
     } catch (error) {

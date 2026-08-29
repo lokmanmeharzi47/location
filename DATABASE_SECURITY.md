@@ -44,8 +44,9 @@ CREATE POLICY "Service role orders" ON orders
 | Variable | Exposure | Notes |
 |----------|----------|-------|
 | `DATABASE_URL` | Server only | Never prefix with `NEXT_PUBLIC_` |
-| `CLOUDINARY_API_SECRET` | Server only | Never prefix with `NEXT_PUBLIC_` |
-| `CLOUDINARY_CLOUD_NAME` | Server only | Safe but not needed on client |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Never prefix with `NEXT_PUBLIC_` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client & Server | Safe to expose; protected by RLS |
+| `NEXT_PUBLIC_SUPABASE_URL` | Client & Server | Safe to expose |
 
 ## API Route Protection
 
