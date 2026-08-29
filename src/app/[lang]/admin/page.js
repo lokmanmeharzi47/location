@@ -14,7 +14,7 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
-    console.log("Attempting login with:", { email, password });
+    console.log("Attempting login with email:", email);
 
     try {
       const response = await fetch("/api/auth/login", {

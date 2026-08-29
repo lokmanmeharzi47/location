@@ -91,6 +91,7 @@ export async function POST(request) {
         const buffer = Buffer.from(bytes);
 
         // 6. Upload to Supabase Storage (server-side)
+        console.log('Uploading to Supabase Storage:', { folder, contentType: file.type, size: file.size });
         const result = await uploadImage(buffer, {
             folder,
             contentType: file.type,
