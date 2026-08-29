@@ -4,45 +4,23 @@ if (!process.env.DATABASE_URL) {
     console.error("FATAL ERROR: DATABASE_URL is not defined in environment variables");
 }
 
-// Optimized pool configuration for Supabase
-// Optimized pool configuration for Supabase
+// Optimized pool configuration for Supabase on Serverless (Vercel)
 const poolConfig = {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 5, // Reduced pool size for faster initial connections
-    idleTimeoutMillis: 60000, // Keep connections alive longer
-    connectionTimeoutMillis: 20000, // Increased timeout to 20s
-    keepAlive: true, // Keep TCP connections alive
-    keepAliveInitialDelayMillis: 10000,
+    max: 3, // Conservative connection limit for serverless lambdas
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 5000, // 5s fast-fail timeout to prevent hanging requests
+    allowExitOnIdle: true, // Allow serverless processes to terminate cleanly
 };
 
 let pool;
 
-// Use global singleton in development to prevent connection exhaustion during HMR
-if (process.env.NODE_ENV === 'production') {
-    pool = new Pool(poolConfig);
-} else {
-    if (!global.dbPool) {
-        global.dbPool = new Pool(poolConfig);
-    }
-    pool = global.dbPool;
+// Maintain a single pool instance across warm serverless lambdas
+if (!globalThis.dbPool) {
+    globalThis.dbPool = new Pool(poolConfig);
 }
-
-// Prewarm connection on module load (only if not already warmed in this process)
-let connectionWarmed = false;
-async function warmConnection() {
-    if (connectionWarmed) return;
-    try {
-        // Just a simple query to ensure connection is established
-        await pool.query("SELECT 1");
-        connectionWarmed = true;
-        console.log("Database connection warmed up");
-    } catch (e) {
-        console.error("Failed to warm connection:", e.message);
-    }
-}
-// Don't await this, let it happen in background
-warmConnection();
+pool = globalThis.dbPool;
 
 /**
  * Convert MySQL '?' placeholders to PostgreSQL '$1, $2, ...'
