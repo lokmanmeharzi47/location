@@ -106,9 +106,13 @@ export async function POST(request) {
         });
 
     } catch (error) {
-        console.error('Upload error:', error);
+        console.error('Upload error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name,
+        });
         return NextResponse.json(
-            { success: false, message: 'حدث خطأ في رفع الصورة', error: error.message },
+            { success: false, message: `حدث خطأ في رفع الصورة: ${error.message}`, error: error.message },
             { status: 500 }
         );
     }

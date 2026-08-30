@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import sharp from 'sharp';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://legnjqukzdwrpoaiyeiz.supabase.co';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -13,27 +12,53 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 const BUCKET_NAME = 'images';
 
 /**
+ * Lazily load sharp — it may not be available on all platforms (e.g. serverless)
+ */
+let _sharp = undefined; // undefined = not yet attempted, null = failed
+async function getSharp() {
+    if (_sharp === undefined) {
+        try {
+            _sharp = (await import('sharp')).default;
+        } catch (e) {
+            console.warn('sharp is not available, image optimization will be skipped:', e.message);
+            _sharp = null;
+        }
+    }
+    return _sharp;
+}
+
+/**
  * Optimize an image buffer using sharp
  * - Resize to max 1200px width (preserving aspect ratio)
  * - Convert to WebP at 80% quality
  * - Strip metadata (EXIF, etc.)
  * @param {Buffer} buffer - Raw image buffer
- * @returns {Promise<{ buffer: Buffer, contentType: string, ext: string }>}
+ * @returns {Promise<{ buffer: Buffer, contentType: string, ext: string } | null>}
  */
 async function optimizeImage(buffer) {
-    const optimized = await sharp(buffer)
-        .resize(1200, 1200, {
-            fit: 'inside',        // Keep aspect ratio, fit within 1200x1200
-            withoutEnlargement: true, // Don't upscale small images
-        })
-        .webp({ quality: 80 })   // Convert to WebP at 80% quality
-        .toBuffer();
+    const sharp = await getSharp();
+    if (!sharp) {
+        return null; // sharp not available
+    }
 
-    return {
-        buffer: optimized,
-        contentType: 'image/webp',
-        ext: 'webp',
-    };
+    try {
+        const optimized = await sharp(buffer)
+            .resize(1200, 1200, {
+                fit: 'inside',        // Keep aspect ratio, fit within 1200x1200
+                withoutEnlargement: true, // Don't upscale small images
+            })
+            .webp({ quality: 80 })   // Convert to WebP at 80% quality
+            .toBuffer();
+
+        return {
+            buffer: optimized,
+            contentType: 'image/webp',
+            ext: 'webp',
+        };
+    } catch (err) {
+        console.warn('Image optimization failed, using original:', err.message);
+        return null; // Optimization failed, caller will use original
+    }
 }
 
 /**
@@ -60,22 +85,26 @@ export async function uploadImage(buffer, options = {}) {
 
     if (!skipOptimization) {
         const optimized = await optimizeImage(buffer);
-        uploadBuffer = optimized.buffer;
-        contentType = optimized.contentType;
-        ext = optimized.ext;
-        console.log(`Image optimized: ${buffer.length} bytes → ${uploadBuffer.length} bytes (${Math.round((1 - uploadBuffer.length / buffer.length) * 100)}% reduction)`);
+        if (optimized) {
+            uploadBuffer = optimized.buffer;
+            contentType = optimized.contentType;
+            ext = optimized.ext;
+            console.log(`Image optimized: ${buffer.length} bytes → ${uploadBuffer.length} bytes (${Math.round((1 - uploadBuffer.length / buffer.length) * 100)}% reduction)`);
+        } else {
+            // Optimization failed or sharp not available — use original
+            console.log('Using original image without optimization');
+            ext = getExtFromContentType(contentType);
+        }
     } else {
         // Use original format
-        if (contentType === 'image/png') ext = 'png';
-        else if (contentType === 'image/webp') ext = 'webp';
-        else if (contentType === 'image/gif') ext = 'gif';
-        else if (contentType === 'image/svg+xml') ext = 'svg';
-        else ext = 'jpg';
+        ext = getExtFromContentType(contentType);
     }
 
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 9);
     const fileName = options.fileName || `${folder}/${timestamp}-${random}.${ext}`;
+
+    console.log('Uploading to Supabase Storage:', { fileName, contentType, size: uploadBuffer.length });
 
     const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
@@ -85,6 +114,7 @@ export async function uploadImage(buffer, options = {}) {
         });
 
     if (error) {
+        console.error('Supabase Storage upload error:', error);
         throw new Error(`Supabase Storage upload failed: ${error.message}`);
     }
 
@@ -96,6 +126,19 @@ export async function uploadImage(buffer, options = {}) {
         url: publicUrlData.publicUrl,
         path: data.path,
     };
+}
+
+/**
+ * Get file extension from MIME content type
+ * @param {string} contentType - MIME type
+ * @returns {string} file extension
+ */
+function getExtFromContentType(contentType) {
+    if (contentType === 'image/png') return 'png';
+    if (contentType === 'image/webp') return 'webp';
+    if (contentType === 'image/gif') return 'gif';
+    if (contentType === 'image/svg+xml') return 'svg';
+    return 'jpg';
 }
 
 /**
