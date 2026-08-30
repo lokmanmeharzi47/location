@@ -54,9 +54,10 @@ export default function CarsPage() {
             setLoading(true);
             setError(null);
 
+            const timestamp = new Date().getTime();
             const [carsRes, categoriesRes] = await Promise.all([
-                fetch("/api/products"),
-                fetch("/api/categories?active=true")
+                fetch(`/api/products?t=${timestamp}`, { cache: 'no-store' }),
+                fetch(`/api/categories?active=true&t=${timestamp}`, { cache: 'no-store' })
             ]);
 
             const carsData = await carsRes.json();
