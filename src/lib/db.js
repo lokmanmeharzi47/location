@@ -10,8 +10,11 @@ const poolConfig = {
     ssl: { rejectUnauthorized: false },
     max: 3, // Conservative connection limit for serverless lambdas
     idleTimeoutMillis: 10000,
-    connectionTimeoutMillis: 5000, // 5s fast-fail timeout to prevent hanging requests
+    connectionTimeoutMillis: 10000, // 10s timeout — Supabase cold starts can be slow
     allowExitOnIdle: true, // Allow serverless processes to terminate cleanly
+    keepAlive: true, // Detect dead connections via TCP keepalive
+    keepAliveInitialDelayMillis: 10000,
+    statement_timeout: 30000, // 30s max query time to prevent hanging queries
 };
 
 let pool;
@@ -19,6 +22,11 @@ let pool;
 // Maintain a single pool instance across warm serverless lambdas
 if (!globalThis.dbPool) {
     globalThis.dbPool = new Pool(poolConfig);
+    // Prevent unhandled 'error' events from crashing the process
+    // when Supabase/PgBouncer drops idle connections
+    globalThis.dbPool.on("error", (err) => {
+        console.error("Unexpected pool error (connection dropped by server):", err.message);
+    });
 }
 pool = globalThis.dbPool;
 

@@ -3,6 +3,7 @@
 import { FaCogs } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -47,11 +48,16 @@ export default function CarCard({ car, onBook, dict }) {
                     >
                         {images.map((img, index) => (
                             <SwiperSlide key={index}>
-                                <img
-                                    src={img}
-                                    alt={`${car.name} - Image ${index + 1}`}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={img}
+                                        alt={`${car.name} - Image ${index + 1}`}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                        loading={index === 0 ? "eager" : "lazy"}
+                                    />
+                                </div>
                             </SwiperSlide>
                         ))}
                     </Swiper>

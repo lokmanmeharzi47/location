@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight, FiShoppingBag } from "react-icons/fi";
+import Image from "next/image";
 
 /**
  * ImageCarousel - Simple state-based image carousel
@@ -52,10 +53,12 @@ export default function ImageCarousel({
             {/* Current Image */}
             <div className="w-full h-full relative">
                 {images[activeIndex] && !images[activeIndex].includes("placeholder") ? (
-                    <img
+                    <Image
                         src={images[activeIndex]}
                         alt={`${productName} - صورة ${activeIndex + 1}`}
-                        className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                         onClick={() => onImageClick?.(activeIndex)}
                     />
                 ) : (

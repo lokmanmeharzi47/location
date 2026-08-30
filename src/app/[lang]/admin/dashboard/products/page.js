@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle } from "react-icons/fi";
+import Image from "next/image";
 
 export default function CarsPage() {
     const [cars, setCars] = useState([]);
@@ -321,10 +322,12 @@ export default function CarsPage() {
                     >
                         <div className="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden">
                             {car.image && !car.image.includes("placeholder") ? (
-                                <img
+                                <Image
                                     src={car.image}
                                     alt={car.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 25vw"
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                             ) : (
                                 <FiImage size={48} className="text-slate-300" />
@@ -507,11 +510,15 @@ export default function CarsPage() {
                                         {/* Existing Images */}
                                         {formData.images.map((img, index) => (
                                             <div key={index} className="relative group">
-                                                <img
-                                                    src={img}
-                                                    alt={`صورة ${index + 1}`}
-                                                    className="w-20 h-20 object-cover rounded-xl border border-slate-200"
-                                                />
+                                                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
+                                                    <Image
+                                                        src={img}
+                                                        alt={`صورة ${index + 1}`}
+                                                        fill
+                                                        sizes="80px"
+                                                        className="object-cover"
+                                                    />
+                                                </div>
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveImage(index)}

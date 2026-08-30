@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
+import Image from "next/image";
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([]);
@@ -222,10 +223,12 @@ export default function CategoriesPage() {
                         {/* Category Image */}
                         <div className="relative h-48 bg-gradient-to-br from-cream-100 to-blush-50 overflow-hidden">
                             {category.image && !category.image.includes("placeholder") ? (
-                                <img
+                                <Image
                                     src={category.image}
                                     alt={category.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 25vw"
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
@@ -402,7 +405,9 @@ export default function CategoriesPage() {
                                     {uploadingImage ? (
                                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold-500 mx-auto"></div>
                                     ) : imagePreview ? (
-                                        <img src={imagePreview} alt="Preview" className="max-h-32 mx-auto rounded-xl shadow-sm" />
+                                        <div className="relative h-32 w-full max-w-[200px] mx-auto rounded-xl overflow-hidden shadow-sm">
+                                            <Image src={imagePreview} alt="Preview" fill className="object-contain" sizes="200px" />
+                                        </div>
                                     ) : (
                                         <>
                                             <FiUpload size={32} className="mx-auto text-cream-400 mb-2" />
