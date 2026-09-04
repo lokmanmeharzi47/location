@@ -1,12 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function HeroSection({ dict, lang }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const videoRef = useRef(null);
+
+  const applyPlaybackSpeed = () => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 1.35;
+    }
+  };
 
   useEffect(() => {
     setIsLoaded(true);
+    applyPlaybackSpeed();
   }, []);
 
   return (
@@ -15,12 +23,18 @@ export default function HeroSection({ dict, lang }) {
       {/* Background Video */}
       <div className="absolute inset-0">
         <video
+          ref={videoRef}
           autoPlay
           muted
+          loop
           playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover md:scale-100 scale-110"
+          preload="auto"
+          poster="/images/hero-poster.webp"
+          onLoadedMetadata={applyPlaybackSpeed}
+          onPlay={applyPlaybackSpeed}
+          className="absolute inset-0 w-full h-full object-cover md:scale-100 scale-110 transform-gpu will-change-transform"
         >
+          <source src="/videos/lambo-optimized.webm" type="video/webm" />
           <source src="/videos/lambo.mp4" type="video/mp4" />
         </video>
 
