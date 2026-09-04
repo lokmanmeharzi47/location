@@ -259,7 +259,9 @@
         "total_amount": "Total",
         "currency": "Million",
         "available": "Disponible",
-        "unavailable": "Indisponible"
+        "unavailable": "Indisponible",
+        "min_economy_notice": "Pour la catégorie Économique : retrait minimum 3 jours après aujourd'hui.",
+        "min_economy_pickup_error": "Pour les véhicules de la catégorie Économique, la date de prise en charge doit être au moins 3 jours après aujourd'hui."
     },
     "admin": {
         "dashboard": "Tableau de bord",

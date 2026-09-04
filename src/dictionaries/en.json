@@ -245,7 +245,9 @@
         "total_amount": "Total",
         "currency": "Million",
         "available": "Available",
-        "unavailable": "Unavailable"
+        "unavailable": "Unavailable",
+        "min_economy_notice": "Economy category: pickup must be at least 3 days after today.",
+        "min_economy_pickup_error": "For economy category vehicles, the pickup date must be at least 3 days after today."
     },
     "admin": {
         "dashboard": "Dashboard",

@@ -37,6 +37,7 @@ export async function GET() {
             price: car.price_per_day,
             transmission: car.transmission,
             category: car.category_name,
+            categoryId: car.category_id,
             displayOrder: car.display_order ?? 0,
             image: car.image_url || '/images/placeholder.jpg', // Fallback image
         }));

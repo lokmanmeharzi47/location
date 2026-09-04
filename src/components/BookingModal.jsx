@@ -48,8 +48,35 @@ export default function BookingModal({
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState(null);
 
-    // Get today's date for min date attribute
-    const today = new Date().toISOString().split('T')[0];
+    // Detect if current car is in Economy category
+    const isEconomy = useMemo(() => {
+        const catName = (category?.name || product?.category || "").toString().toLowerCase().trim();
+        const catSlug = (category?.slug || product?.categorySlug || "").toString().toLowerCase().trim();
+        const catId = Number(category?.id || product?.categoryId);
+
+        return (
+            catId === 5 ||
+            catName === "economy" ||
+            catName.includes("econom") ||
+            catName.includes("اقتصادية") ||
+            catSlug.includes("economy") ||
+            catSlug.includes("اقتصادية")
+        );
+    }, [category, product]);
+
+    // Format date YYYY-MM-DD locally
+    const formatDate = (daysOffset = 0) => {
+        const date = new Date();
+        date.setDate(date.getDate() + daysOffset);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const today = useMemo(() => formatDate(0), []);
+    const minEconomyDate = useMemo(() => formatDate(3), []);
+    const minPickupDate = isEconomy ? minEconomyDate : today;
 
     // Close on Escape key
     useEffect(() => {
@@ -71,6 +98,14 @@ export default function BookingModal({
         const { name, value } = e.target;
         if (name === "wilaya") {
             setFormData({ ...formData, [name]: value, commune: "" });
+        } else if (name === "pickupDate") {
+            setFormData((prev) => {
+                const updated = { ...prev, pickupDate: value };
+                if (prev.returnDate && prev.returnDate < value) {
+                    updated.returnDate = value;
+                }
+                return updated;
+            });
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -100,6 +135,16 @@ export default function BookingModal({
         e.preventDefault();
         setLoading(true);
         setError(null);
+
+        // Economy cars require pickup date at least 3 days in advance
+        if (isEconomy && formData.pickupDate && formData.pickupDate < minPickupDate) {
+            setError(
+                dict?.booking?.min_economy_pickup_error ||
+                "Pour les véhicules de la catégorie Économique, la date de prise en charge doit être au moins 3 jours après aujourd'hui."
+            );
+            setLoading(false);
+            return;
+        }
 
         const orderData = {
             customer_name: formData.fullName,
@@ -242,10 +287,15 @@ export default function BookingModal({
                                     name="pickupDate"
                                     value={formData.pickupDate}
                                     onChange={handleChange}
-                                    min={today}
+                                    min={minPickupDate}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
                                     required
                                 />
+                                {isEconomy && (
+                                    <p className="text-xs text-amber-600 mt-1.5 font-medium leading-tight">
+                                        {dict?.booking?.min_economy_notice || "Pour la catégorie Économique : retrait minimum 3 jours après aujourd'hui."}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Return Date */}
@@ -259,7 +309,7 @@ export default function BookingModal({
                                     name="returnDate"
                                     value={formData.returnDate}
                                     onChange={handleChange}
-                                    min={formData.pickupDate || today}
+                                    min={formData.pickupDate || minPickupDate}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
                                     required
                                 />
