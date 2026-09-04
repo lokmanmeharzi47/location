@@ -221,21 +221,7 @@ export default function BookingModal({
 
                         {/* Car Summary */}
                         <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl border border-slate-200">
-                            <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-200 flex-shrink-0">
-                                {product.image && !product.image.includes("placeholder") ? (
-                                    <Image
-                                        src={product.image}
-                                        alt={product.name}
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                        unoptimized
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                        <FiMapPin size={24} />
-                                    </div>
-                                )}
-                            </div>
+
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
                                 <h3 className="font-bold text-slate-800 truncate">{product.name}</h3>
