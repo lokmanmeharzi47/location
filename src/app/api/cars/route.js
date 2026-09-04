@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const client = await pool.connect();
 
@@ -12,6 +14,7 @@ export async function GET() {
                 c.price_per_day,
                 c.transmission,
                 c.category_id,
+                c.display_order,
                 cat.name as category_name,
                 (
                     SELECT image_url 
@@ -23,7 +26,7 @@ export async function GET() {
             FROM cars c
             LEFT JOIN categories cat ON c.category_id = cat.id
             WHERE c.status = 'disponible'
-            ORDER BY c.created_at DESC
+            ORDER BY COALESCE(c.display_order, 0) ASC, LOWER(TRIM(c.name)) ASC
         `;
 
         const result = await client.query(query);
@@ -34,6 +37,7 @@ export async function GET() {
             price: car.price_per_day,
             transmission: car.transmission,
             category: car.category_name,
+            displayOrder: car.display_order ?? 0,
             image: car.image_url || '/images/placeholder.jpg', // Fallback image
         }));
 

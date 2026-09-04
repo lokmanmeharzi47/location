@@ -72,6 +72,7 @@ model Car {
   images          String?
   description     String?
   features        String?
+  displayOrder    Int?      @default(0) @map("display_order")
   isActive        Boolean?  @default(true) @map("is_active")
   createdAt       DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt       DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
@@ -80,6 +81,7 @@ model Car {
 
   @@index([categoryId], map: "idx_cars_category")
   @@index([status], map: "idx_cars_status")
+  @@index([displayOrder], map: "idx_cars_display_order")
   @@map("cars")
 }
 

@@ -68,6 +68,7 @@ export async function GET(request, { params }) {
                 description: car.description,
                 colors: [],
                 variants: variants,
+                displayOrder: car.display_order ?? 0,
                 // Car-specific fields
                 brand: car.brand,
                 model: car.model,
@@ -100,16 +101,20 @@ export async function PUT(request, { params }) {
 
         const { id } = await params;
         const body = await request.json();
-        const { name, category_id, price, stock, description, variants } = body;
+        const { name, category_id, price, stock, description, variants, display_order, displayOrder } = body;
 
         // Check if car exists
-        const existing = await client.query('SELECT id FROM cars WHERE id = $1', [id]);
+        const existing = await client.query('SELECT id, display_order FROM cars WHERE id = $1', [id]);
         if (existing.rows.length === 0) {
             return NextResponse.json(
                 { success: false, message: 'السيارة غير موجودة' },
                 { status: 404 }
             );
         }
+
+        const targetOrder = display_order !== undefined && display_order !== null && display_order !== ''
+            ? parseInt(display_order)
+            : (displayOrder !== undefined && displayOrder !== null && displayOrder !== '' ? parseInt(displayOrder) : existing.rows[0].display_order);
 
         // Extract images
         let imageUrls = [];
@@ -141,8 +146,8 @@ export async function PUT(request, { params }) {
             `UPDATE cars 
              SET name = $1, year = $2, category_id = $3, 
                  price_per_day = $4, fuel_type = $5, transmission = $6, seats = $7,
-                 status = $8, description = $9, updated_at = CURRENT_TIMESTAMP
-             WHERE id = $10`,
+                 status = $8, description = $9, display_order = $10, updated_at = CURRENT_TIMESTAMP
+             WHERE id = $11`,
             [
                 name,
                 year,
@@ -153,6 +158,7 @@ export async function PUT(request, { params }) {
                 seats,
                 carStatus,
                 description || null,
+                targetOrder,
                 id
             ]
         );

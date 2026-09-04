@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch all cars with category info and images
 export async function GET(request) {
     const client = await pool.connect();
@@ -54,7 +56,7 @@ export async function GET(request) {
             paramIndex++;
         }
 
-        sql += ' GROUP BY c.id, cat.name, cat.slug ORDER BY c.created_at DESC';
+        sql += ' GROUP BY c.id, cat.name, cat.slug ORDER BY COALESCE(c.display_order, 0) ASC, LOWER(TRIM(c.name)) ASC';
 
         const result = await client.query(sql, params);
         const cars = result.rows;
@@ -78,6 +80,7 @@ export async function GET(request) {
                 category: car.category_name || 'غير مصنف',
                 categoryId: car.category_id,
                 categorySlug: car.category_slug,
+                displayOrder: car.display_order ?? 0,
                 price: car.price_per_day,
                 priceRaw: car.price_per_day,
                 stock: car.status === 'disponible' ? 1 : 0,
@@ -194,10 +197,13 @@ export async function POST(request) {
 
         // Insert car
         const carStatus = stock > 0 ? 'disponible' : 'loué';
+        const displayOrder = body.display_order !== undefined && body.display_order !== null && body.display_order !== ''
+            ? parseInt(body.display_order)
+            : (body.displayOrder !== undefined && body.displayOrder !== null && body.displayOrder !== '' ? parseInt(body.displayOrder) : 0);
 
         const insertQuery = `
-            INSERT INTO cars (name, year, category_id, price_per_day, fuel_type, transmission, seats, status, description, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            INSERT INTO cars (name, year, category_id, price_per_day, fuel_type, transmission, seats, status, description, display_order, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             RETURNING id
         `;
 
@@ -210,7 +216,8 @@ export async function POST(request) {
             transmission,
             seats,
             carStatus,
-            description || null
+            description || null,
+            displayOrder
         ]);
 
         const carId = result.rows[0].id;

@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiArrowUp, FiArrowDown, FiList } from "react-icons/fi";
 import Image from "next/image";
 
 export default function CarsPage() {
     const [cars, setCars] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [reordering, setReordering] = useState(false);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [editCar, setEditCar] = useState(null);
@@ -28,6 +29,7 @@ export default function CarsPage() {
         doors: 4,
         air_conditioning: true,
         description: "",
+        display_order: 0,
         images: [], // Multiple images support
     });
 
@@ -126,6 +128,58 @@ export default function CarsPage() {
         }));
     };
 
+    // Sort all cars alphabetically (A-Z)
+    const handleSortAlphabetical = async () => {
+        if (!confirm("هل تريد إعادة ترتيب جميع السيارات تلقائياً حسب الأحرف الأبجدية من A إلى Z؟")) return;
+
+        try {
+            setReordering(true);
+            const res = await fetch("/api/cars/reorder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "sort_alphabetical" })
+            });
+            const data = await res.json();
+            if (data.success) {
+                await fetchData();
+            } else {
+                alert(data.message || "حدث خطأ");
+            }
+        } catch {
+            alert("حدث خطأ في إعادة الترتيب");
+        } finally {
+            setReordering(false);
+        }
+    };
+
+    // Quick inline order change
+    const handleQuickOrderChange = async (carId, newOrder) => {
+        const orderNum = parseInt(newOrder);
+        if (isNaN(orderNum) || orderNum < 0) return;
+
+        // Optimistic local state update
+        setCars(prev => {
+            const updated = prev.map(c => c.id === carId ? { ...c, displayOrder: orderNum } : c);
+            return [...updated].sort((a, b) => {
+                const orderA = a.displayOrder ?? 0;
+                const orderB = b.displayOrder ?? 0;
+                if (orderA !== orderB) return orderA - orderB;
+                return (a.name || '').localeCompare(b.name || '');
+            });
+        });
+
+        try {
+            await fetch("/api/cars/reorder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ carId, display_order: orderNum })
+            });
+            fetchData();
+        } catch {
+            fetchData();
+        }
+    };
+
     const handleSubmit = async () => {
         if (!formData.name || !formData.category_id || !formData.price_per_day) {
             alert("الاسم والفئة والسعر مطلوبون");
@@ -143,6 +197,7 @@ export default function CarsPage() {
                 category_id: formData.category_id,
                 price: parseFloat(formData.price_per_day.toString().replace(/,/g, "")),
                 stock: 1,
+                display_order: parseInt(formData.display_order) || 0,
                 description: `${formData.brand} ${formData.model} ${formData.year} | ${formData.fuel_type} | ${formData.transmission} | ${formData.seats} مقاعد`,
                 variants: [{
                     colorName: "Default",
@@ -220,6 +275,7 @@ export default function CarsPage() {
             doors: 4,
             air_conditioning: true,
             description: car.description || "",
+            display_order: car.displayOrder !== undefined ? car.displayOrder : 0,
             images: carImages,
         });
         setShowModal(true);
@@ -239,6 +295,7 @@ export default function CarsPage() {
             doors: 4,
             air_conditioning: true,
             description: "",
+            display_order: 0,
             images: [],
         });
         setEditCar(null);
@@ -275,18 +332,29 @@ export default function CarsPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">إدارة السيارات</h1>
-                    <p className="text-gray-500 mt-1">إضافة وتعديل وحذف السيارات</p>
+                    <p className="text-gray-500 mt-1">إضافة وتعديل وحذف وترتيب السيارات</p>
                 </div>
-                <button
-                    onClick={() => {
-                        resetForm();
-                        setShowModal(true);
-                    }}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors font-medium shadow-lg shadow-gold-500/20"
-                >
-                    <FiPlus size={18} />
-                    <span>إضافة سيارة</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleSortAlphabetical}
+                        disabled={reordering}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-700 rounded-xl hover:bg-slate-50 border border-slate-200 transition-colors font-medium shadow-sm hover:border-gold-400"
+                        title="ترتيب جميع السيارات تلقائياً حسب الأحرف الأبجدية من أ إلى ي"
+                    >
+                        <FiList size={16} className="text-gold-500" />
+                        <span>{reordering ? "جاري الترتيب..." : "ترتيب أبجدي (A-Z)"}</span>
+                    </button>
+                    <button
+                        onClick={() => {
+                            resetForm();
+                            setShowModal(true);
+                        }}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-colors font-medium shadow-lg shadow-gold-500/20"
+                    >
+                        <FiPlus size={18} />
+                        <span>إضافة سيارة</span>
+                    </button>
+                </div>
             </div>
 
             {/* Category Filters */}
@@ -333,6 +401,15 @@ export default function CarsPage() {
                             ) : (
                                 <FiImage size={48} className="text-slate-300" />
                             )}
+
+                            {/* Display Order Badge */}
+                            <div className="absolute top-3 left-3">
+                                <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-white/95 text-gold-600 shadow-md border border-gold-200/50 flex items-center gap-1">
+                                    <span className="text-[10px] text-gray-400">#</span>
+                                    {car.displayOrder ?? 0}
+                                </span>
+                            </div>
+
                             <div className="absolute top-3 right-3">
                                 <span
                                     className={`px-3 py-1 rounded-full text-xs font-medium ${car.status === "متوفر"
@@ -359,7 +436,44 @@ export default function CarsPage() {
                             </div>
                         </div>
 
-                        <div className="p-5 pt-0 flex gap-2">
+                        {/* Quick Order Adjustment */}
+                        <div className="px-5 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span className="text-gray-500 font-medium">ترتيب العرض:</span>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    onClick={() => handleQuickOrderChange(car.id, Math.max(1, (car.displayOrder || 1) - 1))}
+                                    className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                                    title="تقديم الترتيب"
+                                >
+                                    <FiArrowUp size={14} />
+                                </button>
+                                <input
+                                    type="number"
+                                    defaultValue={car.displayOrder ?? 0}
+                                    key={car.displayOrder}
+                                    onBlur={(e) => handleQuickOrderChange(car.id, e.target.value)}
+                                    onKeyDown={(e) => {
+                                         if (e.key === 'Enter') {
+                                             handleQuickOrderChange(car.id, e.currentTarget.value);
+                                             e.currentTarget.blur();
+                                         }
+                                    }}
+                                    className="w-12 text-center py-0.5 px-1 bg-white border border-slate-300 rounded font-bold text-gold-600 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                                    min="0"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => handleQuickOrderChange(car.id, (car.displayOrder || 0) + 1)}
+                                    className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                                    title="تأخير الترتيب"
+                                >
+                                    <FiArrowDown size={14} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-5 pt-3 flex gap-2 border-t border-slate-50">
                             <button
                                 onClick={() => openEditModal(car)}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors text-sm font-medium"
@@ -447,16 +561,29 @@ export default function CarsPage() {
                                     </div>
                                 </div>
 
-                                {/* Price per Day */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (million) *</label>
-                                    <input
-                                        type="text"
-                                        value={formData.price_per_day}
-                                        onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
-                                        placeholder="1"
-                                    />
+                                {/* Price per Day & Display Order */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">السعر لليوم (million) *</label>
+                                        <input
+                                            type="text"
+                                            value={formData.price_per_day}
+                                            onChange={(e) => setFormData({ ...formData, price_per_day: e.target.value })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                            placeholder="1"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">ترتيب العرض (الأولوية)</label>
+                                        <input
+                                            type="number"
+                                            value={formData.display_order}
+                                            onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 bg-slate-50/50"
+                                            min="0"
+                                            placeholder="1"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Fuel & Transmission */}
@@ -510,29 +637,29 @@ export default function CarsPage() {
                                     <div className="flex flex-wrap gap-3">
                                         {/* Existing Images */}
                                         {formData.images.map((img, index) => (
-                                            <div key={index} className="relative group">
-                                                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
-                                                    <Image
-                                                        src={img}
-                                                        alt={`صورة ${index + 1}`}
-                                                        fill
-                                                        sizes="80px"
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveImage(index)}
-                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                                                >
-                                                    <FiX size={14} />
-                                                </button>
-                                                {index === 0 && (
-                                                    <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
-                                                        رئيسية
-                                                    </span>
-                                                )}
-                                            </div>
+                                             <div key={index} className="relative group">
+                                                 <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
+                                                     <Image
+                                                         src={img}
+                                                         alt={`صورة ${index + 1}`}
+                                                         fill
+                                                         sizes="80px"
+                                                         className="object-cover"
+                                                     />
+                                                 </div>
+                                                 <button
+                                                     type="button"
+                                                     onClick={() => handleRemoveImage(index)}
+                                                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                 >
+                                                     <FiX size={14} />
+                                                 </button>
+                                                 {index === 0 && (
+                                                     <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
+                                                         رئيسية
+                                                     </span>
+                                                 )}
+                                             </div>
                                         ))}
 
                                         {/* Add Image Button */}
