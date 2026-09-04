@@ -53,7 +53,7 @@ const localBusinessSchema = {
     "name": "Luxury Location",
     "description": "Location voiture Alger – Service premium de location de voitures à Alger avec livraison aéroport Houari Boumediene et tous quartiers.",
     "url": "https://luxurylocation.dz",
-    "telephone": "+213779132534",
+    "telephone": "+213559306980",
     "address": {
         "@type": "PostalAddress",
         "addressLocality": "Alger",

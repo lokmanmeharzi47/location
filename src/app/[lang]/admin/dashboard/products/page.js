@@ -454,10 +454,10 @@ export default function CarsPage() {
                                     key={car.displayOrder}
                                     onBlur={(e) => handleQuickOrderChange(car.id, e.target.value)}
                                     onKeyDown={(e) => {
-                                         if (e.key === 'Enter') {
-                                             handleQuickOrderChange(car.id, e.currentTarget.value);
-                                             e.currentTarget.blur();
-                                         }
+                                        if (e.key === 'Enter') {
+                                            handleQuickOrderChange(car.id, e.currentTarget.value);
+                                            e.currentTarget.blur();
+                                        }
                                     }}
                                     className="w-12 text-center py-0.5 px-1 bg-white border border-slate-300 rounded font-bold text-gold-600 focus:outline-none focus:ring-1 focus:ring-gold-500"
                                     min="0"
@@ -637,29 +637,29 @@ export default function CarsPage() {
                                     <div className="flex flex-wrap gap-3">
                                         {/* Existing Images */}
                                         {formData.images.map((img, index) => (
-                                             <div key={index} className="relative group">
-                                                 <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
-                                                     <Image
-                                                         src={img}
-                                                         alt={`صورة ${index + 1}`}
-                                                         fill
-                                                         sizes="80px"
-                                                         className="object-cover"
-                                                     />
-                                                 </div>
-                                                 <button
-                                                     type="button"
-                                                     onClick={() => handleRemoveImage(index)}
-                                                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                                                 >
-                                                     <FiX size={14} />
-                                                 </button>
-                                                 {index === 0 && (
-                                                     <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
-                                                         رئيسية
-                                                     </span>
-                                                 )}
-                                             </div>
+                                            <div key={index} className="relative group">
+                                                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
+                                                    <Image
+                                                        src={img}
+                                                        alt={`صورة ${index + 1}`}
+                                                        fill
+                                                        sizes="80px"
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveImage(index)}
+                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                >
+                                                    <FiX size={14} />
+                                                </button>
+                                                {index === 0 && (
+                                                    <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
+                                                        رئيسية
+                                                    </span>
+                                                )}
+                                            </div>
                                         ))}
 
                                         {/* Add Image Button */}
