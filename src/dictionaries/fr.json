@@ -260,8 +260,8 @@
         "currency": "Million",
         "available": "Disponible",
         "unavailable": "Indisponible",
-        "min_economy_notice": "Pour la catégorie Économique : retrait minimum 3 jours après aujourd'hui.",
-        "min_economy_pickup_error": "Pour les véhicules de la catégorie Économique, la date de prise en charge doit être au moins 3 jours après aujourd'hui."
+        "min_economy_days_error": "La durée minimale de location pour la catégorie Économique est de 3 jours.",
+        "min_economy_badge": "Minimum 3 jours"
     },
     "admin": {
         "dashboard": "Tableau de bord",

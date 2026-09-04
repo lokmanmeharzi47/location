@@ -18,6 +18,18 @@ function calculateDays(pickupDate, returnDate) {
     return Math.max(diffDays, 1); // Minimum 1 day
 }
 
+// Add days to YYYY-MM-DD string without timezone issues
+function addDays(dateStr, days) {
+    if (!dateStr) return "";
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    date.setDate(date.getDate() + days);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Extract numeric price from string
 function extractPrice(priceStr) {
     if (!priceStr) return 0;
@@ -48,35 +60,28 @@ export default function BookingModal({
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState(null);
 
-    // Detect if current car is in Economy category
+    // Detect if car belongs to Economy category
     const isEconomy = useMemo(() => {
-        const catName = (category?.name || product?.category || "").toString().toLowerCase().trim();
-        const catSlug = (category?.slug || product?.categorySlug || "").toString().toLowerCase().trim();
-        const catId = Number(category?.id || product?.categoryId);
-
+        const catName = (category?.name || product?.category || product?.category_name || "").toLowerCase();
+        const catSlug = (category?.slug || product?.category_slug || "").toLowerCase();
+        const catId = category?.id || product?.category_id || product?.categoryId;
         return (
             catId === 5 ||
-            catName === "economy" ||
+            product?.min_rental_days === 3 ||
+            product?.minRentalDays === 3 ||
             catName.includes("econom") ||
-            catName.includes("اقتصادية") ||
-            catSlug.includes("economy") ||
-            catSlug.includes("اقتصادية")
+            catSlug.includes("econom") ||
+            catName.includes("اقتصاد") ||
+            catSlug.includes("اقتصاد") ||
+            catName === "économique"
         );
     }, [category, product]);
 
-    // Format date YYYY-MM-DD locally
-    const formatDate = (daysOffset = 0) => {
-        const date = new Date();
-        date.setDate(date.getDate() + daysOffset);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const today = useMemo(() => formatDate(0), []);
-    const minEconomyDate = useMemo(() => formatDate(3), []);
-    const minPickupDate = isEconomy ? minEconomyDate : today;
+    // Get today's date for min date attribute
+    const today = new Date().toISOString().split('T')[0];
+    const minReturnDate = isEconomy
+        ? (formData.pickupDate ? addDays(formData.pickupDate, 3) : addDays(today, 3))
+        : (formData.pickupDate || today);
 
     // Close on Escape key
     useEffect(() => {
@@ -100,12 +105,35 @@ export default function BookingModal({
             setFormData({ ...formData, [name]: value, commune: "" });
         } else if (name === "pickupDate") {
             setFormData((prev) => {
-                const updated = { ...prev, pickupDate: value };
-                if (prev.returnDate && prev.returnDate < value) {
-                    updated.returnDate = value;
+                const newPickup = value;
+                let newReturn = prev.returnDate;
+                if (isEconomy && newPickup) {
+                    const minReturn = addDays(newPickup, 3);
+                    // Automatically adjust return date if empty or less than 3 days duration
+                    if (!newReturn || newReturn < minReturn) {
+                        newReturn = minReturn;
+                    }
+                } else if (newPickup && newReturn && newReturn < newPickup) {
+                    newReturn = newPickup;
                 }
-                return updated;
+                return { ...prev, pickupDate: newPickup, returnDate: newReturn };
             });
+            setError(null);
+        } else if (name === "returnDate") {
+            if (isEconomy && formData.pickupDate) {
+                const minReturn = addDays(formData.pickupDate, 3);
+                if (value < minReturn) {
+                    setError(
+                        dict?.booking?.min_economy_days_error ||
+                        "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام."
+                    );
+                } else {
+                    setError(null);
+                }
+            } else {
+                setError(null);
+            }
+            setFormData((prev) => ({ ...prev, returnDate: value }));
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -136,11 +164,11 @@ export default function BookingModal({
         setLoading(true);
         setError(null);
 
-        // Economy cars require pickup date at least 3 days in advance
-        if (isEconomy && formData.pickupDate && formData.pickupDate < minPickupDate) {
+        // Validate minimum rental duration for Economy
+        if (isEconomy && rentalDays < 3) {
             setError(
-                dict?.booking?.min_economy_pickup_error ||
-                "Pour les véhicules de la catégorie Économique, la date de prise en charge doit être au moins 3 jours après aujourd'hui."
+                dict?.booking?.min_economy_days_error ||
+                "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام."
             );
             setLoading(false);
             return;
@@ -268,7 +296,14 @@ export default function BookingModal({
                         <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl border border-slate-200">
 
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
+                                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                                    <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
+                                    {isEconomy && (
+                                        <span className="text-[11px] font-semibold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                                            {dict?.booking?.min_economy_badge || "الحد الأدنى: 3 أيام"}
+                                        </span>
+                                    )}
+                                </div>
                                 <h3 className="font-bold text-slate-800 truncate">{product.name}</h3>
                                 <p className="text-gold-600 font-bold">{formatPrice(product.price)} / {dict?.booking?.currency || "day"}</p>
                             </div>
@@ -287,15 +322,10 @@ export default function BookingModal({
                                     name="pickupDate"
                                     value={formData.pickupDate}
                                     onChange={handleChange}
-                                    min={minPickupDate}
+                                    min={today}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
                                     required
                                 />
-                                {isEconomy && (
-                                    <p className="text-xs text-amber-600 mt-1.5 font-medium leading-tight">
-                                        {dict?.booking?.min_economy_notice || "Pour la catégorie Économique : retrait minimum 3 jours après aujourd'hui."}
-                                    </p>
-                                )}
                             </div>
 
                             {/* Return Date */}
@@ -309,12 +339,18 @@ export default function BookingModal({
                                     name="returnDate"
                                     value={formData.returnDate}
                                     onChange={handleChange}
-                                    min={formData.pickupDate || minPickupDate}
+                                    min={minReturnDate}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
                                     required
                                 />
                             </div>
                         </div>
+                        {isEconomy && (
+                            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200/60 rounded-xl px-3 py-2 flex items-center gap-1.5 -mt-2">
+                                <FiAlertCircle className="flex-shrink-0" />
+                                {dict?.booking?.min_economy_days_error || "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام."}
+                            </p>
+                        )}
 
                         {/* Pickup Location Type */}
                         <div>

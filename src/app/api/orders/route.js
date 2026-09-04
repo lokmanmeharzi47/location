@@ -113,40 +113,41 @@ export async function POST(request) {
             );
         }
 
-        // Validate pickup date for economy category cars (minimum 3 days after today)
-        if (pickup_date) {
-            const carCheck = await client.query(
-                `SELECT c.id, c.category_id, cat.name as category_name, cat.slug as category_slug
-                 FROM cars c 
-                 LEFT JOIN categories cat ON c.category_id = cat.id 
-                 WHERE c.id = $1`,
-                [parseInt(car_id)]
-            );
-            if (carCheck.rows.length > 0) {
-                const car = carCheck.rows[0];
-                const catName = (car.category_name || '').toLowerCase();
-                const catSlug = (car.category_slug || '').toLowerCase();
-                const isEconomy = car.category_id === 5 || catName.includes('econom') || catSlug.includes('econom') || catName.includes('اقتصادية') || catSlug.includes('اقتصادية');
+        // Validate minimum rental duration based on category / min_rental_days
+        const carCheck = await client.query(
+            `SELECT c.id, c.name, c.category_id, cat.name as category_name, cat.slug as category_slug,
+                    COALESCE(cat.min_rental_days, 1) as min_rental_days
+             FROM cars c 
+             LEFT JOIN categories cat ON c.category_id = cat.id 
+             WHERE c.id = $1`,
+            [parseInt(car_id)]
+        );
 
-                if (isEconomy) {
-                    const minDate = new Date();
-                    minDate.setDate(minDate.getDate() + 3);
-                    const minDateStr = `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`;
-                    
+        if (carCheck.rows.length > 0) {
+            const car = carCheck.rows[0];
+            const catName = (car.category_name || '').toLowerCase();
+            const catSlug = (car.category_slug || '').toLowerCase();
+            const isEconomy = car.category_id === 5 || catName.includes('econom') || catSlug.includes('econom') || catName.includes('اقتصاد') || catSlug.includes('اقتصاد');
+            const minDays = isEconomy ? Math.max(car.min_rental_days || 1, 3) : (car.min_rental_days || 1);
+
+            if (minDays > 1) {
+                let calcDays = parseInt(total_days) || 0;
+                if (pickup_date && return_date) {
                     const pDate = new Date(pickup_date);
-                    const pickupDateStr = !isNaN(pDate.getTime()) 
-                        ? `${pDate.getFullYear()}-${String(pDate.getMonth() + 1).padStart(2, '0')}-${String(pDate.getDate()).padStart(2, '0')}`
-                        : pickup_date;
+                    const rDate = new Date(return_date);
+                    const diffTime = rDate - pDate;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    calcDays = Math.max(calcDays, diffDays);
+                }
 
-                    if (pickupDateStr < minDateStr) {
-                        return NextResponse.json(
-                            { 
-                                success: false, 
-                                message: 'بالنسبة للسيارات الاقتصادية، يجب أن يكون تاريخ الاستلام بعد 3 أيام على الأقل من اليوم.' 
-                            },
-                            { status: 400 }
-                        );
-                    }
+                if (calcDays < minDays) {
+                    return NextResponse.json(
+                        { 
+                            success: false, 
+                            message: `الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو ${minDays} أيام.` 
+                        },
+                        { status: 400 }
+                    );
                 }
             }
         }

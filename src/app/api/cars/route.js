@@ -16,6 +16,7 @@ export async function GET() {
                 c.category_id,
                 c.display_order,
                 cat.name as category_name,
+                COALESCE(cat.min_rental_days, 1) as min_rental_days,
                 (
                     SELECT image_url 
                     FROM car_images 
@@ -38,6 +39,9 @@ export async function GET() {
             transmission: car.transmission,
             category: car.category_name,
             categoryId: car.category_id,
+            category_id: car.category_id,
+            minRentalDays: car.min_rental_days || 1,
+            min_rental_days: car.min_rental_days || 1,
             displayOrder: car.display_order ?? 0,
             image: car.image_url || '/images/placeholder.jpg', // Fallback image
         }));

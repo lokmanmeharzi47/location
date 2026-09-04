@@ -246,8 +246,8 @@
         "currency": "Million",
         "available": "Available",
         "unavailable": "Unavailable",
-        "min_economy_notice": "Economy category: pickup must be at least 3 days after today.",
-        "min_economy_pickup_error": "For economy category vehicles, the pickup date must be at least 3 days after today."
+        "min_economy_days_error": "Minimum rental duration for the Economy category is 3 days.",
+        "min_economy_badge": "Minimum 3 days"
     },
     "admin": {
         "dashboard": "Dashboard",
