@@ -101,10 +101,6 @@ export default function Header({ lang, dict }) {
             className="relative px-3.5 py-2 rounded-full font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm flex items-center gap-1.5"
           >
             <span>{dict?.header?.custom_pack || "Pack Personnalisé"}</span>
-            <span className="px-1.5 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 flex items-center gap-1">
-              <FiAward size={11} className="text-gold-400" />
-              VIP
-            </span>
           </Link>
           <button
             onClick={() => handleNavigateAndScroll("#car-categories")}
@@ -205,10 +201,6 @@ export default function Header({ lang, dict }) {
               className="px-5 py-3 rounded-xl text-center font-semibold text-gold-400 bg-gradient-to-r from-gold-500/15 via-gold-500/5 to-transparent border border-gold-500/40 hover:border-gold-400 hover:text-gold-300 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <span>{dict?.header?.custom_pack || "Pack Personnalisé"}</span>
-              <span className="px-1.5 py-0.5 text-[9px] uppercase font-bold tracking-wider rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 flex items-center gap-1">
-                <FiAward size={10} className="text-gold-400" />
-                VIP
-              </span>
             </Link>
             <button
               onClick={() => handleNavigateAndScroll("#car-categories")}
