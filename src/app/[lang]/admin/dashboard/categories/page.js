@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiEye, FiEyeOff, FiCheck } from "react-icons/fi";
 import Image from "next/image";
 
 export default function CategoriesPage() {
@@ -378,12 +378,22 @@ export default function CategoriesPage() {
                                     <button
                                         type="button"
                                         onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-                                        className={`w-full px-4 py-3 rounded-xl font-medium transition-colors ${formData.is_active
+                                        className={`w-full px-4 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${formData.is_active
                                                 ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
                                                 : "bg-gray-100 text-gray-600 border border-gray-200"
                                             }`}
                                     >
-                                        {formData.is_active ? "نشط ✓" : "مخفي"}
+                                        {formData.is_active ? (
+                                            <>
+                                                <FiCheck size={16} />
+                                                <span>نشط</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FiEyeOff size={16} />
+                                                <span>مخفي</span>
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                             </div>

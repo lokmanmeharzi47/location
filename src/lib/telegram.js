@@ -147,3 +147,80 @@ export async function sendOrderNotification(orderData) {
 
     return sendTelegramMessage(message);
 }
+
+/**
+ * Format and send a Custom Pack notification to Telegram.
+ * @param {Object} packData
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function sendCustomPackNotification(packData) {
+    const {
+        id,
+        customer_name,
+        customer_phone,
+        customer_city,
+        pickup_date,
+        return_date,
+        total_days,
+        event_type,
+        with_chauffeur,
+        with_decoration,
+        selected_cars = [],
+        estimated_total,
+        notes,
+    } = packData;
+
+    const formatDate = (d) => {
+        if (!d) return 'غير محدد';
+        try {
+            return new Date(d).toLocaleDateString('fr-DZ', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+        } catch {
+            return d;
+        }
+    };
+
+    const formatPriceHelper = (p) => {
+        const num = Number(p || 0);
+        const val = num > 100 ? (num / 10000) : num;
+        const formatted = val.toLocaleString('fr-FR', { maximumFractionDigits: 1 });
+        return `${formatted} ${val > 1 ? 'Millions' : 'Million'}`;
+    };
+
+    const carsListText = selected_cars.length > 0
+        ? selected_cars.map(c => `• <b>${c.name}</b> (${c.formatted_price || formatPriceHelper(c.price)}/j)`).join('\n')
+        : 'لم يتم تحديد سيارات';
+
+    const cleanPhone = (customer_phone || '').replace(/[^0-9]/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '213' + cleanPhone.substring(1) : cleanPhone;
+
+    const displayTotal = packData.formatted_total || formatPriceHelper(estimated_total);
+
+    const message = [
+        `👑 <b>طلب باقة مخصصة جديدة / NOUVEAU PACK VIP</b> 👑`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `👤 <b>العميل / Client:</b> ${customer_name || 'غير محدد'}`,
+        `📞 <b>الهاتف / Tél:</b> ${customer_phone || 'غير محدد'}`,
+        `📍 <b>الولاية / Wilaya:</b> ${customer_city || 'غير محدد'}`,
+        `🎉 <b>المناسبة / Événement:</b> ${event_type || 'غير محدد'}`,
+        ``,
+        `🚗 <b>السيارات المختارة / Véhicules (${selected_cars.length}):</b>`,
+        carsListText,
+        ``,
+        `🎩 <b>سائق / Chauffeur:</b> ${with_chauffeur ? 'نعم / Oui ✅' : 'بدون سائق / Non ❌'}`,
+        `💐 <b>تزيين الموكب / Décoration:</b> ${with_decoration ? 'نعم (ورود وأشرطة) / Oui ✅' : 'بدون تزيين / Non ❌'}`,
+        ``,
+        `📅 <b>من:</b> ${formatDate(pickup_date)}`,
+        `📅 <b>إلى:</b> ${formatDate(return_date)}`,
+        `⏱ <b>المدة / Durée:</b> ${total_days || 1} يوم / jours`,
+        `💰 <b>التقدير المالي / Estimation:</b> ${displayTotal}`,
+        ...(notes ? [``, `📝 <b>ملاحظات / Remarques:</b>\n${notes}`] : []),
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `📲 <b>واتساب العميل:</b> https://wa.me/${waPhone}`,
+        `✨ <i>تم استلام الطلب من موقع Luxury Location</i>`,
+    ].join('\n');
+
+    return sendTelegramMessage(message);
+}
+
