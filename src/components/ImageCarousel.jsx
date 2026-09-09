@@ -3,10 +3,6 @@ import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight, FiShoppingBag } from "react-icons/fi";
 import Image from "next/image";
 
-/**
- * ImageCarousel - Simple state-based image carousel
- * No scroll-snap, just show/hide images based on activeIndex
- */
 export default function ImageCarousel({
     images = [],
     productName = "",
@@ -18,12 +14,10 @@ export default function ImageCarousel({
 }) {
     const [activeIndex, setActiveIndex] = useState(currentIndex);
 
-    // Sync with external currentIndex changes
     useEffect(() => {
         setActiveIndex(currentIndex);
     }, [currentIndex]);
 
-    // Navigation handlers
     const goToNext = () => {
         if (activeIndex < images.length - 1) {
             const newIndex = activeIndex + 1;
@@ -45,56 +39,55 @@ export default function ImageCarousel({
         onIndexChange?.(index);
     };
 
-    // Show navigation only if more than 1 image
     const showNavigation = images.length > 1;
 
     return (
-        <div className="relative h-72 sm:h-80 bg-gradient-to-br from-blush-100 via-cream-100 to-blush-50 overflow-hidden group">
+        <div className="relative h-72 sm:h-80 bg-slate-950 overflow-hidden group">
             {/* Current Image */}
             <div className="w-full h-full relative">
                 {images[activeIndex] && !images[activeIndex].includes("placeholder") ? (
                     <Image
                         src={images[activeIndex]}
-                        alt={`${productName} - صورة ${activeIndex + 1}`}
+                        alt={`${productName} - image ${activeIndex + 1}`}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
                         onClick={() => onImageClick?.(activeIndex)}
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <FiShoppingBag size={64} className="text-cream-300" />
+                    <div className="w-full h-full flex items-center justify-center bg-slate-900 text-slate-600">
+                        <FiShoppingBag size={64} />
                     </div>
                 )}
+                {/* Vignette */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none"></div>
             </div>
 
             {/* Navigation Arrows */}
             {showNavigation && (
                 <>
-                    {/* Previous Arrow */}
                     <button
                         onClick={goToPrevious}
                         disabled={activeIndex === 0}
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg transition-all duration-200 ${activeIndex === 0
-                                ? 'opacity-30 cursor-not-allowed'
-                                : 'opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110'
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2.5 bg-slate-900/80 backdrop-blur-md rounded-full border border-slate-700/80 text-gold-400 shadow-lg transition-all duration-200 cursor-pointer ${activeIndex === 0
+                                ? 'opacity-20 cursor-not-allowed'
+                                : 'opacity-0 group-hover:opacity-100 hover:bg-slate-800 hover:scale-110 hover:border-gold-500/50'
                             }`}
-                        aria-label="الصورة السابقة"
+                        aria-label="Previous image"
                     >
-                        <FiChevronLeft size={20} className="text-brown-dark" />
+                        <FiChevronLeft size={18} />
                     </button>
 
-                    {/* Next Arrow */}
                     <button
                         onClick={goToNext}
                         disabled={activeIndex === images.length - 1}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg transition-all duration-200 ${activeIndex === images.length - 1
-                                ? 'opacity-30 cursor-not-allowed'
-                                : 'opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110'
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2.5 bg-slate-900/80 backdrop-blur-md rounded-full border border-slate-700/80 text-gold-400 shadow-lg transition-all duration-200 cursor-pointer ${activeIndex === images.length - 1
+                                ? 'opacity-20 cursor-not-allowed'
+                                : 'opacity-0 group-hover:opacity-100 hover:bg-slate-800 hover:scale-110 hover:border-gold-500/50'
                             }`}
-                        aria-label="الصورة التالية"
+                        aria-label="Next image"
                     >
-                        <FiChevronRight size={20} className="text-brown-dark" />
+                        <FiChevronRight size={18} />
                     </button>
                 </>
             )}
@@ -106,11 +99,11 @@ export default function ImageCarousel({
                         <button
                             key={index}
                             onClick={() => goToIndex(index)}
-                            className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${index === activeIndex
-                                    ? 'bg-amber-500 w-6'
-                                    : 'bg-white/60 hover:bg-white'
+                            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${index === activeIndex
+                                    ? 'bg-gold-500 w-6'
+                                    : 'bg-white/40 hover:bg-white/80 w-2'
                                 }`}
-                            aria-label={`صورة ${index + 1}`}
+                            aria-label={`Image ${index + 1}`}
                         />
                     ))}
                 </div>
@@ -118,11 +111,11 @@ export default function ImageCarousel({
 
             {/* Product Badge */}
             {showBadge && (
-                <div className="absolute bottom-4 right-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-                    <p className="text-sm font-bold text-brown-dark truncate max-w-[150px]">
+                <div className="absolute bottom-4 right-4 z-10 bg-slate-900/90 backdrop-blur-md rounded-xl px-4 py-2 shadow-xl border border-gold-500/25">
+                    <p className="text-sm font-bold text-white truncate max-w-[150px]">
                         {productName}
                     </p>
-                    <p className="text-amber-600 font-semibold text-sm">
+                    <p className="text-gold-400 font-bold text-sm">
                         {productPrice}
                     </p>
                 </div>
@@ -130,7 +123,7 @@ export default function ImageCarousel({
 
             {/* Image Counter */}
             {showNavigation && (
-                <div className="absolute top-4 left-4 z-10 bg-black/50 text-white px-2 py-1 rounded-lg text-xs">
+                <div className="absolute top-4 left-4 z-10 bg-slate-950/70 backdrop-blur-md border border-white/10 text-slate-300 px-2.5 py-1 rounded-full text-xs">
                     {activeIndex + 1} / {images.length}
                 </div>
             )}

@@ -35,7 +35,7 @@ export default function ColorSwatches({
 
     return (
         <div className="flex items-center justify-center gap-3 py-2">
-            <span className="text-xs text-brown-light/70 ml-2">الألوان:</span>
+            <span className="text-xs text-slate-400 ml-2">الألوان:</span>
             <div className="flex gap-2">
                 {variants.map((variant, index) => {
                     const isSelected = index === selectedIndex;
@@ -47,7 +47,7 @@ export default function ColorSwatches({
                             onClick={() => onColorChange?.(index)}
                             className={`${sizeConfig.swatch} rounded-full relative transition-all duration-200 
                                 ${isSelected
-                                    ? 'ring-2 ring-offset-2 ring-gold-500 scale-110 shadow-lg'
+                                    ? 'ring-2 ring-offset-2 ring-offset-slate-900 ring-gold-500 scale-110 shadow-lg'
                                     : 'hover:scale-105 shadow-md hover:shadow-lg'
                                 }
                                 ${!hasImages ? 'opacity-60' : ''}

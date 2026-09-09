@@ -14,8 +14,6 @@ export default function CarDetailsModal({
     onOrder,
     dict
 }) {
-    // Format price function (same as CarCard)
-    // Format price function (consistent with CategoryClient)
     const formatPrice = (priceStr) => {
         const price = Number(priceStr);
         if (isNaN(price)) return priceStr;
@@ -27,6 +25,7 @@ export default function CarDetailsModal({
 
         return `${price.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${dict?.cars_page?.currency || 'Million'}`;
     };
+
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [openImageViewer, setOpenImageViewer] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -68,8 +67,6 @@ export default function CarDetailsModal({
             ? [product.image]
             : ['/images/placeholder.svg'];
 
-    // Mock car specifications (using dictionary mapping)
-    // We assume backend returns standard keys like "Automatic" or we map "أوتوماتيك" to dict key
     const getTransmissionLabel = (val) => {
         if (!val) return dict?.specs?.transmission_auto;
         const lower = val.toLowerCase();
@@ -91,7 +88,6 @@ export default function CarDetailsModal({
         year: product.year || "2024",
     };
 
-    // Check availability (mock - would come from backend)
     const isAvailable = product.stock !== 0;
 
     return (
@@ -101,26 +97,26 @@ export default function CarDetailsModal({
             dir="rtl"
         >
             {/* Backdrop with blur */}
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
 
             {/* Modal Content */}
             <div
-                className="relative bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn border border-slate-200"
+                className="relative bg-slate-900 border border-gold-500/30 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn text-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 left-4 z-20 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 group"
+                    className="absolute top-4 left-4 z-20 p-2 bg-slate-800/80 backdrop-blur-md rounded-full border border-slate-700/80 hover:bg-slate-700 hover:text-gold-400 transition-all duration-200 cursor-pointer"
                     aria-label="Close"
                 >
-                    <FiX size={20} className="text-slate-700 group-hover:text-slate-900 transition-colors" />
+                    <FiX size={18} className="text-slate-300" />
                 </button>
 
                 {/* Availability Badge */}
-                <div className={`absolute top-4 right-4 z-20 px-3 py-1 rounded-full text-xs font-semibold ${isAvailable
-                    ? 'bg-green-500 text-white'
-                    : 'bg-red-500 text-white'
+                <div className={`absolute top-4 right-4 z-20 px-3 py-1 rounded-full text-xs font-semibold shadow-md ${isAvailable
+                    ? 'bg-emerald-500/90 text-white'
+                    : 'bg-rose-500/90 text-white'
                     }`}>
                     {isAvailable ? (dict?.booking?.available || 'Available') : (dict?.booking?.unavailable || 'Unavailable')}
                 </div>
@@ -137,23 +133,23 @@ export default function CarDetailsModal({
                 />
 
                 {/* Car Specifications */}
-                <div className="bg-slate-100 border-b border-slate-200">
+                <div className="bg-slate-950/70 border-b border-slate-800/80">
                     <div className="grid grid-cols-4 gap-2 p-4">
                         <div className="flex flex-col items-center text-center">
-                            <TbManualGearbox className="text-gold-600 text-xl mb-1" />
-                            <span className="text-xs text-slate-600">{carSpecs.transmission}</span>
+                            <TbManualGearbox className="text-gold-400 text-xl mb-1" />
+                            <span className="text-xs text-slate-300">{carSpecs.transmission}</span>
                         </div>
                         <div className="flex flex-col items-center text-center">
-                            <BsFuelPump className="text-gold-600 text-xl mb-1" />
-                            <span className="text-xs text-slate-600">{carSpecs.fuel}</span>
+                            <BsFuelPump className="text-gold-400 text-xl mb-1" />
+                            <span className="text-xs text-slate-300">{carSpecs.fuel}</span>
                         </div>
                         <div className="flex flex-col items-center text-center">
-                            <MdAirlineSeatReclineNormal className="text-gold-600 text-xl mb-1" />
-                            <span className="text-xs text-slate-600">{carSpecs.seats} {dict?.specs?.seats}</span>
+                            <MdAirlineSeatReclineNormal className="text-gold-400 text-xl mb-1" />
+                            <span className="text-xs text-slate-300">{carSpecs.seats} {dict?.specs?.seats}</span>
                         </div>
                         <div className="flex flex-col items-center text-center">
-                            <BsSpeedometer2 className="text-gold-600 text-xl mb-1" />
-                            <span className="text-xs text-slate-600">{carSpecs.year}</span>
+                            <BsSpeedometer2 className="text-gold-400 text-xl mb-1" />
+                            <span className="text-xs text-slate-300">{carSpecs.year}</span>
                         </div>
                     </div>
                 </div>
@@ -161,40 +157,40 @@ export default function CarDetailsModal({
                 {/* Product Details */}
                 <div className="p-6 pt-4 text-center space-y-4">
                     {/* Category Badge */}
-                    <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 text-xs font-semibold rounded-full border border-slate-300">
+                    <span className="inline-block px-3.5 py-1 bg-gold-500/10 text-gold-400 text-xs font-semibold rounded-full border border-gold-500/25">
                         {category?.name || dict?.cars_page?.category_label}
                     </span>
 
                     {/* Car Name */}
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 leading-tight">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
                         {product.name}
                     </h2>
 
-                    {/* Description (if exists, show truncated) */}
+                    {/* Description */}
                     {product.description && (
-                        <p className="text-slate-600 text-sm leading-relaxed line-clamp-2">
+                        <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
                             {product.description}
                         </p>
                     )}
 
                     {/* Price per day */}
-                    <div className="py-3">
-                        <p className="text-3xl font-bold bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
+                    <div className="py-2">
+                        <p className="text-3xl font-extrabold bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent">
                             {formatPrice(product.price)}
                         </p>
-                        <p className="text-sm text-slate-500">{dict?.cars_page?.per_day}</p>
+                        <p className="text-xs text-slate-400 mt-1">{dict?.cars_page?.per_day}</p>
                     </div>
 
                     {/* Decorative Line */}
-                    <div className="w-16 h-0.5 mx-auto bg-gradient-to-r from-transparent via-gold-400 to-transparent" />
+                    <div className="w-16 h-0.5 mx-auto bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
 
                     {/* Book CTA Button */}
                     <button
                         onClick={() => onOrder(product)}
                         disabled={!isAvailable}
-                        className={`w-full py-4 px-8 font-bold text-lg rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 ${isAvailable
-                            ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-slate-900 hover:from-gold-600 hover:to-gold-700 hover:shadow-xl hover:-translate-y-0.5'
-                            : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                        className={`w-full py-3.5 px-8 font-bold text-base sm:text-lg rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer ${isAvailable
+                            ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 hover:shadow-xl hover:shadow-gold-500/30 hover:scale-[1.02]'
+                            : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
                             }`}
                     >
                         <FiCalendar size={20} />
@@ -202,8 +198,8 @@ export default function CarDetailsModal({
                     </button>
 
                     {/* Trust Badge */}
-                    <p className="text-xs text-slate-500 flex items-center justify-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <p className="text-xs text-slate-400 flex items-center justify-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                         {dict?.booking?.pickup_location}
                     </p>
                 </div>

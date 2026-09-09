@@ -35,68 +35,72 @@ export default async function CarCategories({ dict, lang }) {
     }
 
     return (
-        <section className="py-20 px-4" id="car-categories">
-            <div className="max-w-7xl mx-auto">
+        <section className="py-24 px-4 bg-slate-950 relative overflow-hidden" id="car-categories">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-1/4 left-0 w-80 h-80 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-10 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="max-w-7xl mx-auto relative z-10">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <span className="text-gold-500 font-medium text-sm tracking-wider mb-2 block">
+                    <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold-500/10 border border-gold-500/20 text-gold-400 font-medium text-xs tracking-wider uppercase mb-3">
                         {dict?.categories?.fleet}
                     </span>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 mb-4">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
                         {dict?.categories?.title}
                     </h2>
-                    <div className="w-24 h-1 bg-gradient-to-r from-slate-400 via-gold-400 to-slate-400 mx-auto rounded-full"></div>
-                    <p className="text-slate-600 mt-6 max-w-2xl mx-auto text-lg">
+                    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold-400 to-transparent mx-auto rounded-full"></div>
+                    <p className="text-slate-400 mt-5 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
                         {dict?.categories?.subtitle}
                     </p>
                 </div>
 
-                {/* Categories Grid - Centered */}
+                {/* Categories Grid */}
                 <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
                     {categories.map((category, index) => (
                         <Link
                             key={category.id || index}
                             href={category.href ? `/${lang}${category.href}` : `/${lang}/design/${category.slug}`}
-                            className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200 hover:border-gold-300 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-sm"
+                            className="group block bg-slate-900/70 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl shadow-black/40 hover:shadow-2xl hover:shadow-gold-500/10 transition-all duration-500 hover:-translate-y-2 border border-slate-800/80 hover:border-gold-500/40 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-sm"
                         >
                             {/* Image Container */}
-                            <div className="relative h-64 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+                            <div className="relative h-64 bg-slate-800/50 overflow-hidden">
                                 <Image
                                     src={category.image || "/images/placeholder.svg"}
                                     alt={category.name}
                                     fill
                                     style={{ objectFit: 'cover' }}
-                                    className="transition-transform duration-500 ease-out group-hover:scale-110"
+                                    className="transition-transform duration-700 ease-out group-hover:scale-110"
                                     priority={index < 2}
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                 />
-                                {/* Overlay on hover */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                {/* Bottom gradient vignette */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent opacity-80 group-hover:opacity-50 transition-opacity duration-300"></div>
                             </div>
 
                             {/* Content */}
                             <div className="p-6">
-                                {/* Title with gold accent */}
+                                {/* Title with gold accent indicator */}
                                 <div className="flex items-center justify-between mb-3">
-                                    <h3 className="text-xl font-bold text-slate-800 group-hover:text-gold-600 transition-colors duration-300">
+                                    <h3 className="text-xl font-bold text-white group-hover:text-gold-400 transition-colors duration-300">
                                         {category.name}
                                     </h3>
-                                    <div className="w-8 h-0.5 bg-gold-400 rounded-full"></div>
+                                    <div className="w-8 h-0.5 bg-gold-400/70 group-hover:w-12 transition-all duration-300 rounded-full"></div>
                                 </div>
 
                                 {/* Description */}
-                                <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                                <p className="text-slate-400 text-sm leading-relaxed mb-5 line-clamp-2">
                                     {category.description}
                                 </p>
 
                                 {/* CTA */}
-                                <div className="flex items-center justify-between">
-                                    <span className="text-gold-600 font-medium text-sm group-hover:text-gold-700 transition-colors">
+                                <div className="flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                    <span className="text-gold-400 font-semibold text-sm group-hover:text-gold-300 transition-colors">
                                         {dict?.categories?.view_cars}
                                     </span>
-                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-gold-500 transition-all duration-300">
+                                    <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700/60 flex items-center justify-center text-slate-300 group-hover:bg-gold-500 group-hover:border-gold-500 group-hover:text-slate-950 transition-all duration-300 shadow-md">
                                         <svg
-                                            className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors duration-300 rotate-180 rtl:rotate-0"
+                                            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"

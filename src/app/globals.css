@@ -21,8 +21,8 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%);
-  color: var(--foreground);
+  background: #020617;
+  color: #F8FAFC;
 }
 
 /* Elegant animations */

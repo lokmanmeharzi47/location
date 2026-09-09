@@ -53,7 +53,7 @@ const localBusinessSchema = {
     "name": "Luxury Location",
     "description": "Location voiture Alger – Service premium de location de voitures à Alger avec livraison aéroport Houari Boumediene et tous quartiers.",
     "url": "https://luxurylocation.dz",
-    "telephone": "+213559306980",
+    "telephone": "+213778612190",
     "address": {
         "@type": "PostalAddress",
         "addressLocality": "Alger",
@@ -110,7 +110,7 @@ export default async function RootLayout({ children, params }) {
                     strategy="afterInteractive"
                 />
             </head>
-            <body className="bg-cream-50 min-h-screen" suppressHydrationWarning>
+            <body className="bg-slate-950 text-white min-h-screen selection:bg-gold-500 selection:text-slate-950" suppressHydrationWarning>
                 <ClientLayout lang={lang} dict={dict}>
                     {children}
                 </ClientLayout>

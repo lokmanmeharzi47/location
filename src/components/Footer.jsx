@@ -34,7 +34,7 @@ export default function Footer({ dict, lang }) {
     };
 
     return (
-        <footer className="bg-gradient-to-b from-slate-800 to-slate-900 pt-16 pb-8 text-white" id="footer">
+        <footer className="bg-gradient-to-b from-slate-950 via-[#0A0E1A] to-slate-950 pt-20 pb-10 text-white border-t border-slate-800/80" id="footer">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
@@ -104,7 +104,7 @@ export default function Footer({ dict, lang }) {
                                 <FaInstagram className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="tel:0559 30 96 80"
+                                href="tel:0778612190"
                                 aria-label="Phone"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -113,7 +113,7 @@ export default function Footer({ dict, lang }) {
                                 <FaPhone className={`text-white h-5 w-5 transition-colors ${twitch ? 'icon-twitch' : ''}`} />
                             </Link>
                             <Link
-                                href="https://wa.me/213559309680"
+                                href="https://wa.me/213778612190"
                                 aria-label="WhatsApp"
                                 target="_blank"
                                 rel="noopener noreferrer"

@@ -15,10 +15,9 @@ function calculateDays(pickupDate, returnDate) {
     const return_ = new Date(returnDate);
     const diffTime = Math.abs(return_ - pickup);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return Math.max(diffDays, 1); // Minimum 1 day
+    return Math.max(diffDays, 1);
 }
 
-// Add days to YYYY-MM-DD string without timezone issues
 function addDays(dateStr, days) {
     if (!dateStr) return "";
     const [y, m, d] = dateStr.split('-').map(Number);
@@ -28,13 +27,6 @@ function addDays(dateStr, days) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-}
-
-// Extract numeric price from string
-function extractPrice(priceStr) {
-    if (!priceStr) return 0;
-    const num = priceStr.toString().replace(/[^\d]/g, "");
-    return parseInt(num, 10) || 0;
 }
 
 export default function BookingModal({
@@ -51,7 +43,7 @@ export default function BookingModal({
         commune: "",
         pickupDate: "",
         returnDate: "",
-        pickupLocation: "agency", // 'agency' or 'delivery'
+        pickupLocation: "agency",
         paymentMethod: "espece",
         notes: "",
     });
@@ -60,7 +52,6 @@ export default function BookingModal({
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState(null);
 
-    // Detect if car belongs to Economy category
     const isEconomy = useMemo(() => {
         const catName = (category?.name || product?.category || product?.category_name || "").toLowerCase();
         const catSlug = (category?.slug || product?.category_slug || "").toLowerCase();
@@ -77,13 +68,11 @@ export default function BookingModal({
         );
     }, [category, product]);
 
-    // Get today's date for min date attribute
     const today = new Date().toISOString().split('T')[0];
     const minReturnDate = isEconomy
         ? (formData.pickupDate ? addDays(formData.pickupDate, 3) : addDays(today, 3))
         : (formData.pickupDate || today);
 
-    // Close on Escape key
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -109,7 +98,6 @@ export default function BookingModal({
                 let newReturn = prev.returnDate;
                 if (isEconomy && newPickup) {
                     const minReturn = addDays(newPickup, 3);
-                    // Automatically adjust return date if empty or less than 3 days duration
                     if (!newReturn || newReturn < minReturn) {
                         newReturn = minReturn;
                     }
@@ -139,18 +127,14 @@ export default function BookingModal({
         }
     };
 
-    // Calculate pricing
-    // Calculate pricing
     const dailyPrice = Number(product?.price) || 0;
     const rentalDays = useMemo(() => calculateDays(formData.pickupDate, formData.returnDate), [formData.pickupDate, formData.returnDate]);
     const totalPrice = dailyPrice * rentalDays;
 
     function formatPrice(priceInput) {
-        // Handle input could be string or number
         const price = Number(priceInput);
         if (isNaN(price)) return priceInput;
 
-        // Consistent formatting with other components
         if (price > 100) {
             const formatted = price / 10000;
             return `${formatted.toLocaleString('en-US', { maximumFractionDigits: 10 })} ${(dict?.cars_page?.currency || "Million")}`;
@@ -164,7 +148,6 @@ export default function BookingModal({
         setLoading(true);
         setError(null);
 
-        // Validate minimum rental duration for Economy
         if (isEconomy && rentalDays < 3) {
             setError(
                 dict?.booking?.min_economy_days_error ||
@@ -199,44 +182,37 @@ export default function BookingModal({
                 body: JSON.stringify(orderData),
             });
 
-            const result = await response.json();
+            const data = await response.json();
 
-            if (result.success) {
+            if (data.success) {
                 setIsSuccess(true);
             } else {
-                setError(result.message || (dict?.common?.error || "Error submitting booking"));
+                setError(data.error || dict?.booking?.error_generic);
             }
         } catch (err) {
-            console.error("Booking submission error:", err);
-            setError(dict?.common?.network_error || "Connection failed. Please try again.");
+            console.error("Booking error:", err);
+            setError(dict?.booking?.error_generic);
         } finally {
             setLoading(false);
         }
     };
 
-    if (!product) return null;
-
-
-
-    // Success View
     if (isSuccess) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir="rtl">
-                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-                <div className="relative bg-white rounded-3xl shadow-xl w-full max-w-md p-8 text-center animate-fadeIn">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <FiCheckCircle className="text-green-500 text-4xl" />
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir="rtl">
+                <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
+                <div
+                    className="relative bg-slate-900 border border-gold-500/30 rounded-3xl shadow-2xl w-full max-w-md p-8 text-center animate-fadeIn text-white"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400">
+                        <FiCheckCircle size={32} />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{dict?.booking?.success_title}</h2>
-                    <p className="text-gray-600 mb-8">
-                        {dict?.booking?.success_msg}
-                    </p>
-
-
-
+                    <h2 className="text-2xl font-bold text-white mb-2">{dict?.booking?.success_title}</h2>
+                    <p className="text-slate-300 text-sm mb-6 leading-relaxed">{dict?.booking?.success_desc}</p>
                     <button
                         onClick={onClose}
-                        className="w-full py-3.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all"
+                        className="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 font-bold rounded-xl hover:shadow-lg hover:shadow-gold-500/25 transition-all"
                     >
                         {dict?.common?.close || "Close"}
                     </button>
@@ -246,24 +222,18 @@ export default function BookingModal({
     }
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            onClick={onClose}
-            dir="rtl"
-        >
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir="rtl">
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
 
-            {/* Modal Content */}
             <div
-                className="relative bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden animate-fadeIn border border-slate-200 flex flex-col"
+                className="relative bg-slate-900 border border-gold-500/30 rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden animate-fadeIn flex flex-col text-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-700 px-5 py-4 flex items-center justify-between">
+                <div className="flex-shrink-0 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-5 py-4 flex items-center justify-between border-b border-slate-800">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm font-medium"
+                        className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium cursor-pointer"
                     >
                         <FiArrowRight size={18} />
                         {dict?.booking?.back}
@@ -271,50 +241,44 @@ export default function BookingModal({
                     <h2 className="text-lg font-bold text-white">{dict?.booking?.modal_title}</h2>
                     <button
                         onClick={onClose}
-                        className="p-1.5 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
+                        className="p-1.5 bg-slate-800 rounded-full border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
                         aria-label="Close"
                     >
-                        <FiX size={18} className="text-white" />
+                        <FiX size={18} />
                     </button>
                 </div>
 
                 {/* Form Container */}
                 <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
-
-                    {/* Scrollable Content */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5">
-
-                        {/* Error Message */}
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm">
+                            <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 px-4 py-3 rounded-xl flex items-center gap-2 text-sm">
                                 <FiAlertCircle className="flex-shrink-0 text-lg" />
                                 {error}
                             </div>
                         )}
 
                         {/* Car Summary */}
-                        <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl border border-slate-200">
-
+                        <div className="flex items-center gap-4 p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800/80">
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                                    <p className="text-xs text-gold-600 font-medium">{category?.name || dict?.cars_page?.category_label}</p>
+                                    <p className="text-xs text-gold-400 font-semibold uppercase">{category?.name || dict?.cars_page?.category_label}</p>
                                     {isEconomy && (
-                                        <span className="text-[11px] font-semibold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                                        <span className="text-[11px] font-semibold bg-gold-500/10 text-gold-400 border border-gold-500/20 px-2 py-0.5 rounded-full">
                                             {dict?.booking?.min_economy_badge || "الحد الأدنى: 3 أيام"}
                                         </span>
                                     )}
                                 </div>
-                                <h3 className="font-bold text-slate-800 truncate">{product.name}</h3>
-                                <p className="text-gold-600 font-bold">{formatPrice(product.price)} / {dict?.booking?.currency || "day"}</p>
+                                <h3 className="font-bold text-white truncate text-base">{product.name}</h3>
+                                <p className="text-gold-400 font-bold">{formatPrice(product.price)} / {dict?.booking?.currency || "day"}</p>
                             </div>
                         </div>
 
                         {/* Date Selection */}
                         <div className="grid grid-cols-2 gap-4">
-                            {/* Pickup Date */}
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    <FiCalendar className="inline ml-1" />
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                                    <FiCalendar className="inline ml-1 text-gold-400" />
                                     {dict?.booking?.pickup_date}
                                 </label>
                                 <input
@@ -323,15 +287,14 @@ export default function BookingModal({
                                     value={formData.pickupDate}
                                     onChange={handleChange}
                                     min={today}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-gold-400 text-sm"
                                     required
                                 />
                             </div>
 
-                            {/* Return Date */}
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    <FiCalendar className="inline ml-1" />
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                                    <FiCalendar className="inline ml-1 text-gold-400" />
                                     {dict?.booking?.return_date}
                                 </label>
                                 <input
@@ -340,13 +303,13 @@ export default function BookingModal({
                                     value={formData.returnDate}
                                     onChange={handleChange}
                                     min={minReturnDate}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-gold-400 text-sm"
                                     required
                                 />
                             </div>
                         </div>
                         {isEconomy && (
-                            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200/60 rounded-xl px-3 py-2 flex items-center gap-1.5 -mt-2">
+                            <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 flex items-center gap-1.5 -mt-2">
                                 <FiAlertCircle className="flex-shrink-0" />
                                 {dict?.booking?.min_economy_days_error || "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام."}
                             </p>
@@ -354,30 +317,30 @@ export default function BookingModal({
 
                         {/* Pickup Location Type */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">
                                 {dict?.booking?.pickup_location}
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, pickupLocation: "agency" })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.pickupLocation === "agency"
-                                        ? "border-gold-500 bg-gold-50 text-gold-700"
-                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                    className={`p-3.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer ${formData.pickupLocation === "agency"
+                                        ? "border-gold-500 bg-gold-500/10 text-gold-400"
+                                        : "border-slate-800 bg-slate-800/70 text-slate-400 hover:border-slate-700"
                                         }`}
                                 >
-                                    <FiMapPin size={22} />
+                                    <FiMapPin size={20} />
                                     <span className="text-sm font-medium">{dict?.booking?.agency}</span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, pickupLocation: "delivery" })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.pickupLocation === "delivery"
-                                        ? "border-gold-500 bg-gold-50 text-gold-700"
-                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                    className={`p-3.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer ${formData.pickupLocation === "delivery"
+                                        ? "border-gold-500 bg-gold-500/10 text-gold-400"
+                                        : "border-slate-800 bg-slate-800/70 text-slate-400 hover:border-slate-700"
                                         }`}
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                                     </svg>
                                     <span className="text-sm font-medium">{dict?.booking?.delivery}</span>
@@ -385,11 +348,10 @@ export default function BookingModal({
                             </div>
                         </div>
 
-                        {/* Form Fields - Grid Layout */}
+                        {/* Form Fields */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Full Name */}
                             <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                     {dict?.booking?.full_name}
                                 </label>
                                 <input
@@ -398,14 +360,13 @@ export default function BookingModal({
                                     value={formData.fullName}
                                     onChange={handleChange}
                                     placeholder={dict?.booking?.full_name}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-gold-400 text-sm"
                                     required
                                 />
                             </div>
 
-                            {/* Phone Number */}
                             <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                     {dict?.booking?.phone}
                                 </label>
                                 <input
@@ -413,51 +374,49 @@ export default function BookingModal({
                                     name="phoneNumber"
                                     value={formData.phoneNumber}
                                     onChange={handleChange}
-                                    placeholder="0555555555"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
+                                    placeholder="0778612190"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-gold-400 text-sm"
                                     dir="ltr"
                                     required
                                 />
                             </div>
 
-                            {/* Wilaya Dropdown */}
                             <div className="col-span-1">
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                     {dict?.booking?.wilaya}
                                 </label>
                                 <select
                                     name="wilaya"
                                     value={formData.wilaya}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all appearance-none cursor-pointer"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-gold-400 appearance-none cursor-pointer text-sm"
                                     required
                                 >
-                                    <option value="">{dict?.booking?.wilaya}</option>
+                                    <option value="" className="bg-slate-900">{dict?.booking?.wilaya}</option>
                                     {wilayasList.map((wilaya) => (
-                                        <option key={wilaya} value={wilaya}>
+                                        <option key={wilaya} value={wilaya} className="bg-slate-900">
                                             {wilaya}
                                         </option>
                                     ))}
                                 </select>
                             </div>
 
-                            {/* Commune Dropdown */}
                             <div className="col-span-1">
-                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                     {dict?.booking?.commune}
                                 </label>
                                 <select
                                     name="commune"
                                     value={formData.commune}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all appearance-none cursor-pointer disabled:opacity-50"
+                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-gold-400 appearance-none cursor-pointer text-sm disabled:opacity-50"
                                     disabled={!formData.wilaya}
                                 >
-                                    <option value="">
+                                    <option value="" className="bg-slate-900">
                                         {formData.wilaya ? dict?.booking?.commune : "---"}
                                     </option>
                                     {formData.wilaya && wilayaCommunes[formData.wilaya]?.map((commune, index) => (
-                                        <option key={index} value={commune}>
+                                        <option key={index} value={commune} className="bg-slate-900">
                                             {commune}
                                         </option>
                                     ))}
@@ -467,7 +426,7 @@ export default function BookingModal({
 
                         {/* Notes */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                 {dict?.booking?.notes}
                             </label>
                             <textarea
@@ -476,36 +435,36 @@ export default function BookingModal({
                                 onChange={handleChange}
                                 placeholder={dict?.booking?.notes}
                                 rows={2}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all resize-none"
+                                className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-gold-400 text-sm resize-none"
                             />
                         </div>
 
                         {/* Payment Method */}
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">
                                 {dict?.booking?.payment_method}
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, paymentMethod: "cheque" })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.paymentMethod === "cheque"
-                                        ? "border-gold-500 bg-gold-50 text-gold-700"
-                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                    className={`p-3.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer ${formData.paymentMethod === "cheque"
+                                        ? "border-gold-500 bg-gold-500/10 text-gold-400"
+                                        : "border-slate-800 bg-slate-800/70 text-slate-400 hover:border-slate-700"
                                         }`}
                                 >
-                                    <FiCreditCard size={22} />
+                                    <FiCreditCard size={20} />
                                     <span className="text-sm font-medium">Chèque</span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, paymentMethod: "espece" })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all duration-200 ${formData.paymentMethod === "espece"
-                                        ? "border-gold-500 bg-gold-50 text-gold-700"
-                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-gold-300"
+                                    className={`p-3.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer ${formData.paymentMethod === "espece"
+                                        ? "border-gold-500 bg-gold-500/10 text-gold-400"
+                                        : "border-slate-800 bg-slate-800/70 text-slate-400 hover:border-slate-700"
                                         }`}
                                 >
-                                    <FiDollarSign size={22} />
+                                    <FiDollarSign size={20} />
                                     <span className="text-sm font-medium">Espèce</span>
                                 </button>
                             </div>
@@ -513,19 +472,19 @@ export default function BookingModal({
 
                         {/* Price Summary */}
                         {formData.pickupDate && formData.returnDate && (
-                            <div className="bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl p-4 border border-slate-200 animate-fadeIn">
-                                <div className="flex justify-between text-sm text-slate-600 mb-2">
+                            <div className="bg-slate-950/80 rounded-2xl p-4 border border-slate-800 animate-fadeIn">
+                                <div className="flex justify-between text-sm text-slate-400 mb-2">
                                     <span>{dict?.booking?.price_per_day}:</span>
-                                    <span className="font-medium">{formatPrice(product.price)}</span>
+                                    <span className="font-medium text-white">{formatPrice(product.price)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm text-slate-600 mb-2">
+                                <div className="flex justify-between text-sm text-slate-400 mb-2">
                                     <span>{dict?.booking?.total_days}:</span>
-                                    <span className="font-medium">{rentalDays} {dict?.cars_page?.per_day || "days"}</span>
+                                    <span className="font-medium text-white">{rentalDays} {dict?.cars_page?.per_day || "days"}</span>
                                 </div>
-                                <div className="border-t border-slate-200 pt-2 mt-2">
-                                    <div className="flex justify-between text-lg font-bold text-slate-800">
+                                <div className="border-t border-slate-800 pt-2 mt-2">
+                                    <div className="flex justify-between text-lg font-bold text-white">
                                         <span>{dict?.booking?.total_amount}:</span>
-                                        <span className="text-gold-600">{formatPrice(totalPrice)}</span>
+                                        <span className="text-gold-400">{formatPrice(totalPrice)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -533,11 +492,11 @@ export default function BookingModal({
                     </div>
 
                     {/* Footer - Submit Button */}
-                    <div className="flex-shrink-0 p-5 pt-3 bg-gradient-to-t from-slate-50 to-transparent border-t border-slate-200">
+                    <div className="flex-shrink-0 p-5 pt-3 bg-slate-950/90 border-t border-slate-800">
                         <button
                             type="submit"
                             disabled={loading || !formData.fullName || !formData.phoneNumber || !formData.wilaya || !formData.pickupDate || !formData.returnDate}
-                            className="w-full py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-900 font-bold rounded-xl shadow-lg shadow-gold-500/30 hover:from-gold-600 hover:to-gold-700 hover:shadow-xl hover:shadow-gold-500/40 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-gold-500/25 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             {loading ? (
                                 <>
@@ -551,9 +510,9 @@ export default function BookingModal({
                                 </>
                             )}
                         </button>
-                        <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
-                            <FiCheckCircle size={10} className="text-green-500" />
-                            {dict?.hero?.badge_clean || "Trusted"}
+                        <p className="text-center text-xs text-slate-400 mt-2.5 flex items-center justify-center gap-1">
+                            <FiCheckCircle size={11} className="text-emerald-400" />
+                            {dict?.hero?.badge_clean || "Trusted Service"}
                         </p>
                     </div>
                 </form>

@@ -106,9 +106,17 @@ export async function uploadImage(buffer, options = {}) {
 
     console.log('Uploading to Supabase Storage:', { fileName, contentType, size: uploadBuffer.length });
 
+    // In Next.js App Router / Turbopack, passing a Node Buffer directly to Supabase storage
+    // triggers Next.js fetch body serialization which can convert binary data to UTF-8 string,
+    // corrupting binary bytes (>127) into 0xEF 0xBF 0xBD.
+    // Wrapping in a standard Blob forces multipart/form-data upload which preserves binary integrity.
+    const uploadPayload = (typeof Blob !== 'undefined')
+        ? new Blob([uploadBuffer], { type: contentType })
+        : uploadBuffer;
+
     const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
-        .upload(fileName, uploadBuffer, {
+        .upload(fileName, uploadPayload, {
             contentType,
             upsert: false,
         });

@@ -1,7 +1,35 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiArrowUp, FiArrowDown, FiList } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiImage, FiUpload, FiAlertCircle, FiArrowUp, FiArrowDown, FiList, FiStar, FiCheck } from "react-icons/fi";
 import Image from "next/image";
+
+function ImageWithFallback({ src, alt, fill, sizes, className, fallbackIconSize = 48, ...props }) {
+    const [hasError, setHasError] = useState(false);
+
+    useEffect(() => {
+        setHasError(false);
+    }, [src]);
+
+    if (!src || src.includes("placeholder") || hasError) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-300">
+                <FiImage size={fallbackIconSize} />
+            </div>
+        );
+    }
+
+    return (
+        <Image
+            src={src}
+            alt={alt || "صورة"}
+            fill={fill}
+            sizes={sizes}
+            className={className}
+            onError={() => setHasError(true)}
+            {...props}
+        />
+    );
+}
 
 export default function CarsPage() {
     const [cars, setCars] = useState([]);
@@ -14,6 +42,7 @@ export default function CarsPage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [uploadSuccess, setUploadSuccess] = useState(false);
     const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -94,6 +123,7 @@ export default function CarsPage() {
         if (!file) return;
 
         setUploading(true);
+        setUploadSuccess(false);
         const formDataUpload = new FormData();
         formDataUpload.append("file", file);
 
@@ -105,11 +135,18 @@ export default function CarsPage() {
             const data = await response.json();
 
             if (data.success) {
-                // Add new image to the images array
-                setFormData(prev => ({
-                    ...prev,
-                    images: [...prev.images, data.url]
-                }));
+                // Add new image to the images array (filter out any old placeholder string)
+                setFormData(prev => {
+                    const cleanImages = (prev.images || []).filter(img => img && !img.includes("placeholder"));
+                    return {
+                        ...prev,
+                        images: [...cleanImages, data.url]
+                    };
+                });
+                setUploadSuccess(true);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
             } else {
                 alert(data.message);
             }
@@ -118,6 +155,20 @@ export default function CarsPage() {
         } finally {
             setUploading(false);
         }
+    };
+
+    // Set an image as primary (move to index 0)
+    const handleSetPrimary = (indexToPrimary) => {
+        if (indexToPrimary === 0) return;
+        setFormData(prev => {
+            const updated = [...prev.images];
+            const [selected] = updated.splice(indexToPrimary, 1);
+            updated.unshift(selected);
+            return {
+                ...prev,
+                images: updated
+            };
+        });
     };
 
     // Remove image from array
@@ -250,12 +301,13 @@ export default function CarsPage() {
 
     const openEditModal = (car) => {
         setEditCar(car);
+        setUploadSuccess(false);
 
-        // Get images from variants
+        // Get images from variants (filter out placeholder images)
         let carImages = [];
         if (car.variants && car.variants.length > 0 && car.variants[0].images) {
-            carImages = car.variants[0].images;
-        } else if (car.image) {
+            carImages = car.variants[0].images.filter(img => img && !img.includes("placeholder"));
+        } else if (car.image && !car.image.includes("placeholder")) {
             carImages = [car.image];
         }
 
@@ -282,6 +334,7 @@ export default function CarsPage() {
     };
 
     const resetForm = () => {
+        setUploadSuccess(false);
         setFormData({
             name: "",
             brand: "",
@@ -390,17 +443,14 @@ export default function CarsPage() {
                         className="bg-white rounded-2xl shadow-sm border border-cream-100 overflow-hidden hover:shadow-xl transition-all duration-300 group hover:-translate-y-1"
                     >
                         <div className="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden">
-                            {car.image && !car.image.includes("placeholder") ? (
-                                <Image
-                                    src={car.image}
-                                    alt={car.name}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, 25vw"
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
-                            ) : (
-                                <FiImage size={48} className="text-slate-300" />
-                            )}
+                            <ImageWithFallback
+                                src={car.image}
+                                alt={car.name}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 25vw"
+                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                fallbackIconSize={48}
+                            />
 
                             {/* Display Order Badge */}
                             <div className="absolute top-3 left-3">
@@ -634,30 +684,47 @@ export default function CarsPage() {
                                         <span className="text-xs text-gray-400 mr-2">({formData.images.length} صورة)</span>
                                     </label>
 
-                                    <div className="flex flex-wrap gap-3">
+                                    <div className="flex flex-wrap gap-4 items-start">
                                         {/* Existing Images */}
                                         {formData.images.map((img, index) => (
-                                            <div key={index} className="relative group">
-                                                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
-                                                    <Image
+                                            <div key={index} className="relative flex flex-col items-center">
+                                                <div className={`relative w-24 h-24 rounded-xl overflow-hidden border-2 bg-slate-100 shadow-sm ${index === 0 ? "border-gold-500 ring-2 ring-gold-200" : "border-slate-200"}`}>
+                                                    <ImageWithFallback
                                                         src={img}
                                                         alt={`صورة ${index + 1}`}
                                                         fill
-                                                        sizes="80px"
+                                                        sizes="96px"
                                                         className="object-cover"
+                                                        fallbackIconSize={28}
                                                     />
+                                                    {index === 0 && (
+                                                        <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">
+                                                            رئيسية
+                                                        </span>
+                                                    )}
                                                 </div>
+
+                                                {/* Remove Button - Always visible */}
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveImage(index)}
-                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 z-10"
+                                                    title="حذف هذه الصورة"
                                                 >
                                                     <FiX size={14} />
                                                 </button>
-                                                {index === 0 && (
-                                                    <span className="absolute bottom-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded">
-                                                        رئيسية
-                                                    </span>
+
+                                                {/* Make Primary Action */}
+                                                {index !== 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleSetPrimary(index)}
+                                                        className="mt-1 text-[11px] text-slate-600 hover:text-gold-600 flex items-center gap-1 font-medium bg-slate-100 hover:bg-gold-50 px-2 py-0.5 rounded border border-slate-200 transition-colors"
+                                                        title="جعل هذه الصورة هي الصورة الرئيسية للسيارة"
+                                                    >
+                                                        <FiStar size={11} className="text-gold-500" />
+                                                        <span>تعيين كرئيسية</span>
+                                                    </button>
                                                 )}
                                             </div>
                                         ))}
@@ -674,21 +741,32 @@ export default function CarsPage() {
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="w-20 h-20 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center hover:border-gold-400 transition-colors cursor-pointer bg-slate-50"
+                                            className="w-24 h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center hover:border-gold-400 hover:bg-gold-50/30 transition-colors cursor-pointer bg-slate-50 flex-shrink-0"
+                                            title="رفع صورة جديدة"
                                         >
                                             {uploading ? (
-                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gold-500"></div>
+                                                <div className="flex flex-col items-center gap-1">
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gold-500"></div>
+                                                    <span className="text-[11px] text-gold-600 font-medium">جاري الرفع...</span>
+                                                </div>
                                             ) : (
                                                 <>
-                                                    <FiUpload size={20} className="text-slate-400 mb-1" />
-                                                    <span className="text-xs text-slate-400">إضافة</span>
+                                                    <FiUpload size={22} className="text-slate-400 mb-1" />
+                                                    <span className="text-xs text-slate-500 font-medium">إضافة صورة</span>
                                                 </>
                                             )}
                                         </button>
                                     </div>
 
-                                    <p className="text-xs text-gray-400 mt-2">
-                                        الصورة الأولى ستكون الصورة الرئيسية. يمكنك إضافة عدة صور.
+                                    {uploadSuccess && (
+                                        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 mt-3 animate-fadeIn">
+                                            <FiCheck size={16} className="text-emerald-500 flex-shrink-0" />
+                                            <span>تم رفع الصورة بنجاح! اضغط على <strong>{editCar ? "حفظ التعديلات" : "إضافة السيارة"}</strong> بالأسفل لحفظ التغييرات.</span>
+                                        </div>
+                                    )}
+
+                                    <p className="text-xs text-gray-500 mt-2.5">
+                                        الصورة الأولى المميزة بـ <span className="font-bold text-gold-600">"رئيسية"</span> هي التي تظهر في قائمة السيارات. يمكنك الضغط على "تعيين كرئيسية" لاختيار أي صورة رئيسية.
                                     </p>
                                 </div>
                             </div>
