@@ -2,6 +2,9 @@
 const nextConfig = {
   // Fix: Use remotePatterns instead of deprecated domains
   images: {
+    // Bypass Vercel's image optimization to avoid 402 quota errors on free plan
+    // Images are already optimized (avif/webp/jpg) so no quality loss
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -9,13 +12,6 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    // Cache optimized images for 1 hour (in seconds)
-    minimumCacheTTL: 3600,
-    // Use fewer device sizes to reduce optimization work
-    deviceSizes: [640, 1080, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    // Use WebP format for all optimized images
-    formats: ['image/webp'],
   },
   // Fix: Set turbopack root to prevent lockfile detection issues
   turbopack: {
