@@ -766,7 +766,7 @@ export default function CarsPage() {
                                     )}
 
                                     <p className="text-xs text-gray-500 mt-2.5">
-                                        الصورة الأولى المميزة بـ <span className="font-bold text-gold-600">"رئيسية"</span> هي التي تظهر في قائمة السيارات. يمكنك الضغط على "تعيين كرئيسية" لاختيار أي صورة رئيسية.
+                                        الصورة الأولى المميزة بـ <span className="font-bold text-gold-600">&quot;رئيسية&quot;</span> هي التي تظهر في قائمة السيارات. يمكنك الضغط على &quot;تعيين كرئيسية&quot; لاختيار أي صورة رئيسية.
                                     </p>
                                 </div>
                             </div>
