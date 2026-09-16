@@ -105,10 +105,10 @@ Update `package.json` scripts:
 ### 3.1 Dynamic Multilingual Sitemap (`src/app/sitemap.ts`)
 Next.js App Router serves this route as `/sitemap.xml`.
 
-- **Base URL Resolution**: `process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocation.dz'`
+- **Base URL Resolution**: `process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocationdz.com'`
 - **Languages**: `ar` (default), `fr`, `en`
 - **Static Routes**:
-  1. Home (`/` -> `https://luxurylocation.dz/ar`, `fr`, `en`) - Priority `1.0`, ChangeFreq `daily`
+  1. Home (`/` -> `https://luxurylocationdz.com/ar`, `fr`, `en`) - Priority `1.0`, ChangeFreq `daily`
   2. Cars Catalog (`/cars` -> `/[lang]/cars`) - Priority `0.9`, ChangeFreq `daily`
   3. Custom Pack (`/pack-personnalise` -> `/[lang]/pack-personnalise`) - Priority `0.8`, ChangeFreq `weekly`
   4. Design Concept (`/design` -> `/[lang]/design`) - Priority `0.7`, ChangeFreq `weekly`
@@ -125,8 +125,8 @@ Next.js App Router serves this route as `/robots.txt`.
   - `userAgent: '*'`
   - `allow: '/'`
   - `disallow: ['/*/admin/', '/api/', '/_next/', '/admin/']`
-  - `sitemap: 'https://luxurylocation.dz/sitemap.xml'`
-  - `host: 'https://luxurylocation.dz'`
+  - `sitemap: 'https://luxurylocationdz.com/sitemap.xml'`
+  - `host: 'https://luxurylocationdz.com'`
 
 ---
 

@@ -12,7 +12,7 @@
 
 - Preserve all existing `.js` and `.jsx` components and pages without breaking runtime functionality.
 - Do not introduce breaking schema changes in Prisma or database models.
-- Base site URL must default to `https://luxurylocation.dz` with support for `process.env.NEXT_PUBLIC_SITE_URL`.
+- Base site URL must default to `https://luxurylocationdz.com` with support for `process.env.NEXT_PUBLIC_SITE_URL`.
 - Supported locales for sitemap: `ar` (default), `fr`, `en`.
 - CI/CD workflow must run in `ubuntu-latest` with Node.js `20.x`.
 - Every task must end with a commit.
@@ -289,7 +289,7 @@ git commit -m "feat: add core TypeScript definitions for cars, categories, booki
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocation.dz';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocationdz.com';
 
   return {
     rules: {
@@ -320,7 +320,7 @@ import { i18n } from '@/i18n-config';
 export const revalidate = 86400; // Revalidate daily (in seconds)
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocation.dz';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxurylocationdz.com';
   const locales = i18n.locales as ('ar' | 'fr' | 'en')[];
   const now = new Date();
 
@@ -448,7 +448,7 @@ jobs:
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
       DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
-      NEXT_PUBLIC_SITE_URL: "https://luxurylocation.dz"
+      NEXT_PUBLIC_SITE_URL: "https://luxurylocationdz.com"
 
     steps:
       - name: Checkout repository
