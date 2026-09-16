@@ -21,6 +21,16 @@ function getLocale(request) {
 export function proxy(request) {
     const pathname = request.nextUrl.pathname;
 
+    // Do not redirect sitemap, robots, or static files with extensions
+    if (
+        pathname === '/sitemap.xml' ||
+        pathname === '/robots.txt' ||
+        pathname.startsWith('/sitemap') ||
+        pathname.includes('.')
+    ) {
+        return;
+    }
+
     // Check if there is any supported locale in the pathname
     const pathnameIsMissingLocale = i18n.locales.every(
         (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
@@ -39,6 +49,6 @@ export function proxy(request) {
 }
 
 export const config = {
-    // Matcher ignoring `/_next/` and `/api/`
-    matcher: ['/((?!api|_next/static|_next/image|images|videos|favicon.ico).*)'],
+    // Matcher ignoring internal paths, assets, and metadata routes
+    matcher: ['/((?!api|_next/static|_next/image|images|videos|favicon.ico|sitemap.xml|robots.txt).*)'],
 };
