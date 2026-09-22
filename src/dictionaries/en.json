@@ -250,7 +250,13 @@
         "available": "Available",
         "unavailable": "Unavailable",
         "min_economy_days_error": "Minimum rental duration for the Economy category is 3 days.",
-        "min_economy_badge": "Minimum 3 days"
+        "min_economy_badge": "Minimum 3 days",
+        "already_booked_dates": "Already booked periods for this car:",
+        "checking_availability": "Checking availability...",
+        "car_available": "Car is available for these dates",
+        "car_unavailable": "This car is already booked for this period",
+        "select_other_dates": "Please select different pickup or return dates.",
+        "unavailable_btn": "Unavailable for these dates"
     },
     "admin": {
         "dashboard": "Dashboard",

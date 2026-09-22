@@ -264,7 +264,13 @@
         "available": "متوفر",
         "unavailable": "غير متوفر",
         "min_economy_days_error": "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام.",
-        "min_economy_badge": "الحد الأدنى: 3 أيام"
+        "min_economy_badge": "الحد الأدنى: 3 أيام",
+        "already_booked_dates": "الفترات المحجوزة مسبقاً لهذه السيارة:",
+        "checking_availability": "جاري التحقق من التوفر...",
+        "car_available": "السيارة متوفرة في هذه التواريخ",
+        "car_unavailable": "هذه السيارة محجوزة بالفعل في هذه الفترة",
+        "select_other_dates": "يرجى اختيار تواريخ استلام أو إرجاع أخرى.",
+        "unavailable_btn": "غير متوفرة لهذه التواريخ"
     },
     "admin": {
         "dashboard": "لوحة التحكم",

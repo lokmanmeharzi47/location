@@ -264,7 +264,13 @@
         "available": "Disponible",
         "unavailable": "Indisponible",
         "min_economy_days_error": "La durée minimale de location pour la catégorie Économique est de 3 jours.",
-        "min_economy_badge": "Minimum 3 jours"
+        "min_economy_badge": "Minimum 3 jours",
+        "already_booked_dates": "Périodes déjà réservées pour ce véhicule :",
+        "checking_availability": "Vérification de la disponibilité...",
+        "car_available": "Véhicule disponible pour ces dates",
+        "car_unavailable": "Ce véhicule est déjà réservé pour cette période",
+        "select_other_dates": "Veuillez choisir d'autres dates de retrait ou de retour.",
+        "unavailable_btn": "Indisponible pour ces dates"
     },
     "admin": {
         "dashboard": "Tableau de bord",

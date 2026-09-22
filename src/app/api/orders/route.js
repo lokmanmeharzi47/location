@@ -152,6 +152,34 @@ export async function POST(request) {
             }
         }
 
+        // Validate car availability for the chosen dates
+        if (pickup_date && return_date) {
+            const conflictCheck = await client.query(
+                `SELECT id, pickup_date, return_date 
+                 FROM bookings 
+                 WHERE car_id = $1 
+                   AND (status IS NULL OR status NOT IN ('cancelled', 'ملغي', 'ملغى', 'annulée', 'annulee', 'rejected', 'refused'))
+                   AND pickup_date <= $3::timestamp 
+                   AND return_date >= $2::timestamp
+                 LIMIT 1`,
+                [parseInt(car_id), `${pickup_date} 00:00:00`, `${return_date} 23:59:59`]
+            );
+
+            if (conflictCheck.rows.length > 0) {
+                const conflict = conflictCheck.rows[0];
+                const conflictStart = new Date(conflict.pickup_date).toISOString().split('T')[0];
+                const conflictEnd = new Date(conflict.return_date).toISOString().split('T')[0];
+                return NextResponse.json(
+                    {
+                        success: false,
+                        error: 'CAR_NOT_AVAILABLE',
+                        message: `عذراً، هذه السيارة محجوزة بالفعل من ${conflictStart} إلى ${conflictEnd}. يرجى اختيار تواريخ أخرى.`
+                    },
+                    { status: 409 }
+                );
+            }
+        }
+
         // Define initial status
         const initialStatus = 'قيد التنفيذ';
 

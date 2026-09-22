@@ -51,6 +51,38 @@ export default function BookingModal({
     const [loading, setLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState(null);
+    const [bookedRanges, setBookedRanges] = useState([]);
+    const [loadingAvailability, setLoadingAvailability] = useState(false);
+
+    // Fetch booked ranges for this car
+    useEffect(() => {
+        if (!product?.id) return;
+        let isMounted = true;
+        setLoadingAvailability(true);
+
+        fetch(`/api/cars/${product.id}/availability`)
+            .then(res => res.json())
+            .then(data => {
+                if (isMounted && data.success && Array.isArray(data.bookedRanges)) {
+                    setBookedRanges(data.bookedRanges);
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching booked dates:", err);
+            })
+            .finally(() => {
+                if (isMounted) setLoadingAvailability(false);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [product?.id]);
+
+    const isRtl = useMemo(() => {
+        const text = dict?.booking?.modal_title || "";
+        return /[\u0600-\u06FF]/.test(text);
+    }, [dict]);
 
     const isEconomy = useMemo(() => {
         const catName = (category?.name || product?.category || product?.category_name || "").toLowerCase();
@@ -131,6 +163,23 @@ export default function BookingModal({
     const rentalDays = useMemo(() => calculateDays(formData.pickupDate, formData.returnDate), [formData.pickupDate, formData.returnDate]);
     const totalPrice = dailyPrice * rentalDays;
 
+    // Check if selected dates conflict with any existing booking
+    const dateConflict = useMemo(() => {
+        if (!formData.pickupDate || !formData.returnDate || bookedRanges.length === 0) {
+            return null;
+        }
+        const pDate = new Date(`${formData.pickupDate}T00:00:00`);
+        const rDate = new Date(`${formData.returnDate}T23:59:59`);
+
+        const conflict = bookedRanges.find(range => {
+            const bStart = new Date(`${range.startDate}T00:00:00`);
+            const bEnd = new Date(`${range.endDate}T23:59:59`);
+            return bStart <= rDate && bEnd >= pDate;
+        });
+
+        return conflict || null;
+    }, [formData.pickupDate, formData.returnDate, bookedRanges]);
+
     function formatPrice(priceInput) {
         const price = Number(priceInput);
         if (isNaN(price)) return priceInput;
@@ -152,6 +201,14 @@ export default function BookingModal({
             setError(
                 dict?.booking?.min_economy_days_error ||
                 "الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو 3 أيام."
+            );
+            setLoading(false);
+            return;
+        }
+
+        if (dateConflict) {
+            setError(
+                `${dict?.booking?.car_unavailable || "Ce véhicule est déjà réservé pour cette période"} (${dateConflict.startDate} → ${dateConflict.endDate}). ${dict?.booking?.select_other_dates || "Veuillez choisir d'autres dates."}`
             );
             setLoading(false);
             return;
@@ -187,7 +244,7 @@ export default function BookingModal({
             if (data.success) {
                 setIsSuccess(true);
             } else {
-                setError(data.error || dict?.booking?.error_generic);
+                setError(data.message || data.error || dict?.booking?.error_generic);
             }
         } catch (err) {
             console.error("Booking error:", err);
@@ -199,7 +256,7 @@ export default function BookingModal({
 
     if (isSuccess) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir="rtl">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir={isRtl ? "rtl" : "ltr"}>
                 <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
                 <div
                     className="relative bg-slate-900 border border-gold-500/30 rounded-3xl shadow-2xl w-full max-w-md p-8 text-center animate-fadeIn text-white"
@@ -222,7 +279,7 @@ export default function BookingModal({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose} dir={isRtl ? "rtl" : "ltr"}>
             <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
 
             <div
@@ -235,7 +292,7 @@ export default function BookingModal({
                         onClick={onBack}
                         className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium cursor-pointer"
                     >
-                        <FiArrowRight size={18} />
+                        <FiArrowRight size={18} className={isRtl ? "" : "rotate-180"} />
                         {dict?.booking?.back}
                     </button>
                     <h2 className="text-lg font-bold text-white">{dict?.booking?.modal_title}</h2>
@@ -308,6 +365,68 @@ export default function BookingModal({
                                 />
                             </div>
                         </div>
+
+                        {/* Booked Periods Indicator */}
+                        {loadingAvailability ? (
+                            <p className="text-xs text-slate-400 flex items-center gap-1.5 animate-pulse -mt-2">
+                                <BiLoaderAlt className="animate-spin text-gold-400" />
+                                {dict?.booking?.checking_availability || "Vérification de la disponibilité..."}
+                            </p>
+                        ) : bookedRanges.length > 0 ? (
+                            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5 -mt-2">
+                                <div className="flex items-center gap-1.5 text-slate-400 font-medium">
+                                    <FiCalendar className="text-gold-400 flex-shrink-0" />
+                                    <span>{dict?.booking?.already_booked_dates || "Périodes déjà réservées :"}</span>
+                                </div>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {bookedRanges.map((range, idx) => (
+                                        <span
+                                            key={idx}
+                                            dir="ltr"
+                                            className="inline-flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/25 text-rose-300 px-2.5 py-1 rounded-md font-mono text-[11px] tracking-normal"
+                                            style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+                                        >
+                                            <span>{range.startDate}</span>
+                                            <span className="text-rose-400 font-bold">→</span>
+                                            <span>{range.endDate}</span>
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {/* Real-time Availability Feedback */}
+                        {formData.pickupDate && formData.returnDate && (
+                            dateConflict ? (
+                                <div className="bg-rose-500/15 border border-rose-500/35 text-rose-200 px-3.5 py-2.5 rounded-xl flex items-start gap-2 text-xs">
+                                    <FiAlertCircle className="flex-shrink-0 text-rose-400 text-base mt-0.5" />
+                                    <div>
+                                        <span className="font-semibold text-rose-300">
+                                            {dict?.booking?.car_unavailable || "Ce véhicule est déjà réservé pour cette période"}
+                                        </span>
+                                        <span className="block text-rose-300/80 mt-0.5">
+                                            (
+                                            <span
+                                                dir="ltr"
+                                                className="inline-flex items-center gap-1 font-mono font-medium mx-1 text-rose-200"
+                                                style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+                                            >
+                                                <span>{dateConflict.startDate}</span>
+                                                <span className="text-rose-400 font-bold">→</span>
+                                                <span>{dateConflict.endDate}</span>
+                                            </span>
+                                            ) — {dict?.booking?.select_other_dates || "Veuillez choisir d'autres dates."}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 px-3 py-2 rounded-xl flex items-center gap-2 text-xs">
+                                    <FiCheckCircle className="flex-shrink-0 text-emerald-400" />
+                                    <span>{dict?.booking?.car_available || "Véhicule disponible pour ces dates"}</span>
+                                </div>
+                            )
+                        )}
+
                         {isEconomy && (
                             <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 flex items-center gap-1.5 -mt-2">
                                 <FiAlertCircle className="flex-shrink-0" />
@@ -495,18 +614,27 @@ export default function BookingModal({
                     <div className="flex-shrink-0 p-5 pt-3 bg-slate-950/90 border-t border-slate-800">
                         <button
                             type="submit"
-                            disabled={loading || !formData.fullName || !formData.phoneNumber || !formData.wilaya || !formData.pickupDate || !formData.returnDate}
-                            className="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-gold-500/25 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            disabled={loading || Boolean(dateConflict) || !formData.fullName || !formData.phoneNumber || !formData.wilaya || !formData.pickupDate || !formData.returnDate}
+                            className={`w-full py-3.5 font-bold rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                                dateConflict
+                                    ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 cursor-not-allowed opacity-90"
+                                    : "bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 shadow-gold-500/25 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
+                            }`}
                         >
                             {loading ? (
                                 <>
                                     <BiLoaderAlt className="animate-spin text-xl" />
                                     {dict?.booking?.loading}
                                 </>
+                            ) : dateConflict ? (
+                                <>
+                                    <FiAlertCircle className="text-lg" />
+                                    {dict?.booking?.unavailable_btn || "Indisponible pour ces dates"}
+                                </>
                             ) : (
                                 <>
                                     {dict?.booking?.confirm}
-                                    <FiArrowRight className="rotate-180" />
+                                    <FiArrowRight className={isRtl ? "rotate-180" : ""} />
                                 </>
                             )}
                         </button>
