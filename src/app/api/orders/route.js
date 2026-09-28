@@ -243,11 +243,17 @@ export async function POST(request) {
 
             // Send to Google Sheet if configured (MUST await on Vercel serverless!)
             if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
+                // Prepend with single quote (') to force Google Sheets to treat value as literal text.
+                // Google Sheets hides the apostrophe and displays the complete "+213 778612190" without formula errors.
+                const sheetPhone = customer_phone
+                    ? (customer_phone.startsWith("'") ? customer_phone : `'${customer_phone}`)
+                    : '-';
+
                 const sheetData = {
                     record: {
                         id: newBookingId,
                         customer_name,
-                        customer_phone,
+                        customer_phone: sheetPhone,
                         cars: { name: carName },
                         pickup_date,
                         return_date,
