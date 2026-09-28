@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FiX, FiArrowRight, FiMapPin, FiCheckCircle, FiAlertCircle, FiCalendar, FiCreditCard, FiDollarSign } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
 import wilayaCommunes from "@/data/wilaya_communes.json";
+import PhoneInput from "@/components/PhoneInput";
 
 // Get wilayas list from communes data
 const wilayasList = Object.keys(wilayaCommunes);
@@ -488,14 +489,10 @@ export default function BookingModal({
                                 <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
                                     {dict?.booking?.phone}
                                 </label>
-                                <input
-                                    type="tel"
-                                    name="phoneNumber"
+                                <PhoneInput
                                     value={formData.phoneNumber}
-                                    onChange={handleChange}
-                                    placeholder="0778612190"
-                                    className="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-gold-400 text-sm"
-                                    dir="ltr"
+                                    onChange={(fullNumber) => setFormData((prev) => ({ ...prev, phoneNumber: fullNumber }))}
+                                    placeholder="07 78 61 21 90"
                                     required
                                 />
                             </div>
