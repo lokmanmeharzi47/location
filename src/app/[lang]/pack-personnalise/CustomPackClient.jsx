@@ -28,6 +28,7 @@ import {
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import wilayaCommunes from "@/data/wilaya_communes.json";
+import PhoneInput from "@/components/PhoneInput";
 
 const wilayasList = Object.keys(wilayaCommunes);
 
@@ -816,13 +817,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                     <FiPhone className="text-gold-400" size={14} />
                                     <span>{dict?.custom_pack?.phone_number || "Numéro de téléphone (WhatsApp)"}</span>
                                 </label>
-                                <input
-                                    type="tel"
-                                    name="customerPhone"
+                                <PhoneInput
                                     value={formData.customerPhone}
-                                    onChange={handleFormChange}
-                                    placeholder="05 / 06 / 07..."
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-gold-500 placeholder-slate-600 transition-colors"
+                                    onChange={(fullNumber) => setFormData((prev) => ({ ...prev, customerPhone: fullNumber }))}
+                                    placeholder="07 78 61 21 90"
                                     required
                                 />
                             </div>
