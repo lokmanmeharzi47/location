@@ -113,7 +113,7 @@ export default function PhoneInput({
     };
 
     return (
-        <div className={`relative flex items-center ${className}`} ref={dropdownRef}>
+        <div className={`relative flex items-center ${className}`} dir="ltr" ref={dropdownRef}>
             {/* Country Selector Button */}
             <button
                 type="button"
