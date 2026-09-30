@@ -158,7 +158,7 @@ export async function POST(request) {
             `Bonjour, je souhaite obtenir un devis personnalisé et réserver ce pack.`,
         ].join('\n');
 
-        const whatsappUrl = `https://wa.me/213778612190?text=${encodeURIComponent(waMessage)}`;
+        const whatsappUrl = `https://wa.me/213559309680?text=${encodeURIComponent(waMessage)}`;
 
         return NextResponse.json({
             success: true,

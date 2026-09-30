@@ -219,7 +219,7 @@ git commit -m "feat(ui): add reusable PhoneInput component with country dial cod
 
 **Interfaces:**
 - Consumes: `PhoneInput` from `@/components/PhoneInput`
-- Produces: `formData.phoneNumber` holding full international number (e.g. `+213 778612190`), passed to `POST /api/orders` as `customer_phone`.
+- Produces: `formData.phoneNumber` holding full international number (e.g. `+213 559309680`), passed to `POST /api/orders` as `customer_phone`.
 
 - [ ] **Step 1: Import `PhoneInput` in `src/components/BookingModal.jsx`**
 
@@ -270,7 +270,7 @@ git commit -m "feat(booking): integrate PhoneInput with country dial code in Boo
 
 **Interfaces:**
 - Consumes: `PhoneInput` from `@/components/PhoneInput`
-- Produces: `formData.customerPhone` formatted with country dial code (e.g. `+213 778612190`).
+- Produces: `formData.customerPhone` formatted with country dial code (e.g. `+213 559309680`).
 
 - [ ] **Step 1: Import `PhoneInput` in `CustomPackClient.jsx`**
 
@@ -321,7 +321,7 @@ Modify lines 245-270:
             // Send to Google Sheet if configured (MUST await on Vercel serverless!)
             if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
                 // Prepend with single quote (') to force Google Sheets to treat value as literal text.
-                // Google Sheets hides the apostrophe and displays the complete "+213 778612190" without formula errors.
+                // Google Sheets hides the apostrophe and displays the complete "+213 559309680" without formula errors.
                 const sheetPhone = customer_phone
                     ? (customer_phone.startsWith("'") ? customer_phone : `'${customer_phone}`)
                     : '-';

@@ -96,7 +96,7 @@ export default function SettingsClient({ dict }) {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">{dict?.booking?.phone || "Phone"}</label>
                                         <input
                                             type="tel"
-                                            defaultValue="0778612190"
+                                            defaultValue="0559309680"
                                             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400"
                                         />
                                     </div>

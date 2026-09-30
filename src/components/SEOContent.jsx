@@ -112,7 +112,7 @@ export default function SEOContent({ dict, lang }) {
                                     {dict?.internal_links?.cars_page || seo.cta_text}
                                 </Link>
                                 <a
-                                    href="https://wa.me/213778612190"
+                                    href="https://wa.me/213559309680"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto px-8 py-3.5 bg-slate-900/80 backdrop-blur-sm text-white font-semibold text-base md:text-lg rounded-full border border-white/20 hover:border-gold-400/50 hover:bg-slate-800 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2"

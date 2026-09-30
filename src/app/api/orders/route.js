@@ -142,9 +142,9 @@ export async function POST(request) {
 
                 if (calcDays < minDays) {
                     return NextResponse.json(
-                        { 
-                            success: false, 
-                            message: `الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو ${minDays} أيام.` 
+                        {
+                            success: false,
+                            message: `الحد الأدنى لمدّة الحجز في الفئة الاقتصادية هو ${minDays} أيام.`
                         },
                         { status: 400 }
                     );
@@ -244,7 +244,7 @@ export async function POST(request) {
             // Send to Google Sheet if configured (MUST await on Vercel serverless!)
             if (process.env.GOOGLE_SHEET_SCRIPT_URL) {
                 // Prepend with single quote (') to force Google Sheets to treat value as literal text.
-                // Google Sheets hides the apostrophe and displays the complete "+213 778612190" without formula errors.
+                // Google Sheets hides the apostrophe and displays the complete "+213 559309680" without formula errors.
                 const sheetPhone = customer_phone
                     ? (customer_phone.startsWith("'") ? customer_phone : `'${customer_phone}`)
                     : '-';
