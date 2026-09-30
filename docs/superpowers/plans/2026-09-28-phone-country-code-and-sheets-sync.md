@@ -53,7 +53,7 @@ export default function PhoneInput({
     value = "",
     onChange,
     defaultCountry = "DZ",
-    placeholder = "07 78 61 21 90",
+    placeholder = "05 59 30 96 80",
     required = false,
     disabled = false,
     className = "",
@@ -239,7 +239,7 @@ Find the phone number input block in `src/components/BookingModal.jsx` around li
     <PhoneInput
         value={formData.phoneNumber}
         onChange={(fullNumber) => setFormData((prev) => ({ ...prev, phoneNumber: fullNumber }))}
-        placeholder="07 78 61 21 90"
+        placeholder="05 59 30 96 80"
         required
     />
 </div>
@@ -286,7 +286,7 @@ Locate the phone number input in `src/app/[lang]/pack-personnalise/CustomPackCli
 <PhoneInput
     value={formData.customerPhone}
     onChange={(fullNumber) => setFormData((prev) => ({ ...prev, customerPhone: fullNumber }))}
-    placeholder="07 78 61 21 90"
+    placeholder="05 59 30 96 80"
     required
 />
 ```

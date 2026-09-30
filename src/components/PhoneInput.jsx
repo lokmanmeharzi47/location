@@ -22,7 +22,7 @@ export default function PhoneInput({
     value = "",
     onChange,
     defaultCountry = "DZ",
-    placeholder = "07 78 61 21 90",
+    placeholder = "05 59 30 96 80",
     required = false,
     disabled = false,
     className = "",
@@ -135,9 +135,8 @@ export default function PhoneInput({
                             key={c.code}
                             type="button"
                             onClick={() => handleSelectCountry(c)}
-                            className={`w-full flex items-center justify-between px-3.5 py-2 text-xs text-left hover:bg-slate-800 transition-colors ${
-                                c.code === selectedCountry.code ? "bg-gold-500/10 text-gold-400 font-bold" : "text-slate-200"
-                            }`}
+                            className={`w-full flex items-center justify-between px-3.5 py-2 text-xs text-left hover:bg-slate-800 transition-colors ${c.code === selectedCountry.code ? "bg-gold-500/10 text-gold-400 font-bold" : "text-slate-200"
+                                }`}
                         >
                             <span className="flex items-center gap-2">
                                 <span className="text-base">{c.flag}</span>

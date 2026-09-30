@@ -492,7 +492,7 @@ export default function BookingModal({
                                 <PhoneInput
                                     value={formData.phoneNumber}
                                     onChange={(fullNumber) => setFormData((prev) => ({ ...prev, phoneNumber: fullNumber }))}
-                                    placeholder="07 78 61 21 90"
+                                    placeholder="05 59 30 96 80"
                                     required
                                 />
                             </div>
@@ -612,11 +612,10 @@ export default function BookingModal({
                         <button
                             type="submit"
                             disabled={loading || Boolean(dateConflict) || !formData.fullName || !formData.phoneNumber || !formData.wilaya || !formData.pickupDate || !formData.returnDate}
-                            className={`w-full py-3.5 font-bold rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                                dateConflict
+                            className={`w-full py-3.5 font-bold rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${dateConflict
                                     ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 cursor-not-allowed opacity-90"
                                     : "bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 shadow-gold-500/25 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
-                            }`}
+                                }`}
                         >
                             {loading ? (
                                 <>

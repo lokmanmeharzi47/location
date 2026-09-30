@@ -331,17 +331,15 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                 const el = document.getElementById("select-cars-section");
                                 if (el) el.scrollIntoView({ behavior: "smooth" });
                             }}
-                            className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${
-                                selectedCars.length > 0
+                            className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${selectedCars.length > 0
                                     ? "bg-slate-900/90 border-gold-500/50 shadow-lg shadow-gold-500/10"
                                     : "bg-slate-900/70 border-slate-800 hover:border-slate-700"
-                            }`}
+                                }`}
                         >
-                            <span className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0 ${
-                                selectedCars.length > 0
+                            <span className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0 ${selectedCars.length > 0
                                     ? "bg-gold-500 text-slate-950 shadow-md shadow-gold-500/40"
                                     : "bg-gold-500/20 text-gold-400 border border-gold-500/30"
-                            }`}>
+                                }`}>
                                 {selectedCars.length > 0 ? <FiCheck size={18} strokeWidth={3} /> : "1"}
                             </span>
                             <div>
@@ -361,17 +359,15 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                 const el = document.getElementById("pack-form-section");
                                 if (el) el.scrollIntoView({ behavior: "smooth" });
                             }}
-                            className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${
-                                formData.customerName && formData.customerPhone
+                            className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center gap-3.5 ${formData.customerName && formData.customerPhone
                                     ? "bg-slate-900/90 border-gold-500/50 shadow-lg shadow-gold-500/10"
                                     : "bg-slate-900/70 border-slate-800 hover:border-slate-700"
-                            }`}
+                                }`}
                         >
-                            <span className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0 ${
-                                formData.customerName && formData.customerPhone
+                            <span className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0 ${formData.customerName && formData.customerPhone
                                     ? "bg-gold-500 text-slate-950 shadow-md shadow-gold-500/40"
                                     : "bg-gold-500/20 text-gold-400 border border-gold-500/30"
-                            }`}>
+                                }`}>
                                 {formData.customerName && formData.customerPhone ? <FiCheck size={18} strokeWidth={3} /> : "2"}
                             </span>
                             <div>
@@ -413,11 +409,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                             <button
                                 type="button"
                                 onClick={() => setShowOnlySelected(!showOnlySelected)}
-                                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${
-                                    showOnlySelected
+                                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${showOnlySelected
                                         ? "bg-gold-500 text-slate-950 border-gold-400 shadow-md shadow-gold-500/20"
                                         : "bg-slate-900 text-slate-300 border-slate-800 hover:border-gold-500/40"
-                                }`}
+                                    }`}
                             >
                                 <FiFilter size={14} className={showOnlySelected ? "text-slate-950" : "text-gold-400"} />
                                 <span>{dict?.custom_pack?.filter_selected_only || "Voir ma sélection"}</span>
@@ -456,11 +451,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                             <button
                                 type="button"
                                 onClick={() => setSelectedCategory("all")}
-                                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${
-                                    selectedCategory === "all"
+                                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${selectedCategory === "all"
                                         ? "bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 shadow-md shadow-gold-500/20"
                                         : "bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
-                                }`}
+                                    }`}
                             >
                                 {dict?.custom_pack?.all_categories || "Toutes les catégories"}
                             </button>
@@ -469,11 +463,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                     key={idx}
                                     type="button"
                                     onClick={() => setSelectedCategory(cat)}
-                                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${
-                                        selectedCategory === cat
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${selectedCategory === cat
                                             ? "bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 shadow-md shadow-gold-500/20"
                                             : "bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
-                                    }`}
+                                        }`}
                                 >
                                     {cat}
                                 </button>
@@ -497,20 +490,18 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                     <div
                                         key={car.id}
                                         onClick={() => toggleCarSelection(car.id)}
-                                        className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 flex flex-col border-2 select-none ${
-                                            isSelected
+                                        className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 flex flex-col border-2 select-none ${isSelected
                                                 ? "bg-gradient-to-b from-slate-900 to-[#121927] border-gold-500 shadow-xl shadow-gold-500/20 scale-[1.02]"
                                                 : "bg-slate-900/70 hover:bg-slate-900 border-slate-800/80 hover:border-gold-500/40 shadow-lg hover:-translate-y-1"
-                                        }`}
+                                            }`}
                                     >
                                         {/* Top Checkmark Indicator */}
                                         <div className="absolute top-3 right-3 rtl:right-auto rtl:left-3 z-20">
                                             <div
-                                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${
-                                                    isSelected
+                                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${isSelected
                                                         ? "bg-gold-500 text-slate-950 scale-110 shadow-gold-500/40"
                                                         : "bg-black/60 backdrop-blur-md text-slate-300 border border-white/20 group-hover:border-gold-500/60"
-                                                }`}
+                                                    }`}
                                             >
                                                 {isSelected ? <FiCheck size={16} strokeWidth={3} /> : <FiPlus size={16} />}
                                             </div>
@@ -532,9 +523,8 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                                 alt={car.name}
                                                 fill
                                                 style={{ objectFit: 'cover' }}
-                                                className={`transition-transform duration-500 ease-out group-hover:scale-105 ${
-                                                    isSelected ? "scale-105" : ""
-                                                }`}
+                                                className={`transition-transform duration-500 ease-out group-hover:scale-105 ${isSelected ? "scale-105" : ""
+                                                    }`}
                                                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-70"></div>
@@ -546,9 +536,8 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                         {/* Card Body */}
                                         <div className="p-4 flex flex-col justify-between flex-1">
                                             <div>
-                                                <h3 className={`text-base font-bold transition-colors ${
-                                                    isSelected ? "text-gold-300" : "text-white group-hover:text-gold-400"
-                                                }`}>
+                                                <h3 className={`text-base font-bold transition-colors ${isSelected ? "text-gold-300" : "text-white group-hover:text-gold-400"
+                                                    }`}>
                                                     {car.name}
                                                 </h3>
                                                 <p className="text-xs text-slate-400 mt-0.5">
@@ -566,11 +555,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                                 </div>
 
                                                 <span
-                                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${
-                                                        isSelected
+                                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${isSelected
                                                             ? "bg-gold-500 text-slate-950 shadow-md shadow-gold-500/30"
                                                             : "bg-slate-800 text-slate-300 group-hover:bg-gold-500 group-hover:text-slate-950"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {isSelected ? (
                                                         <>
@@ -596,7 +584,7 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                 {/* STEP 2: EVENT CUSTOMIZATION & CLIENT FORM */}
                 <div id="pack-form-section" className="scroll-mt-24">
                     <form onSubmit={handleSubmit} className="bg-slate-900/90 border border-gold-500/30 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-blur-md">
-                        
+
                         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-800">
                             <span className="w-7 h-7 rounded-lg bg-gold-500 text-slate-950 font-bold flex items-center justify-center text-sm shadow-md">
                                 2
@@ -632,16 +620,14 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                         <div
                                             key={ev.id}
                                             onClick={() => setFormData(p => ({ ...p, eventType: ev.title }))}
-                                            className={`p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-center justify-between ${
-                                                isChosen
+                                            className={`p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-center justify-between ${isChosen
                                                     ? "bg-gold-500/10 border-gold-500 shadow-md shadow-gold-500/10 text-white"
                                                     : "bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700"
-                                            }`}
+                                                }`}
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${
-                                                    isChosen ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
-                                                }`}>
+                                                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${isChosen ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
+                                                    }`}>
                                                     <IconComp size={18} />
                                                 </div>
                                                 <div>
@@ -654,12 +640,10 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                                 </div>
                                             </div>
                                             {/* Radio-style indicator */}
-                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 shrink-0 ms-3 ${
-                                                isChosen ? "border-gold-500" : "border-slate-700"
-                                            }`}>
-                                                <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                                                    isChosen ? "bg-gold-500 scale-100" : "bg-transparent scale-0"
-                                                }`}></div>
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 shrink-0 ms-3 ${isChosen ? "border-gold-500" : "border-slate-700"
+                                                }`}>
+                                                <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${isChosen ? "bg-gold-500 scale-100" : "bg-transparent scale-0"
+                                                    }`}></div>
                                             </div>
                                         </div>
                                     );
@@ -676,16 +660,14 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                 {/* Chauffeur */}
                                 <div
                                     onClick={() => setFormData(p => ({ ...p, withChauffeur: !p.withChauffeur }))}
-                                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-start justify-between gap-4 ${
-                                        formData.withChauffeur
+                                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-start justify-between gap-4 ${formData.withChauffeur
                                             ? "bg-gold-500/10 border-gold-500 shadow-md shadow-gold-500/15"
                                             : "bg-slate-950/60 border-slate-800 hover:border-slate-700"
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex items-start gap-3.5">
-                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${
-                                            formData.withChauffeur ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
-                                        }`}>
+                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${formData.withChauffeur ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
+                                            }`}>
                                             <FiUserCheck size={20} />
                                         </div>
                                         <div>
@@ -698,9 +680,8 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                         </div>
                                     </div>
                                     {/* Checkbox-style indicator */}
-                                    <div className={`shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-300 mt-0.5 ${
-                                        formData.withChauffeur ? "bg-gold-500 border-gold-400 text-slate-950" : "border-slate-700 bg-slate-900"
-                                    }`}>
+                                    <div className={`shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-300 mt-0.5 ${formData.withChauffeur ? "bg-gold-500 border-gold-400 text-slate-950" : "border-slate-700 bg-slate-900"
+                                        }`}>
                                         {formData.withChauffeur && <FiCheck size={14} strokeWidth={3} />}
                                     </div>
                                 </div>
@@ -708,16 +689,14 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                 {/* Wedding Decoration */}
                                 <div
                                     onClick={() => setFormData(p => ({ ...p, withDecoration: !p.withDecoration }))}
-                                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-start justify-between gap-4 ${
-                                        formData.withDecoration
+                                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-start justify-between gap-4 ${formData.withDecoration
                                             ? "bg-gold-500/10 border-gold-500 shadow-md shadow-gold-500/15"
                                             : "bg-slate-950/60 border-slate-800 hover:border-slate-700"
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex items-start gap-3.5">
-                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${
-                                            formData.withDecoration ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
-                                        }`}>
+                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors shrink-0 ${formData.withDecoration ? "bg-gold-500 text-slate-950 border-gold-400 shadow-sm" : "bg-slate-900 border-slate-800 text-gold-400"
+                                            }`}>
                                             <FiGift size={20} />
                                         </div>
                                         <div>
@@ -729,9 +708,8 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className={`shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-300 mt-0.5 ${
-                                        formData.withDecoration ? "bg-gold-500 border-gold-400 text-slate-950" : "border-slate-700 bg-slate-900"
-                                    }`}>
+                                    <div className={`shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-300 mt-0.5 ${formData.withDecoration ? "bg-gold-500 border-gold-400 text-slate-950" : "border-slate-700 bg-slate-900"
+                                        }`}>
                                         {formData.withDecoration && <FiCheck size={14} strokeWidth={3} />}
                                     </div>
                                 </div>
@@ -820,7 +798,7 @@ export default function CustomPackClient({ initialCars = [], dict, lang }) {
                                 <PhoneInput
                                     value={formData.customerPhone}
                                     onChange={(fullNumber) => setFormData((prev) => ({ ...prev, customerPhone: fullNumber }))}
-                                    placeholder="07 78 61 21 90"
+                                    placeholder="05 59 30 96 80"
                                     required
                                 />
                             </div>
