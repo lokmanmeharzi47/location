@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { pool } from '@/lib/db';
 import { sendCustomPackNotification } from '@/lib/telegram';
+import { sendToTracker, toDay, toDzd } from '@/lib/tracker';
 
 export async function POST(request) {
     const client = await pool.connect();
@@ -112,6 +113,42 @@ export async function POST(request) {
         };
 
         const displayTotal = body.formatted_total || formatPriceHelper(estimated_total);
+
+        // Cars Tracker : envoyé après la réponse, le client n'attend pas.
+        after(async () => {
+            try {
+                // Unité lue sur les prix par jour (DA si > 100, sinon millions).
+                const refPrice = Number(selected_cars[0]?.price) || undefined;
+                await sendToTracker({
+                    external_ref: String(newBookingId),
+                    kind: 'pack',
+                    customer: {
+                        name: customer_name,
+                        phone: customer_phone,
+                        email: customer_email || undefined,
+                        city: customer_city || undefined,
+                    },
+                    vehicles: selected_cars.map((c) => ({
+                        ref: c.id != null ? String(c.id) : undefined,
+                        name: String(c.name || 'Véhicule'),
+                        price_display: `${c.formatted_price || formatPriceHelper(c.price)}/j`,
+                    })),
+                    pickup_date: toDay(pickup_date),
+                    return_date: toDay(return_date),
+                    total_days: parseInt(total_days) || undefined,
+                    amount_dzd: toDzd(estimated_total, refPrice),
+                    amount_display: displayTotal,
+                    notes: notes || undefined,
+                    details: {
+                        'Événement': event_type,
+                        Chauffeur: Boolean(with_chauffeur),
+                        'Décoration': Boolean(with_decoration),
+                    },
+                });
+            } catch (err) {
+                console.error('[tracker] envoi pack', newBookingId, err);
+            }
+        });
 
         // Dispatch Telegram Notification
         try {

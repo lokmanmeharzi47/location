@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { pool } from '@/lib/db';
 import { sendOrderNotification } from '@/lib/telegram';
+import { absoluteUrl, sendToTracker, toDay, toDzd } from '@/lib/tracker';
 
 // GET - Fetch all bookings
 export async function GET(request) {
@@ -222,6 +223,14 @@ export async function POST(request) {
             const carResult = await client.query('SELECT name FROM cars WHERE id = $1', [parseInt(car_id)]);
             const carName = carResult.rows[0]?.name || 'Unknown Car';
 
+            // Cars Tracker : envoyé après la réponse, le client n'attend pas.
+            after(() => sendBookingToTracker({
+                bookingId: newBookingId,
+                carId: car_id,
+                carName,
+                body: { customer_name, customer_phone, customer_email, customer_city, customer_address, pickup_date, return_date, pickup_location, payment_method, total_days, total_amount, daily_rate, notes },
+            }));
+
             // Send Telegram notification (MUST await on Vercel serverless!)
             try {
                 await sendOrderNotification({
@@ -291,5 +300,60 @@ export async function POST(request) {
         );
     } finally {
         client.release();
+    }
+}
+
+/**
+ * Envoie une réservation à Cars Tracker. Lit le prix et la photo avec sa
+ * propre connexion, isolée du flux principal : une erreur ici ne touche
+ * jamais la réservation ni les notifications existantes.
+ */
+async function sendBookingToTracker({ bookingId, carId, carName, body }) {
+    try {
+        let dbPrice = null;
+        let imageUrl;
+        try {
+            const { rows } = await pool.query(
+                `SELECT c.price_per_day,
+                        (SELECT image_url FROM car_images WHERE car_id = c.id
+                         ORDER BY is_primary DESC, display_order ASC LIMIT 1) AS image_url
+                   FROM cars c WHERE c.id = $1`,
+                [parseInt(carId)]
+            );
+            dbPrice = rows[0]?.price_per_day ?? null;
+            imageUrl = absoluteUrl(rows[0]?.image_url);
+        } catch (err) {
+            console.warn('[tracker] lecture prix/photo impossible:', err.message);
+        }
+
+        // Montant recalculé depuis le prix en base (le total envoyé par le navigateur n'est pas fiable).
+        const days = parseInt(body.total_days) || 0;
+        const amount = dbPrice && days > 0
+            ? toDzd(Number(dbPrice) * days, dbPrice)
+            : toDzd(body.total_amount, body.daily_rate);
+
+        const pickup = { agency: 'En agence', delivery: 'Livraison' }[body.pickup_location] || body.pickup_location || undefined;
+
+        await sendToTracker({
+            external_ref: String(bookingId),
+            kind: 'reservation',
+            customer: {
+                name: body.customer_name,
+                phone: body.customer_phone,
+                email: body.customer_email || undefined,
+                city: body.customer_city || undefined,
+            },
+            vehicle: { ref: String(carId), name: carName, photo_url: imageUrl },
+            pickup_date: toDay(body.pickup_date),
+            return_date: toDay(body.return_date),
+            total_days: days || undefined,
+            pickup_location: pickup,
+            amount_dzd: amount,
+            payment_method: { espece: 'Espèces', cheque: 'Chèque' }[body.payment_method] || body.payment_method || undefined,
+            notes: body.notes || undefined,
+            details: { Adresse: body.customer_address || null },
+        });
+    } catch (err) {
+        console.error('[tracker] envoi réservation', bookingId, err);
     }
 }
